@@ -22,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
     private final TokenProvider tokenProvider;
 
     // 토큰의 인증 정보를 SecurityContext에 저장
@@ -46,7 +45,7 @@ public class JwtFilter extends GenericFilterBean {
 
     private String resolveToken(HttpServletRequest request) {
 
-        Optional<Cookie> authCookie = Optional.ofNullable(WebUtils.getCookie(request, "Authorization"));
+        Optional<Cookie> authCookie = Optional.ofNullable(WebUtils.getCookie(request, "accessToken"));
 
         return authCookie.map(Cookie::getValue).orElse(null);
     }

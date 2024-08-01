@@ -1,7 +1,10 @@
 import {useState} from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 function Signin() {
+
+    const navigate = useNavigate()
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,8 +18,8 @@ function Signin() {
                 withCredentials: true
             }
         ).then(res => {
-            alert(res.message)
-            location.href = "/"
+            alert("login Success")
+            navigate("/")
         })
             .catch(err => alert(err));
     }

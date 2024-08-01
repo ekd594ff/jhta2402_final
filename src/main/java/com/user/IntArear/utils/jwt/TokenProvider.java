@@ -18,6 +18,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,7 +45,7 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public ResponseCookie createToken(Authentication authentication) {
+    public ResponseCookie createAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -59,12 +60,21 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .compact();
 
-        return ResponseCookie.from("Authorization")
+        return ResponseCookie.from("accessToken")
                 .value(jwt)
                 .domain("localhost")
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
+                .maxAge(tokenValidityInSeconds)
+                .build();
+    }
+
+    public ResponseCookie getLoginToken() {
+        return ResponseCookie.from("login")
+                .value(UUID.randomUUID().toString())
+                .domain("localhost")
+                .path("/")
                 .maxAge(tokenValidityInSeconds)
                 .build();
     }

@@ -1,4 +1,6 @@
 import axios from "axios";
+import {Link} from "react-router-dom";
+import LoginLink from "../components/common/loginLink.jsx";
 
 function Index() {
 
@@ -18,8 +20,9 @@ function Index() {
         <>
             <main>
                 <h1>IntArear</h1>
-                <p><a href="/login">Login</a></p>
-                <p><a href="/signup">SignUp</a></p>
+                <p><Link to="/login">Login</Link></p>
+                <p><Link to="/signup">SignUp</Link></p>
+                <p><LoginLink to={"/auth"} className={"auth-test"}>Auth Test</LoginLink></p>
                 <button onClick={test}>Auth Test</button>
             </main>
         </>
