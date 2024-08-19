@@ -1,12 +1,10 @@
 import "./styles/index.scss";
+import {RouterProvider} from "react-router-dom";
+import root from "./router/root.jsx";
 
 function App() {
     return (
-        <>
-            <main>
-                <h1>IntArear</h1>
-            </main>
-        </>
+        <RouterProvider router={root}/>
     )
 }
 
