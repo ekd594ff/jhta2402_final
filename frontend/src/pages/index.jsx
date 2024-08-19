@@ -5,7 +5,7 @@ import LoginLink from "../components/common/loginLink.jsx";
 function Index() {
 
     const test = () => {
-        axios.post("http://localhost:8080/api/example/test",
+        axios.post("/api/example/test",
             {},
             {withCredentials: true})
             .then((response) => {
@@ -22,6 +22,7 @@ function Index() {
                 <h1>IntArear</h1>
                 <p><Link to="/login">Login</Link></p>
                 <p><Link to="/signup">SignUp</Link></p>
+                {/* 로그인 쿠키가 없으면 이동 불가 */}
                 <p><LoginLink to={"/auth"} className={"auth-test"}>Auth Test</LoginLink></p>
                 <button onClick={test}>Auth Test</button>
             </main>

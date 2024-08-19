@@ -2,8 +2,7 @@ import {lazy, Suspense} from "react";
 import {createBrowserRouter} from "react-router-dom";
 
 const Index = lazy(() => import("../pages/index"));
-const SignIn = lazy(() => import('../pages/signin'));
-const SignUp = lazy(() => import('../pages/signup'));
+const SignIn = lazy(() => import('../pages/login/signin.jsx'));
 
 const root = createBrowserRouter([
     {
@@ -13,10 +12,6 @@ const root = createBrowserRouter([
     {
         path: '/login',
         element: <Suspense><SignIn/></Suspense>
-    },
-    {
-        path: '/signup',
-        element: <Suspense><SignUp/></Suspense>
     },
 ])
 
