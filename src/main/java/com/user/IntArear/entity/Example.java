@@ -3,20 +3,23 @@ package com.user.IntArear.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Entity
-public class Category { // 카테고리 - 상품 분류
+public class Example { // 예제
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
+    private String description;
+    private Long otherNecessaryLong;
+    private String otherNecessaryString;
+    private LocalDateTime necessaryDate;
 }
