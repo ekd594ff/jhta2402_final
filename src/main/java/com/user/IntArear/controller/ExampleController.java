@@ -12,4 +12,14 @@ public class ExampleController {
     public String test() {
         return "test";
     }
+
+    @PostMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @PostMapping("/signup")
+    public String signup() {
+        return "signup";
+    }
 }
