@@ -63,3 +63,4 @@ dist-ssr
 *.sw?
 
 .env
+src/main/resources/static/assets
