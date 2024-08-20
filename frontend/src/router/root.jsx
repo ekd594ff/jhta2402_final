@@ -2,7 +2,7 @@ import {lazy, Suspense} from "react";
 import {createBrowserRouter} from "react-router-dom";
 
 const Index = lazy(() => import("../pages/index"));
-const SignIn = lazy(() => import('../pages/login/signin.jsx'));
+const SignIn = lazy(() => import('../pages/login/login.jsx'));
 
 const root = createBrowserRouter([
     {

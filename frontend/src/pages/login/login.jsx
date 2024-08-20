@@ -1,8 +1,9 @@
 import {useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import BasicLayout from "../../layout/BasicLayout.jsx";
 
-function Signin() {
+function Login() {
 
     const navigate = useNavigate()
 
@@ -24,13 +25,13 @@ function Signin() {
             .catch(err => alert(err));
     }
 
-    return <>
+    return <BasicLayout>
         <input value={email} onChange={(e) => setEmail(e.target.value)}
                type="email" name="email" placeholder="Email"/>
         <input value={password} onChange={(e) => setPassword(e.target.value)}
                type="password" name="password" placeholder="Password"/>
         <button onClick={login}>Login</button>
-    </>
+    </BasicLayout>
 }
 
-export default Signin;
+export default Login;

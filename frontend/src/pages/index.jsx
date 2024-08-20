@@ -1,6 +1,7 @@
 import axios from "axios";
-import {Link} from "react-router-dom";
 import LoginLink from "../components/common/loginLink.jsx";
+import "../styles/index.scss";
+import BasicLayout from "../layout/BasicLayout.jsx";
 
 function Index() {
 
@@ -17,16 +18,14 @@ function Index() {
     }
 
     return (
-        <>
+        <BasicLayout>
             <main>
                 <h1>IntArear</h1>
-                <p><Link to="/login">Login</Link></p>
-                <p><Link to="/signup">SignUp</Link></p>
                 {/* 로그인 쿠키가 없으면 이동 불가 */}
                 <p><LoginLink to={"/auth"} className={"auth-test"}>Auth Test</LoginLink></p>
                 <button onClick={test}>Auth Test</button>
             </main>
-        </>
+        </BasicLayout>
     );
 }
 
