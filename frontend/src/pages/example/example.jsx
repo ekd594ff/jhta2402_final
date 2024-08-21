@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 function Example() {
 
@@ -16,7 +17,6 @@ function Example() {
             })
     }, [trigger]);
 
-    const [username, setUsername] = useState("");
     const [exampleForm, setExampleForm] = useState({name: "", description: ""});
 
     const createExampleMember = () => {
@@ -30,8 +30,6 @@ function Example() {
         axios.post("/api/example", exampleForm)
             .then(() => {
                 setTrigger(prev => !prev);
-                setName("");
-                setDescription("");
 
                 alert("created");
             })
@@ -52,29 +50,31 @@ function Example() {
         <>
             <div>
                 <label htmlFor="name">이름</label>
-                <input id="name" value={name}
+                <input id="name" value={exampleForm.name}
                        onChange={(e) => setExampleForm({...exampleForm, name: e.target.value})}/>
                 <label htmlFor="description">설명</label>
-                <input id="description" value={description}
+                <input id="description" value={exampleForm.description}
                        onChange={(e) => setExampleForm({...exampleForm, description: e.target.value})}/>
                 <button onClick={createExample}>Create Example</button>
             </div>
             {exampleList.map((example) => <div key={example.id}>
-                <p>
-                    id : {example.id}
-                </p>
-                <p>
-                    name : {example.name}
-                </p>
-                <p>
-                    description : {example.description}
-                </p>
-                <p>
-                    createdAt : {example.createdAt}
-                </p>
-                <p>
-                    updatedAt : {example.updatedAt}
-                </p>
+                <Link to={`/example/${example.id}`}>
+                    <p>
+                        id : {example.id}
+                    </p>
+                    <p>
+                        name : {example.name}
+                    </p>
+                    <p>
+                        description : {example.description}
+                    </p>
+                    <p>
+                        createdAt : {example.createdAt}
+                    </p>
+                    <p>
+                        updatedAt : {example.updatedAt}
+                    </p>
+                </Link>
                 <button onClick={() => deleteExample(example.id)}>Delete</button>
             </div>)}
         </>

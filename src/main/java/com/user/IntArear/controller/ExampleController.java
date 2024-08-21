@@ -4,7 +4,6 @@ import com.user.IntArear.dto.ExampleDto;
 import com.user.IntArear.entity.Example;
 import com.user.IntArear.service.ExampleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

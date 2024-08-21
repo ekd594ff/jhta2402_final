@@ -1,30 +1,30 @@
 package com.user.IntArear.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Example { // 예제
+public class ExampleComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column
-    private String name;
-
-    @Column
     private String description;
 
-    @OneToMany(mappedBy = "id")
-    private List<ExampleComment> exampleComments;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exampleId")
+    private Example example;
 
     @Column
     private LocalDateTime createdAt;
@@ -32,11 +32,10 @@ public class Example { // 예제
     @Column
     private LocalDateTime updatedAt;
 
-
     @Builder
-    public Example(String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.name = name;
+    public ExampleComment(String description, Example example, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.description = description;
+        this.example = example;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

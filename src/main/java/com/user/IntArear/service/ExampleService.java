@@ -2,11 +2,8 @@ package com.user.IntArear.service;
 
 import com.user.IntArear.dto.ExampleDto;
 import com.user.IntArear.entity.Example;
-import com.user.IntArear.entity.ExampleMember;
-import com.user.IntArear.repository.ExampleMemberRepository;
 import com.user.IntArear.repository.ExampleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,17 +15,13 @@ import java.util.UUID;
 public class ExampleService {
 
     private final ExampleRepository exampleRepository;
-    private final ExampleMemberRepository exampleMemberRepository;
 
     // CREATE: 새로운 Example 생성
     public Example saveExample(ExampleDto exampleDto) {
-        ExampleMember exampleMember = exampleMemberRepository.findById(exampleDto.getExampleMemberId())
-                .orElseThrow(() -> new UsernameNotFoundException("ExampleMember Not Found"));
 
         Example example = new Example(
                 exampleDto.getName(),
                 exampleDto.getDescription(),
-                exampleMember,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
