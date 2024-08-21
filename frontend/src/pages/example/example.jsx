@@ -68,12 +68,6 @@ function Example() {
                     <p>
                         description : {example.description}
                     </p>
-                    <p>
-                        createdAt : {example.createdAt}
-                    </p>
-                    <p>
-                        updatedAt : {example.updatedAt}
-                    </p>
                 </Link>
                 <button onClick={() => deleteExample(example.id)}>Delete</button>
             </div>)}

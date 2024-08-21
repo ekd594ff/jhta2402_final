@@ -53,12 +53,6 @@ function ExampleDetail(props) {
                 <p>
                     description : {example.description}
                 </p>
-                <p>
-                    createdAt : {example.createdAt}
-                </p>
-                <p>
-                    updatedAt : {example.updatedAt}
-                </p>
             </div>
 
             <br/>

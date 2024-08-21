@@ -26,17 +26,10 @@ public class ExampleComment {
     @JoinColumn(name = "exampleId")
     private Example example;
 
-    @Column
-    private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime updatedAt;
 
     @Builder
-    public ExampleComment(String description, Example example, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ExampleComment(String description, Example example) {
         this.description = description;
         this.example = example;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }

@@ -34,8 +34,6 @@ public class ExampleCommentService {
         ExampleComment exampleComment = ExampleComment.builder()
                 .description(exampleCommentDto.getDescription())
                 .example(example)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
 
         return exampleCommentRepository.save(exampleComment);

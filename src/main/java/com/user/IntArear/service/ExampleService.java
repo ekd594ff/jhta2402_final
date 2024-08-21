@@ -2,11 +2,12 @@ package com.user.IntArear.service;
 
 import com.user.IntArear.dto.ExampleDto;
 import com.user.IntArear.entity.Example;
+import com.user.IntArear.repository.ExampleCommentRepository;
 import com.user.IntArear.repository.ExampleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,23 +16,20 @@ import java.util.UUID;
 public class ExampleService {
 
     private final ExampleRepository exampleRepository;
+    private final ExampleCommentRepository exampleCommentRepository;
 
     // CREATE: 새로운 Example 생성
     public Example saveExample(ExampleDto exampleDto) {
 
         Example example = new Example(
                 exampleDto.getName(),
-                exampleDto.getDescription(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                exampleDto.getDescription()
         );
 
         /* 아래 코드와 위 코드는 같은 결과 수행
         Example example = Example.builder()
                 .name(exampleDto.getName())
                 .description(exampleDto.getDescription())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
          */
 
@@ -59,16 +57,22 @@ public class ExampleService {
         // 필요한 필드를 업데이트
         existingExample.setName(exampleDto.getName());
         existingExample.setDescription(exampleDto.getDescription());
-        existingExample.setUpdatedAt(LocalDateTime.now());
 
         // 필요한 다른 필드도 여기에 추가적으로 업데이트 가능
         return exampleRepository.save(existingExample);
     }
 
     // DELETE: 특정 ID의 Example 삭제
+    @Transactional
     public void deleteExample(UUID id) {
+
         Example example = exampleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Example not found with id: " + id));
+
+        // 해당 리뷰에 있는 댓글 먼저 삭제
+        exampleCommentRepository.deleteByExample(example);
+        // 이후 해당 리뷰 삭제
+        // 중간에 오류가 나면 댓글만 지운 댓글을 rollback 해야 하므로, @Transactional 활용
         exampleRepository.delete(example);
     }
 }

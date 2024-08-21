@@ -26,18 +26,10 @@ public class Example { // 예제
     @OneToMany(mappedBy = "id")
     private List<ExampleComment> exampleComments;
 
-    @Column
-    private LocalDateTime createdAt;
-
-    @Column
-    private LocalDateTime updatedAt;
-
 
     @Builder
-    public Example(String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Example(String name, String description) {
         this.name = name;
         this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }
