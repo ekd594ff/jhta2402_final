@@ -1,6 +1,6 @@
 package com.user.IntArear.service;
 
-import com.user.IntArear.dto.MemberRequestDto;
+import com.user.IntArear.dto.member.MemberRequestDto;
 import com.user.IntArear.entity.Member;
 import com.user.IntArear.entity.enums.Role;
 import com.user.IntArear.repository.MemberRepository;

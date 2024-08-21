@@ -22,13 +22,18 @@ public class ExampleComment {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exampleId")
     private Example example;
 
 
     @Builder
-    public ExampleComment(String description, Example example) {
+    public ExampleComment(String description, Member member, Example example) {
         this.description = description;
+        this.member = member;
         this.example = example;
     }
 }

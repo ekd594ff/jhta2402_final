@@ -1,8 +1,7 @@
 package com.user.IntArear.controller;
 
-import com.user.IntArear.dto.ExampleCommentDto;
-import com.user.IntArear.dto.ExampleCommentResponseDto;
-import com.user.IntArear.entity.ExampleComment;
+import com.user.IntArear.dto.example.ExampleCommentDto;
+import com.user.IntArear.dto.example.ExampleCommentResponseDto;
 import com.user.IntArear.service.ExampleCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

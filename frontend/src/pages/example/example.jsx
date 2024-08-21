@@ -19,12 +19,6 @@ function Example() {
 
     const [exampleForm, setExampleForm] = useState({name: "", description: ""});
 
-    const createExampleMember = () => {
-        axios.post("/api/example/member",
-            {"username": username}
-        )
-    }
-
 
     const createExample = () => {
         axios.post("/api/example", exampleForm)
@@ -40,7 +34,7 @@ function Example() {
         axios.delete(`/api/example/${id}`)
             .then(() => {
                 setTrigger(prev => !prev);
-
+                setExampleForm({name: "", description: ""});
                 alert("complete");
             })
             .catch(() => alert("error"))
@@ -57,10 +51,11 @@ function Example() {
                        onChange={(e) => setExampleForm({...exampleForm, description: e.target.value})}/>
                 <button onClick={createExample}>Create Example</button>
             </div>
+
             {exampleList.map((example) => <div key={example.id}>
                 <Link to={`/example/${example.id}`}>
                     <p>
-                        id : {example.memberEmail}
+                        memberEmail : {example.memberEmail}
                     </p>
                     <p>
                         id : {example.id}

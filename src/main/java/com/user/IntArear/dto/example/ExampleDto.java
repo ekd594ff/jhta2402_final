@@ -1,4 +1,4 @@
-package com.user.IntArear.dto;
+package com.user.IntArear.dto.example;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.user.IntArear.dto;
+package com.user.IntArear.dto.example;
 
 import com.user.IntArear.entity.Example;
 import lombok.Data;

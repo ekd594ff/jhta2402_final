@@ -31,7 +31,10 @@ public class Member {
     private Role role;
 
     @OneToMany(mappedBy = "id")
-    List<Example> examples;
+    private List<Example> examples;
+
+    @OneToMany(mappedBy = "id")
+    private List<ExampleComment> exampleComments;
 
     @Builder
     public Member(String email, String password, Role role) {

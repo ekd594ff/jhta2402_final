@@ -1,15 +1,13 @@
 package com.user.IntArear.controller;
 
-import com.user.IntArear.dto.ExampleDto;
-import com.user.IntArear.dto.ExampleResponseDto;
-import com.user.IntArear.entity.Example;
+import com.user.IntArear.dto.example.ExampleDto;
+import com.user.IntArear.dto.example.ExampleResponseDto;
 import com.user.IntArear.service.ExampleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/example")

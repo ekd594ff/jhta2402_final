@@ -1,4 +1,4 @@
-package com.user.IntArear.dto;
+package com.user.IntArear.dto.member;
 
 import lombok.Builder;
 import lombok.Getter;

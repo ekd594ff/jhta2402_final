@@ -51,7 +51,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/signup").permitAll()
                         .requestMatchers("/api/member/info").authenticated()
                         .requestMatchers(HttpMethod.GET).permitAll()
-                        .requestMatchers(HttpMethod.POST).authenticated()
                         .anyRequest().authenticated()
                 )
 
@@ -60,7 +59,8 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                .with(new JwtSecurityConfig(tokenProvider), customizer -> {});
+                .with(new JwtSecurityConfig(tokenProvider), customizer -> {
+                });
         return http.build();
     }
 }

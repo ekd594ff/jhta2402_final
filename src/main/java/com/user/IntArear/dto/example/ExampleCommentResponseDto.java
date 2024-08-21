@@ -1,7 +1,6 @@
-package com.user.IntArear.dto;
+package com.user.IntArear.dto.example;
 
 import com.user.IntArear.entity.ExampleComment;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
@@ -15,7 +14,7 @@ public class ExampleCommentResponseDto {
 
     public ExampleCommentResponseDto(ExampleComment exampleComment) {
         this.id = exampleComment.getId();
-        this.memberEmail = exampleComment.getExample().getMember().getEmail();
+        this.memberEmail = exampleComment.getMember().getEmail();
         this.description = exampleComment.getDescription();
     }
 }

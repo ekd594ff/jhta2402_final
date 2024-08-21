@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom";
 
 function ExampleDetail(props) {
 
+    // url PathVariable 불러오기 (app.jsx 에 적은 :id)
     const params = useParams();
     const id = params.id;
 
@@ -36,6 +37,7 @@ function ExampleDetail(props) {
             {description: description})
             .then(() => {
                 setTrigger(prev => !prev);
+                setDescription("");
                 alert("created");
             })
             .catch(() => alert("error"));

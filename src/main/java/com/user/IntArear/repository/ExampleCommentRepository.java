@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface ExampleCommentRepository extends JpaRepository<ExampleComment, UUID> {
 
     List<ExampleComment> findByExample(Example example);
+
     void deleteByExample(Example example);
 }

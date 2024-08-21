@@ -1,8 +1,8 @@
 package com.user.IntArear.service;
 
-import com.user.IntArear.dto.ExampleDto;
-import com.user.IntArear.dto.ExampleResponseDto;
-import com.user.IntArear.dto.MemberResponseDto;
+import com.user.IntArear.dto.example.ExampleDto;
+import com.user.IntArear.dto.example.ExampleResponseDto;
+import com.user.IntArear.dto.member.MemberDto;
 import com.user.IntArear.entity.Example;
 import com.user.IntArear.entity.Member;
 import com.user.IntArear.repository.ExampleCommentRepository;
@@ -14,10 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +29,10 @@ public class ExampleService {
     // CREATE: 새로운 Example 생성
     public ExampleResponseDto saveExample(ExampleDto exampleDto) {
 
-        MemberResponseDto memberResponseDto = SecurityUtil.getCurrentMember()
+        MemberDto memberDto = SecurityUtil.getCurrentMember()
                 .orElseThrow(() -> new UsernameNotFoundException("member not found"));
 
-        Member member = memberRepository.findByEmail(memberResponseDto.getEmail())
+        Member member = memberRepository.findByEmail(memberDto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("member not found"));
 
         Example example = new Example(
@@ -57,7 +56,8 @@ public class ExampleService {
 
     // READ: 특정 ID로 Example 조회
     public ExampleResponseDto getExampleById(UUID id) {
-        Example example = exampleRepository.getExampleById(id);
+        Example example = exampleRepository.getExampleById(id)
+                .orElseThrow(() -> new NoSuchElementException("example not found"));
 
         return new ExampleResponseDto(example);
     }
@@ -69,8 +69,7 @@ public class ExampleService {
                 .map(ExampleResponseDto::new)
                 .toList();
 
-        // 위와 같은 코드
-        /*
+        /* 위와 같은 코드
         List<Example> examples = exampleRepository.findAll();
         List<ExampleResponseDto> exampleResponseDtos = new ArrayList<>();
         for (Example example : examples) {
@@ -84,7 +83,7 @@ public class ExampleService {
         // Exception을 던지면, GlobalExceptionHandler에서 필터링 함
         // 임의로 Exception을 던진 후, 나중에 한꺼번에 맞춰서 사용할 예정
         Example existingExample = exampleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Example not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Example not found with id: " + id));
 
         // 필요한 필드를 업데이트
         existingExample.setName(exampleDto.getName());
@@ -100,7 +99,16 @@ public class ExampleService {
     public void deleteExample(UUID id) {
 
         Example example = exampleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Example not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Example not found with id: " + id));
+
+        // 로그인 멤버와 작성 멤버가 같은지 확인 -> 아니면 Exception
+        MemberDto memberDto = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("member not found"));
+        Member member = memberRepository.findByEmail(memberDto.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("member not found"));
+        if (!member.getId().equals(example.getMember().getId())) {
+            throw new UsernameNotFoundException("no permission");
+        }
 
         // 해당 리뷰에 있는 댓글 먼저 삭제
         exampleCommentRepository.deleteByExample(example);
