@@ -66,6 +66,9 @@ function ExampleDetail(props) {
                     {comment.id}
                 </p>
                 <p>
+                    {comment.memberEmail}
+                </p>
+                <p>
                     {comment.description}
                 </p>
             </div>)}

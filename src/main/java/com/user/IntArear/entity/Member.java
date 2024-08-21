@@ -5,11 +5,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Member {
 
@@ -27,6 +30,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "id")
+    List<Example> examples;
 
     @Builder
     public Member(String email, String password, Role role) {

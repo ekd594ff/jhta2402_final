@@ -1,6 +1,8 @@
 package com.user.IntArear.service;
 
 import com.user.IntArear.dto.ExampleCommentDto;
+import com.user.IntArear.dto.ExampleCommentResponseDto;
+import com.user.IntArear.dto.ExampleResponseDto;
 import com.user.IntArear.entity.Example;
 import com.user.IntArear.entity.ExampleComment;
 import com.user.IntArear.repository.ExampleCommentRepository;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,14 +22,26 @@ public class ExampleCommentService {
     private final ExampleRepository exampleRepository;
     private final ExampleCommentRepository exampleCommentRepository;
 
-    public List<ExampleComment> findByExampleId(UUID exampleId) {
+    public List<ExampleCommentResponseDto> findByExampleId(UUID exampleId) {
         Example example = exampleRepository.findById(exampleId)
                 .orElse(null);
 
-        return exampleCommentRepository.findByExample(example);
+        return exampleCommentRepository.findByExample(example)
+                .stream()
+                .map(ExampleCommentResponseDto::new)
+                .toList();
+
+        /* 위와 같은 코드
+        List<ExampleComment> exampleComments = exampleCommentRepository.findByExample(example);
+        List<ExampleCommentResponseDto> exampleCommentResponseDtos = new ArrayList<>();
+
+        for (ExampleComment exampleComment : exampleComments) {
+            exampleCommentResponseDtos.add(new ExampleCommentResponseDto(exampleComment));
+        }
+         */
     }
 
-    public ExampleComment save(UUID exampleId, ExampleCommentDto exampleCommentDto) {
+    public ExampleCommentResponseDto save(UUID exampleId, ExampleCommentDto exampleCommentDto) {
 
         Example example = exampleRepository.findById(exampleId)
                 .orElseThrow(() -> new IllegalArgumentException("Example not found"));
@@ -36,6 +51,8 @@ public class ExampleCommentService {
                 .example(example)
                 .build();
 
-        return exampleCommentRepository.save(exampleComment);
+        exampleCommentRepository.save(exampleComment);
+
+        return new ExampleCommentResponseDto(exampleComment);
     }
 }

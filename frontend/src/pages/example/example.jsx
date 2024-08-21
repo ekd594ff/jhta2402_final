@@ -60,6 +60,9 @@ function Example() {
             {exampleList.map((example) => <div key={example.id}>
                 <Link to={`/example/${example.id}`}>
                     <p>
+                        id : {example.memberEmail}
+                    </p>
+                    <p>
                         id : {example.id}
                     </p>
                     <p>
