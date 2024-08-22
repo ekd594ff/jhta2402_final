@@ -24,10 +24,10 @@ function Example() {
                 setExampleList(res.data.content);
                 setPagination({
                     ...pagination,
-                    totalPages: res.data.totalPages,
-                    first: res.data.first,
-                    last: res.data.last,
-                    pageList: getPageList(pagination.page, pageSize, res.data.totalPages)
+                    totalPages: res.data.page.totalPages,
+                    first: pagination.page <= 1,
+                    last: pagination.page >= res.data.page.totalPages,
+                    pageList: getPageList(pagination.page, pageSize, res.data.page.totalPages)
                 });
             })
     }, [pagination.page, trigger]);
