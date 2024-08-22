@@ -126,4 +126,17 @@ public class ExampleService {
         // 중간에 오류가 나면 댓글만 지운 댓글을 rollback 해야 하므로, @Transactional 활용
         exampleRepository.delete(example);
     }
+
+    // DELETE: 특정 ID의 Example 삭제 Admin
+    @Transactional
+    public void deleteExampleAdmin(UUID id) {
+
+        Example example = exampleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Example not found with id: " + id));
+
+        // ROLE_ADMIN 검사는 SecurityFilterChain 에서 실행
+
+        exampleCommentRepository.deleteByExample(example);
+        exampleRepository.delete(example);
+    }
 }

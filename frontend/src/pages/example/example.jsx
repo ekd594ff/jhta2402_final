@@ -56,6 +56,16 @@ function Example() {
             .catch(() => alert("error"))
     }
 
+    const deleteExampleAdmin = (id) => {
+        axios.delete(`/api/admin/example/${id}`)
+            .then(() => {
+                setTrigger(prev => !prev);
+                setExampleForm({name: "", description: ""});
+                alert("complete");
+            })
+            .catch(() => alert("error"))
+    }
+
     return (
         <>
             <div>
@@ -84,6 +94,7 @@ function Example() {
                     </p>
                 </Link>
                 <button onClick={() => deleteExample(example.id)}>Delete</button>
+                <button onClick={() => deleteExampleAdmin(example.id)}>Admin Delete</button>
             </div>)}
 
 

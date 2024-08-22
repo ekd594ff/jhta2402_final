@@ -13,33 +13,33 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/example")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ExampleController {
 
     private final ExampleService exampleService;
 
     // CREATE: 새로운 Example 생성
-    @PostMapping
+    @PostMapping("/example")
     public ExampleResponseDto createExample(@RequestBody ExampleDto exampleDto) {
 
         return exampleService.saveExample(exampleDto);
     }
 
     // READ: 특정 ID로 Example 조회
-    @GetMapping("/{id}")
+    @GetMapping("/example/{id}")
     public ExampleResponseDto getExampleById(@PathVariable UUID id) {
         return exampleService.getExampleById(id);
     }
 
     // READ: 모든 Example 조회
-    @GetMapping("/all")
+    @GetMapping("/example/all")
     public List<ExampleResponseDto> getAllProducts() {
         return exampleService.getAllExamples();
     }
 
     // READ: 페이지 EXAMPLE 조회
-    @GetMapping
+    @GetMapping("/example")
     public Page<ExampleResponseDto> getExamples(@RequestParam int page, @RequestParam int size) {
 
         Pageable pageable = PageRequest.of(page, size);
@@ -48,15 +48,20 @@ public class ExampleController {
     }
 
     // UPDATE: 특정 ID의 Example 수정
-    @PutMapping("/{id}")
+    @PutMapping("/example/{id}")
     public ExampleResponseDto updateExample(@PathVariable UUID id, @RequestBody ExampleDto exampleDto) {
         return exampleService.updateExample(id, exampleDto);
     }
 
     // DELETE: 특정 ID의 Example 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/example/{id}")
     public void deleteExample(@PathVariable UUID id) {
         exampleService.deleteExample(id);
     }
 
+    // DELETE: 특정 ID의 Example 삭제 (admin)
+    @DeleteMapping("/admin/example/{id}")
+    public void deleteExampleAdmin(@PathVariable UUID id) {
+        exampleService.deleteExampleAdmin(id);
+    }
 }

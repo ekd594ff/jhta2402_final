@@ -2,8 +2,10 @@
 INSERT INTO MEMBER (ID, EMAIL, PASSWORD, ROLE)
 VALUES ('f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'user@example.com',
         '$2a$10$tHUPyMBwPx/jKtuBRjldTe3tAmo34LnayXdecS2Os.hKatKyjmmvG', 'ROLE_USER'),
-       ('4cde5da0-bc8a-4ef2-bac0-af4ace3f6424', 'user2@example.com',
-        '$2a$10$EJtf8LM9QiiMw6i0yCvhrOjwNadzaELE9E5rQ1Zk091m09zpJv5lq', 'ROLE_USER');
+       ('e0a8c137-2c61-482f-a057-5f67dfbb315a', 'user2@example.com',
+        '$2a$10$vqAhftiyWCs8XV6tnJxDMujKtPD78rxuvJ4rqhKj8QTsd6QIzavs2', 'ROLE_USER'),
+       ('4cde5da0-bc8a-4ef2-bac0-af4ace3f6424', 'admin@example.com',
+        '$2a$10$EJtf8LM9QiiMw6i0yCvhrOjwNadzaELE9E5rQ1Zk091m09zpJv5lq', 'ROLE_ADMIN');
 
 INSERT INTO EXAMPLE (ID, MEMBERID, DESCRIPTION, NAME)
 VALUES ('2b500693-bfc3-401a-b5a3-63b7b9e039ad', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'desc1', 'name1'),
