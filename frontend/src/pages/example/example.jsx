@@ -1,21 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {Link} from "react-router-dom";
+import {getPageList} from "../../utils/pageUtil.jsx";
+import {Button} from "@mui/material";
 
 function Example() {
 
+    const contentSize = 2; // 페이지에 보여줄 Example 갯수
+    const pageSize = 5; // Pagination 갯수 (5-> [1, 2, 3, 4, 5])
+
+    const [pagination, setPagination] = useState(
+        {page: 1, totalPages: 0, first: true, last: true, pageList: []});
     const [exampleList, setExampleList] = useState([]);
+
     // useEffect를 동작하게 하기 위한 상태 변경
     const [trigger, setTrigger] = useState(false);
 
     useEffect(() => {
-        axios.get("/api/example")
+        axios.get(`/api/example?page=${pagination.page - 1}&size=${contentSize}`)
             .then((res) => {
                 console.log(res);
 
-                setExampleList(res.data)
+                setExampleList(res.data.content);
+                setPagination({
+                    ...pagination,
+                    totalPages: res.data.totalPages,
+                    first: res.data.first,
+                    last: res.data.last,
+                    pageList: getPageList(pagination.page, pageSize, res.data.totalPages)
+                });
             })
-    }, [trigger]);
+    }, [pagination.page, trigger]);
 
     const [exampleForm, setExampleForm] = useState({name: "", description: ""});
 
@@ -24,6 +39,7 @@ function Example() {
         axios.post("/api/example", exampleForm)
             .then(() => {
                 setTrigger(prev => !prev);
+                setExampleForm({name: "", description: ""});
 
                 alert("created");
             })
@@ -69,6 +85,21 @@ function Example() {
                 </Link>
                 <button onClick={() => deleteExample(example.id)}>Delete</button>
             </div>)}
+
+
+            {!pagination.first ? <Button
+                onClick={() => setPagination({...pagination, page: pagination.page - 1})}>prev</Button> : <></>}
+
+            {pagination.pageList.map((pageNum) =>
+                <Button key={pageNum}
+                        onClick={() => setPagination({...pagination, page: pageNum})}>
+                    {pageNum}
+                </Button>)}
+
+            {!pagination.last ? <Button
+                onClick={() => setPagination({...pagination, page: pagination.page + 1})}>
+                next
+            </Button> : <></>}
         </>
     );
 }

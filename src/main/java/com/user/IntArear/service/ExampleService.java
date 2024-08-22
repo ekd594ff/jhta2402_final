@@ -10,6 +10,8 @@ import com.user.IntArear.repository.ExampleRepository;
 import com.user.IntArear.repository.MemberRepository;
 import com.user.IntArear.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +62,14 @@ public class ExampleService {
                 .orElseThrow(() -> new NoSuchElementException("example not found"));
 
         return new ExampleResponseDto(example);
+    }
+
+    // READ: 페이지 Example 조회
+    public Page<ExampleResponseDto> getExamples(Pageable pageable) {
+
+        Page<Example> examples = exampleRepository.findAll(pageable);
+
+        return examples.map(ExampleResponseDto::new);
     }
 
     // READ: 모든 Example 조회
