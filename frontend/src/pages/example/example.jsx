@@ -12,7 +12,6 @@ function Example() {
         axios.get("/api/example")
             .then((res) => {
                 console.log(res);
-
                 setExampleList(res.data)
             })
     }, [trigger]);
@@ -24,13 +23,10 @@ function Example() {
             {"username": username}
         )
     }
-
-
     const createExample = () => {
         axios.post("/api/example", exampleForm)
             .then(() => {
                 setTrigger(prev => !prev);
-
                 alert("created");
             })
             .catch(() => alert("error"))
