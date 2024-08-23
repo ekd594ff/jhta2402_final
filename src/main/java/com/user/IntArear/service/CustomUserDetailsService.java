@@ -1,7 +1,7 @@
 package com.user.IntArear.service;
 
-import com.user.IntArear.repository.MemberRepository;
 import com.user.IntArear.entity.Member;
+import com.user.IntArear.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

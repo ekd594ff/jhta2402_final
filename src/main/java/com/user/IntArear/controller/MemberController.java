@@ -1,10 +1,10 @@
 package com.user.IntArear.controller;
 
-import com.user.IntArear.dto.MemberRequestDto;
-import com.user.IntArear.dto.MemberResponseDto;
+import com.user.IntArear.dto.member.MemberDto;
+import com.user.IntArear.dto.member.MemberRequestDto;
+import com.user.IntArear.service.MemberService;
 import com.user.IntArear.utils.SecurityUtil;
 import com.user.IntArear.utils.jwt.TokenProvider;
-import com.user.IntArear.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -54,13 +52,9 @@ public class MemberController {
     }
 
     @GetMapping("/member/info")
-    public ResponseEntity<MemberResponseDto> getMemberInfo() {
+    public ResponseEntity<MemberDto> getMemberInfo() {
 
-        Optional<MemberResponseDto> optionalMemberResponseDto = SecurityUtil.getCurrentMember();
-
-        return optionalMemberResponseDto.map(memberResponseDto ->
-                        ResponseEntity.ok().body(memberResponseDto))
-                .orElseGet(() ->
-                        ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        return SecurityUtil.getCurrentMember().map(memberDto -> ResponseEntity.ok().body(memberDto))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 }

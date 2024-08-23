@@ -5,15 +5,20 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -25,6 +30,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "id")
+    private List<Example> examples;
+
+    @OneToMany(mappedBy = "id")
+    private List<ExampleComment> exampleComments;
 
     @Builder
     public Member(String email, String password, Role role) {

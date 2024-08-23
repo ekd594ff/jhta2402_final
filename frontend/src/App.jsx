@@ -1,10 +1,29 @@
 import "./styles/index.scss";
-import {RouterProvider} from "react-router-dom";
-import root from "./router/root.jsx";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Header from "./components/common/header.jsx";
+import Footer from "./components/common/footer.jsx";
+import Index from "./pages/index.jsx";
+import Login from "./pages/login/login.jsx";
+import Signup from "./pages/login/signup.jsx";
+import Example from "./pages/example/example.jsx";
+import ExampleDetail from "./pages/example/exampleDetail.jsx";
 
 function App() {
+
     return (
-        <RouterProvider router={root}/>
+        <div className='App'>
+            <BrowserRouter>
+                <Header/>
+                <Routes>
+                    <Route path="/" element={<Index/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/signup" element={<Signup/>}/>
+                    <Route path="/example" element={<Example/>}/>
+                    <Route path="/example/:id" element={<ExampleDetail/>}/>
+                </Routes>
+                <Footer/>
+            </BrowserRouter>
+        </div>
     )
 }
 
