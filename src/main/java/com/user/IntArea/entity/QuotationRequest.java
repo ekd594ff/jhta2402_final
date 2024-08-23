@@ -3,6 +3,7 @@ package com.user.IntArea.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +15,7 @@ public class QuotationRequest {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
 
@@ -25,7 +26,11 @@ public class QuotationRequest {
     @Column(nullable = false)
     private String title;
 
+    @Column
     private String content;
+
+    @OneToMany(mappedBy = "id")
+    private List<RequestSolution> requestSolutions;
 
     @Builder
     public QuotationRequest(Member member, Portfolio portfolio, String title, String content) {

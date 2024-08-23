@@ -10,6 +10,9 @@ import java.util.UUID;
 @Setter
 @Getter
 public class RequestSolution {
+
+    // 견적신청서, 솔루션 중간테이블
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

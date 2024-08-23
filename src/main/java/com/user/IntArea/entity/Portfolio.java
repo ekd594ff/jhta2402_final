@@ -3,6 +3,7 @@ package com.user.IntArea.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +24,12 @@ public class Portfolio {
 
     @Column(nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "id")
+    private List<Solution> solutions;
+
+    @OneToMany(mappedBy = "id")
+    private List<QuotationRequest> quotationRequests;
 
     @Builder
     public Portfolio(Company company, String title, String description) {

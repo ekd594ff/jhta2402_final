@@ -5,6 +5,7 @@ import com.user.IntArea.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,12 @@ public class Member {
     @OneToOne(mappedBy = "member")
     private Company Company;
 
+    @OneToMany(mappedBy = "id")
+    private List<QuotationRequest> quotationRequests;
+
+    @OneToMany(mappedBy = "id")
+    private List<Review> reviews;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Platform platform;
@@ -38,10 +45,11 @@ public class Member {
     private Role role;
 
     @Builder
-    public Member(String email, Platform platform, String password, Role role) {
+    public Member(String username, String password, String email, Platform platform, Role role) {
+        this.username = username;
+        this.password = password;
         this.email = email;
         this.platform = platform;
-        this.password = password;
         this.role = role;
     }
 

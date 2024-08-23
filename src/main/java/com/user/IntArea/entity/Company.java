@@ -2,6 +2,8 @@ package com.user.IntArea.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -31,6 +33,9 @@ public class Company {
 
     @Column(nullable = false)
     private String address;
+
+    @OneToMany(mappedBy = "id")
+    private List<Portfolio> portfolios;
 
     @Builder
     public Company(String companyManager, Member member, String companyName, String description, String phone, String address) {
