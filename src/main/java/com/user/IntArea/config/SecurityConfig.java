@@ -82,6 +82,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, requestSolutionGetAuth).authenticated()
                         .requestMatchers(HttpMethod.GET, reviewGetAuth).authenticated()
                         .requestMatchers(HttpMethod.GET, solutionGetAuth).authenticated()
+                        .requestMatchers(HttpMethod.GET, sellerApi).hasRole("SELLER")
+                        .requestMatchers(HttpMethod.GET, adminApi).hasRole("ADMIN")
 
                         // 나머지 Get 요청 허용 (페이지 이동은 React에서 관리)
                         .requestMatchers(HttpMethod.GET).permitAll()

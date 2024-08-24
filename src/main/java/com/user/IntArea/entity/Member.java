@@ -31,9 +31,6 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToOne(mappedBy = "member")
-    private Company Company;
-
     @OneToMany(mappedBy = "id")
     private List<QuotationRequest> quotationRequests;
 

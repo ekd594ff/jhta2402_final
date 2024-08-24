@@ -39,6 +39,9 @@ public class Company {
     @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
+    private Boolean isApplied;
+
     @OneToMany(mappedBy = "id")
     private List<Portfolio> portfolios;
 
@@ -49,12 +52,13 @@ public class Company {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Company(String companyManager, Member member, String companyName, String description, String phone, String address) {
+    public Company(String companyManager, Member member, String companyName, String description, String phone, String address, boolean isApplied) {
         this.companyManager = companyManager;
         this.member = member;
         this.companyName = companyName;
         this.description = description;
         this.phone = phone;
         this.address = address;
+        this.isApplied = isApplied;
     }
 }
