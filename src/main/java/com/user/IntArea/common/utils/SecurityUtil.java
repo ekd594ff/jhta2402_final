@@ -1,4 +1,4 @@
-package com.user.IntArea.utils;
+package com.user.IntArea.common.utils;
 
 import com.user.IntArea.dto.member.MemberDto;
 import lombok.NoArgsConstructor;

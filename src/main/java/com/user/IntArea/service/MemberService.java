@@ -1,5 +1,6 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Platform;
@@ -21,7 +22,7 @@ public class MemberService {
     public void signup(MemberRequestDto memberRequestDto) {
 
         if (memberRepository.findByEmail(memberRequestDto.getEmail()).isPresent()) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+            throw new UserAlreadyExistsException("이미 가입되어 있는 유저입니다.");
         }
 
         Member member = Member.builder()

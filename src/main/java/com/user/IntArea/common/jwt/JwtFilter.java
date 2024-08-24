@@ -1,4 +1,4 @@
-package com.user.IntArea.utils.jwt;
+package com.user.IntArea.common.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

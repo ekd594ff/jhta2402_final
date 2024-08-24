@@ -1,4 +1,4 @@
-package com.user.IntArea.utils.jwt;
+package com.user.IntArea.common.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
