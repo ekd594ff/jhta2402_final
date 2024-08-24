@@ -42,14 +42,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler(jwtAccessDeniedHandler)
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                )
 
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/api/login", "/api/signup").permitAll()
+                        .requestMatchers("/api/member/login", "/api/member/signup").permitAll()
                         .requestMatchers("/api/member/info").authenticated()
+                        .requestMatchers("/api/*/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -60,7 +57,13 @@ public class SecurityConfig {
                 )
 
                 .with(new JwtSecurityConfig(tokenProvider), customizer -> {
-                });
+                })
+
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                );
+
         return http.build();
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -26,7 +26,7 @@ public class MemberController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<?> login(@RequestBody MemberRequestDto memberRequestDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(memberRequestDto.getEmail(), memberRequestDto.getPassword());
@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> saveMember(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<?> saveMember(@RequestBody MemberRequestDto memberRequestDto) {
 
         memberService.signup(memberRequestDto);
 
