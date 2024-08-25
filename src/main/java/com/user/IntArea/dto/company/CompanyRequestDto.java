@@ -15,7 +15,6 @@ public class CompanyRequestDto {
     public Company toEntity(Member member) {
         return Company.builder()
                 .member(member)
-                .companyManager(member.getUsername())
                 .companyName(companyName)
                 .description(description)
                 .phone(phone)

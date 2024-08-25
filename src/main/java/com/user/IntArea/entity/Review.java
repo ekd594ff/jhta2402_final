@@ -28,6 +28,15 @@ public class Review {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    @Column(nullable = false)
+    private String title;
+
+    @Column
+    private String description;
+
+    @Column
+    private Double rate;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

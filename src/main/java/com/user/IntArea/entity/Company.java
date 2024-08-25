@@ -20,9 +20,6 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column
-    private String companyManager;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
@@ -52,8 +49,7 @@ public class Company {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Company(String companyManager, Member member, String companyName, String description, String phone, String address, boolean isApplied) {
-        this.companyManager = companyManager;
+    public Company(Member member, String companyName, String description, String phone, String address, boolean isApplied) {
         this.member = member;
         this.companyName = companyName;
         this.description = description;

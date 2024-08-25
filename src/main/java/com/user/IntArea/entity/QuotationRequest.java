@@ -24,7 +24,7 @@ public class QuotationRequest {
     @JoinColumn(name = "memberId")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolioId")
     private Portfolio portfolio;
 
@@ -32,7 +32,7 @@ public class QuotationRequest {
     private String title;
 
     @Column
-    private String content;
+    private String description;
 
     @OneToMany(mappedBy = "id")
     private List<RequestSolution> requestSolutions;
@@ -44,10 +44,10 @@ public class QuotationRequest {
     private LocalDateTime updatedAt;
 
     @Builder
-    public QuotationRequest(Member member, Portfolio portfolio, String title, String content) {
+    public QuotationRequest(Member member, Portfolio portfolio, String title, String description) {
         this.member = member;
         this.portfolio = portfolio;
         this.title = title;
-        this.content = content;
+        this.description = description;
     }
 }

@@ -31,6 +31,9 @@ public class Solution {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private Integer price;
+
     @OneToMany(mappedBy = "id")
     private List<RequestSolution> requestSolutions;
 
@@ -41,9 +44,10 @@ public class Solution {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Solution(String title, String description, Portfolio portfolio) {
+    public Solution(String title, String description, Portfolio portfolio, int price) {
         this.title = title;
         this.description = description;
         this.portfolio = portfolio;
+        this.price = price;
     }
 }
