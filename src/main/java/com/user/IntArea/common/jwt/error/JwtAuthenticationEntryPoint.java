@@ -1,4 +1,4 @@
-package com.user.IntArea.utils.jwt.error;
+package com.user.IntArea.common.jwt.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

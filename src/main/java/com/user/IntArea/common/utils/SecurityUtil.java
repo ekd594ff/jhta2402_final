@@ -1,4 +1,4 @@
-package com.user.IntArea.utils;
+package com.user.IntArea.common.utils;
 
 import com.user.IntArea.dto.member.MemberDto;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class SecurityUtil {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String role = String.valueOf(userDetails.getAuthorities().stream().findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+                .orElseThrow(() -> new UsernameNotFoundException("로그인 정보가 없습니다. 다시 시도해주세요.")));
 
         return Optional.of(MemberDto.builder()
                 .email(userDetails.getUsername())

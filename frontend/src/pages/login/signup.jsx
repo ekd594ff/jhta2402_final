@@ -10,7 +10,7 @@ function Signup() {
     const [password, setPassword] = useState('');
 
     const signup = () => {
-        axios.post('/api/signup', {
+        axios.post('/api/member/signup', {
                 email: email,
                 password: password
             },

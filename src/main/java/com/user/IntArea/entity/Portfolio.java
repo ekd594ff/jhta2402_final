@@ -2,14 +2,19 @@ package com.user.IntArea.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,6 +35,12 @@ public class Portfolio {
 
     @OneToMany(mappedBy = "id")
     private List<QuotationRequest> quotationRequests;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     @Builder
     public Portfolio(Company company, String title, String description) {
