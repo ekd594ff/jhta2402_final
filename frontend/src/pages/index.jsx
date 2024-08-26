@@ -1,10 +1,19 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import Header from "../components/common/header.jsx";
+import Footer from "../components/common/footer.jsx";
+
+import style from "../styles/index.module.scss";
+
 
 function Index(props) {
     return (
-        <div>
-        </div>
+        <>
+            <Header/>
+            <main className={style['index']}>
+                <div className={style['container']}></div>
+            </main>
+            <Footer/>
+        </>
     );
 }
 
