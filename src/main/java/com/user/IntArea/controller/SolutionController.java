@@ -4,10 +4,10 @@ import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.service.SolutionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/solution")
@@ -16,13 +16,29 @@ public class SolutionController {
 
     private final SolutionService solutionService;
 
+    // Create
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody SolutionDto solutionDto) {
+    public SolutionDto create(@RequestBody SolutionDto solutionDto) {
 
-        solutionService.create(solutionDto);
-
-        return ResponseEntity.ok().build();
+        return solutionService.create(solutionDto);
     }
 
+    // Read
+    @GetMapping("/{id}")
+    public List<SolutionDto> readAllSolutions() {
+        return solutionService.read();
+    }
+
+    // Update
+    @PutMapping("/{id}")
+    public SolutionDto update(@PathVariable UUID id, @RequestBody SolutionDto solutionDto) {
+        return solutionService.update(id, solutionDto);
+    }
+
+    // Delete
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable UUID id) {
+        solutionService.delete(id);
+    }
 
 }

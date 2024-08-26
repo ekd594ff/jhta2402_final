@@ -1,7 +1,6 @@
 package com.user.IntArea.service;
 
 import com.user.IntArea.dto.solution.SolutionDto;
-import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.entity.Solution;
 import com.user.IntArea.repository.SolutionRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @Service
 @RequiredArgsConstructor
 public class SolutionService {
@@ -22,7 +19,7 @@ public class SolutionService {
     private final SolutionRepository solutionRepository;
 
     // Create
-    public void create(SolutionDto solutionDto) {
+    public SolutionDto create(SolutionDto solutionDto) {
 
         Solution solution = Solution.builder()
                 .title(solutionDto.getTitle())
@@ -31,6 +28,7 @@ public class SolutionService {
                 .build();
 
         solutionRepository.save(solution);
+        return solutionDto;
     }
 
     // Read
