@@ -10,7 +10,7 @@ function Login() {
     const [password, setPassword] = useState('');
 
     const login = () => {
-        axios.post('/api/login', {
+        axios.post('/api/member/login', {
                 email: email,
                 password: password
             },
@@ -18,10 +18,10 @@ function Login() {
                 withCredentials: true
             }
         ).then(res => {
-            alert("login Success")
-            navigate("/")
-        })
-            .catch(err => alert(err));
+                alert("login Success")
+                navigate("/")
+            }
+        ).catch(err => alert(err));
     }
 
     return <>

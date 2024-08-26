@@ -2,21 +2,23 @@ package com.user.IntArea.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @Column
-    private String companyManager;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
@@ -34,16 +36,25 @@ public class Company {
     @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
+    private Boolean isApplied;
+
     @OneToMany(mappedBy = "id")
     private List<Portfolio> portfolios;
 
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
     @Builder
-    public Company(String companyManager, Member member, String companyName, String description, String phone, String address) {
-        this.companyManager = companyManager;
+    public Company(Member member, String companyName, String description, String phone, String address, boolean isApplied) {
         this.member = member;
         this.companyName = companyName;
         this.description = description;
         this.phone = phone;
         this.address = address;
+        this.isApplied = isApplied;
     }
 }

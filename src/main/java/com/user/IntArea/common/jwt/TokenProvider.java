@@ -1,4 +1,4 @@
-package com.user.IntArea.utils.jwt;
+package com.user.IntArea.common.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -30,13 +30,16 @@ public class TokenProvider implements InitializingBean {
     private final long tokenValidityInSeconds;
     private final long tokenValidityInMilliseconds;
     private Key key;
+    private final String domain;
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
+            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds,
+            @Value("${jwt.domain}") String domain) {
         this.secret = secret;
         this.tokenValidityInSeconds = tokenValidityInSeconds;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+        this.domain = domain;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class TokenProvider implements InitializingBean {
 
         return ResponseCookie.from("accessToken")
                 .value(jwt)
-                .domain("localhost")
+                .domain(domain)
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
@@ -73,7 +76,7 @@ public class TokenProvider implements InitializingBean {
     public ResponseCookie getLoginToken() {
         return ResponseCookie.from("login")
                 .value(UUID.randomUUID().toString())
-                .domain("localhost")
+                .domain(domain)
                 .path("/")
                 .maxAge(tokenValidityInSeconds)
                 .build();

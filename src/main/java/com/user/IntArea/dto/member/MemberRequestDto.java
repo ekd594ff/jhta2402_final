@@ -1,14 +1,13 @@
 package com.user.IntArea.dto.member;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.user.IntArea.entity.enums.Platform;
+import lombok.Data;
 
-@Getter
-@Setter
-@Builder
+@Data
 public class MemberRequestDto {
 
     private String email;
+    private String username;
     private String password;
+    private Platform platform;
 }

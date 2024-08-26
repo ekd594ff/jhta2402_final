@@ -4,15 +4,19 @@ import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Setter
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 @Getter
+@Setter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,9 +31,6 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToOne(mappedBy = "member")
-    private Company Company;
-
     @OneToMany(mappedBy = "id")
     private List<QuotationRequest> quotationRequests;
 
@@ -43,6 +44,12 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     @Builder
     public Member(String username, String password, String email, Platform platform, Role role) {
