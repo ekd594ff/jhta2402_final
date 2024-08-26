@@ -9,9 +9,13 @@ import lombok.Setter;
 @Data
 public class SolutionDto {
 
-    private final String title;
-    private final String description;
-    private final String portfolio;
-    private final String price;
+    private String title;
+    private String description;
+    private int price;
 
+    public SolutionDto(Solution solution) {
+        this.title = solution.getTitle();
+        this.description = solution.getDescription();
+        this.price = solution.getPrice();
+    }
 }
