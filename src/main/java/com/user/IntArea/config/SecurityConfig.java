@@ -51,7 +51,7 @@ public class SecurityConfig {
         String[] solutionGetAuth = {};
 
         // 인증이 필요하지 않은 Get이 아닌 api
-        String[] companyApi = {"/api/company/"};
+        String[] companyApi = {};
         String[] imageApi = {};
         String[] memberApi = {"/api/member/login", "/api/member/signup"};
         String[] portfolioApi = {};
