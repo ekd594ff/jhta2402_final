@@ -1,16 +1,14 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
+import com.user.IntArea.dto.member.UpdateMemberDto;
 import com.user.IntArea.service.MemberService;
-import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.common.jwt.TokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,10 +58,10 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.info(id));
     }
 
-    @PutMapping()
-    public ResponseEntity<?> updateMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        log.info("memberResponseDTO={}", memberRequestDto);
-        memberService.update(memberRequestDto);
+    @PatchMapping()
+    public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberDto updateMemberDto) {
+        log.info("memberResponseDTO={}", updateMemberDto);
+        memberService.update(updateMemberDto);
         return ResponseEntity.ok().build();
     }
 

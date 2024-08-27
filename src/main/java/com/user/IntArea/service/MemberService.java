@@ -4,6 +4,7 @@ import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
+import com.user.IntArea.dto.member.UpdateMemberDto;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,11 +44,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void update(MemberRequestDto memberRequestDto) {
+    public void update(UpdateMemberDto updateMemberDto) {
         String email = SecurityUtil.getCurrentMember().get().getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("없음"));
-        member.setUsername(memberRequestDto.getUsername());
-        member.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
+        member.setUsername(updateMemberDto.getUsername());
+        member.setPassword(passwordEncoder.encode(updateMemberDto.getPassword()));
     }
 
     @Transactional

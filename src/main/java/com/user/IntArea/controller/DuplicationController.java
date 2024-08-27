@@ -19,7 +19,7 @@ public class DuplicationController {
     private final DuplicationService duplicationService;
 
     @PostMapping("/username")
-    public ResponseEntity<?> isDuplicateUsername(@RequestBody Map data) {
+    public ResponseEntity<?> isDuplicateUsername(@RequestBody Map<String,String> data) {
         if (duplicationService.isDuplicateUsername(data)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -27,7 +27,7 @@ public class DuplicationController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<?> isDuplicateEmail(@RequestBody Map data) {
+    public ResponseEntity<?> isDuplicateEmail(@RequestBody Map<String,String> data) {
         if (duplicationService.isDuplicateEmail(data)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
