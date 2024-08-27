@@ -54,6 +54,7 @@ public class SecurityConfig {
         String[] companyApi = {"/api/company/"};
         String[] imageApi = {};
         String[] memberApi = {"/api/member/login", "/api/member/signup"};
+        String[] duplicationApi = {"/api/duplication/email","/api/duplication/username"};
         String[] portfolioApi = {};
         String[] quotationApi = {};
         String[] quotationRequestApi = {};
@@ -92,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers(companyApi).permitAll()
                         .requestMatchers(imageApi).permitAll()
                         .requestMatchers(memberApi).permitAll()
+                        .requestMatchers(duplicationApi).permitAll()
                         .requestMatchers(portfolioApi).permitAll()
                         .requestMatchers(quotationApi).permitAll()
                         .requestMatchers(quotationRequestApi).permitAll()
