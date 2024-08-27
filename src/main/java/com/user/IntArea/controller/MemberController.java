@@ -2,10 +2,13 @@ package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.member.MemberRequestDto;
+import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.service.MemberService;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.common.jwt.TokenProvider;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -16,9 +19,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -44,17 +50,26 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> saveMember(@RequestBody MemberRequestDto memberRequestDto) {
-
+    public ResponseEntity<?> saveMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         memberService.signup(memberRequestDto);
-
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/member/info")
-    public ResponseEntity<MemberDto> getMemberInfo() {
+    @GetMapping("/info")
+    public ResponseEntity<MemberResponseDto> getMemberInfo(@RequestParam UUID id) {
+        return ResponseEntity.ok().body(memberService.info(id));
+    }
 
-        return SecurityUtil.getCurrentMember().map(memberDto -> ResponseEntity.ok().body(memberDto))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    @PutMapping()
+    public ResponseEntity<?> updateMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+        log.info("memberResponseDTO={}", memberRequestDto);
+        memberService.update(memberRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<?> deleteMember(@RequestBody MemberRequestDto memberRequestDto) {
+        memberService.delete(memberRequestDto);
+        return ResponseEntity.ok().build();
     }
 }
