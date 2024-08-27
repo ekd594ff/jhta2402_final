@@ -1,5 +1,6 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.member.UpdateMemberDto;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -44,6 +46,17 @@ public class MemberController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessToken.toString())
                 .header(HttpHeaders.SET_COOKIE, loginToken.toString())
+                .build();
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
+        Map logoutCookieMap = tokenProvider.getLogoutToken();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, logoutCookieMap.get("accessToken").toString())
+                .header(HttpHeaders.SET_COOKIE, logoutCookieMap.get("login").toString())
                 .build();
     }
 

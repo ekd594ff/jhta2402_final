@@ -11,13 +11,14 @@ import lombok.Data;
 public class MemberResponseDto {
 
     @NotBlank
-    @Email
+    @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식으로 입력해주세요")
     private String email;
 
     @NotBlank
-    @Pattern(regexp = "/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/", message = "영문 숫자조합 8자리 이상 25자 이하로 작성해주세요")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$", message = "영문 숫자조합 8자리 이상 25자 이하로 작성해주세요")
     private String password;
     @NotBlank
+    @Pattern(regexp = "^[가-힣A-Za-z0-9]{2,16}$",message = "2글자 이상 16글자 이하로 작성해라")
     private String username;
 
     private Platform platform;

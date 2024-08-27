@@ -16,13 +16,14 @@ public class MemberRequestDto {
     private UUID id;
 
     @NotBlank(message = "이메일을 입력해주세요.")
-    @Email(message = "이메일 형식에 맞춰주세요.")
+    @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식으로 입력해주세요")
     private String email;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "영문 숫자조합 8자리 이상 25자 이하로 작성해주세요")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "영문 숫자조합 8자리 이상")
     private String password;
-    @Pattern(regexp = "^[가-힣]{2,4}$", message = "이름을 입력해주세요")
+
+    @Pattern(regexp = "^[가-힣A-Za-z0-9]{2,16}$",message = "2글자 이상 16글자 이하로 작성해라")
     private String username;
 
     private Platform platform;
