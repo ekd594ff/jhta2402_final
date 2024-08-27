@@ -62,7 +62,7 @@ public class MemberController {
 
     @PutMapping()
     public ResponseEntity<?> updateMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        log.info("memberResponseDto={}", memberRequestDto);
+        log.info("memberResponseDTO={}", memberRequestDto);
         memberService.update(memberRequestDto);
         return ResponseEntity.ok().build();
     }
