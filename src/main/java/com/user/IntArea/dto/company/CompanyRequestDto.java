@@ -3,6 +3,7 @@ package com.user.IntArea.dto.company;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Member;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CompanyRequestDto {
@@ -11,6 +12,7 @@ public class CompanyRequestDto {
     private final String description;
     private final String phone;
     private final String address;
+    private MultipartFile image;
 
     public Company toEntity(Member member) {
         return Company.builder()
