@@ -36,6 +36,9 @@ public class Portfolio {
     @OneToMany(mappedBy = "id")
     private List<QuotationRequest> quotationRequests;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
