@@ -21,7 +21,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CompanyRequestDto companyRequestDto) {
+    public ResponseEntity<?> create(CompanyRequestDto companyRequestDto) {
 
         companyService.create(companyRequestDto);
 
