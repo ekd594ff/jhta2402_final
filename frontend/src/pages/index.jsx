@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from "../components/common/header.jsx";
 import Footer from "../components/common/footer.jsx";
 
@@ -6,6 +6,9 @@ import style from "../styles/index.module.scss";
 
 
 function Index(props) {
+    useEffect(() => {
+        console.log(document.cookie);
+    }, []);
     return (
         <>
             <Header/>
