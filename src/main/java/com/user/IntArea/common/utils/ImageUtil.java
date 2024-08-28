@@ -41,7 +41,7 @@ public class ImageUtil {
 
         return Optional.of(ImageDto.builder()
                 .refId(refId)
-                .url("intarea.s3.ap-northeast-2.amazonaws.com/" + folderPath + fileName)
+                .url("https://intarea.s3.ap-northeast-2.amazonaws.com/" + folderPath + fileName)
                 .filename(fileName)
                 .originalFilename(file.getOriginalFilename())
                 .build());
