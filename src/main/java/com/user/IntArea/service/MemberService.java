@@ -11,6 +11,8 @@ import com.user.IntArea.entity.enums.Role;
 import com.user.IntArea.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,12 +62,17 @@ public class MemberService {
         if (passwordEncoder.matches(member.getPassword(), memberRequestDto.getPassword())) {
             throw new UsernameNotFoundException("아이디 비밀번호가 틀렸습니다");
         }
-        memberRepository.delete(member);
+        memberRepository.softDeleteById(member.getId());
     }
 
     public MemberResponseDto info(UUID uuid) {
         return memberRepository.findById(uuid)
                 .map(MemberResponseDto::new)
                 .orElseThrow(() -> new UsernameNotFoundException("없음"));
+    }
+
+    public Page<MemberResponseDto> getMemberList(Pageable pageable) {
+        return memberRepository.findAll(pageable)
+                .map(MemberResponseDto::new);
     }
 }

@@ -45,6 +45,16 @@ server:
 jwt:
   secret: "Secret"
   token-validity-in-seconds: 1209600 # 14일
+
+cloud:
+  aws:
+    s3:
+      bucket: "Bucket name"
+    stack.auto: false
+    region.static: "Region"
+    credentials:
+      accessKey: "AccessKey"
+      secretKey: "SecretKey"
 ```
 ### React modules install
 

@@ -13,7 +13,11 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const login = () => {
+    const [login, setLogin] = useState({email: "", password: ""});
+
+
+    const submit = () => {
+        const {email, password} = login;
         axios.post('/api/member/login', {
                 email: email,
                 password: password
@@ -34,24 +38,29 @@ function Login() {
                 <form method="post">
                     <TextField
                         required
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setLogin({...login, email: e.target.value})}
                         name="email"
-                        id="outlined-required"
-                        label="Email"
+                        label="이메일"
                         variant="standard"
-                        value={email}
+                        value={login.email}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                     />
                     <TextField
                         required
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => setLogin({...login, password: e.target.value})}
                         name="password"
-                        id="outlined-required"
-                        label="Password"
+                        label="비밀번호"
                         variant="standard"
-                        value={password}
+                        type="password"
+                        value={login.password}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                     />
                     <div className={style['btn-group']}>
-                        <Button variant="contained" className={style['login-btn']} size="large" onClick={login}>
+                        <Button variant="contained" className={style['login-btn']} size="large" onClick={submit}>
                             로그인
                         </Button>
                         <div className={style['others']}>
