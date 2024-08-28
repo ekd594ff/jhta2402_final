@@ -13,7 +13,9 @@ function Index(props) {
         <>
             <Header/>
             <main className={style['index']}>
-                <div className={style['container']}></div>
+                <div className={style['container']}>
+                    <section className={style['recommend']}></section>
+                </div>
             </main>
             <Footer/>
         </>
