@@ -3,6 +3,7 @@ package com.user.IntArea.service;
 import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.company.CompanyRequestDto;
+import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
 import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -76,5 +78,25 @@ public class CompanyService {
         member.setRole(Role.ROLE_SELLER);
 
         companyRepository.save(company);
+    }
+
+    // 회사 전체 리스트 출력
+    public List<CompanyResponseDto> getAllCompanies (CompanyRequestDto companyRequestDto) {
+        List<Company> companies = companyRepository.findAll();
+
+        return companies.stream()
+                .map(this::converToDto)
+                .toList();
+    }
+
+    private CompanyResponseDto converToDto(Company company) {
+        return new CompanyResponseDto(
+                company.getId(),
+                company.getCompanyName(),
+                company.getDescription(),
+                company.getPhone(),
+                company.getAddress(),
+                company.getIsApplied(),
+                company.getCreatedAt());
     }
 }
