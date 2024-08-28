@@ -2,6 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
 import com.user.IntArea.common.utils.SecurityUtil;
+import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.member.UpdateMemberDto;
@@ -75,4 +76,16 @@ public class MemberService {
         return memberRepository.findAll(pageable)
                 .map(MemberResponseDto::new);
     }
+
+    public MemberResponseDto getMemberByEmail() {
+        MemberDto memberDto = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("현재 로그인한 사용자가 없습니다."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
+
+        // Member를 MemberResponseDto로 변환하여 반환
+        return new MemberResponseDto(member);
+    }
+
 }
