@@ -5,6 +5,7 @@ import Index from "./pages/index.jsx";
 import Login from "./pages/login/login.jsx";
 import Signup from "./pages/login/signup.jsx";
 import Admin from "./pages/admin/admin.jsx";
+import Mypage from "./pages/login/Mypage.jsx";
 import Header from "./components/common/header.jsx";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />}/>
                     <Route path="/signup" element={<Signup />}/>
                     <Route path="/admin" element={<Admin />}/>
+                    <Route path="/mypage" element={<Mypage />}/>
                 </Routes>
             </BrowserRouter>
         </div>
