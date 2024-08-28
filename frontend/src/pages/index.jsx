@@ -5,13 +5,13 @@ import Footer from "../components/common/footer.jsx";
 import style from "../styles/index.module.scss";
 
 
-function Index(props) {
+function Index({isLoggedIn, username, handleLogout}) {
     useEffect(() => {
         console.log(document.cookie);
     }, []);
     return (
         <>
-            <Header/>
+            <Header isLoggedIn={isLoggedIn} username={username} handleLogout={handleLogout} />
             <main className={style['index']}>
                 <div className={style['container']}>
                     <section className={style['recommend']}></section>
