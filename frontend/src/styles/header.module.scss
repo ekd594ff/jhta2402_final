@@ -1,16 +1,33 @@
+@use "variables";
+
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
   width: 100%;
   box-shadow: 0 0 0 1px lightgray;
+  height: variables.$HEADER_HEIGHT;
+  position: fixed;
+  top: 0;
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    border: 0.5px solid red;
+    padding: 0 16px;
 
-  .logoSample {
-    margin: 0 16px;
-    background-color: aqua;
-  }
+    & > .logoSample {
+      background-color: aqua;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .buttons {
-    margin: 0 16px;
+    & > .buttons {
+      display: flex;
+      align-items: center;
+    }
   }
 }

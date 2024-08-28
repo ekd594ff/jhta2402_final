@@ -1,6 +1,10 @@
 import {useState} from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+import style from "../../styles/login.module.scss";
 
 function Login() {
 
@@ -25,11 +29,38 @@ function Login() {
     }
 
     return <>
-        <input value={email} onChange={(e) => setEmail(e.target.value)}
-               type="email" name="email" placeholder="Email"/>
-        <input value={password} onChange={(e) => setPassword(e.target.value)}
-               type="password" name="password" placeholder="Password"/>
-        <button onClick={login}>Login</button>
+        <main className={style['login']}>
+            <div className={style['container']}>
+                <form method="post">
+                    <TextField
+                        required
+                        onChange={(e) => setEmail(e.target.value)}
+                        name="email"
+                        id="outlined-required"
+                        label="Email"
+                        variant="standard"
+                        value={email}
+                    />
+                    <TextField
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
+                        name="password"
+                        id="outlined-required"
+                        label="Password"
+                        variant="standard"
+                        value={password}
+                    />
+                    <div className={style['btn-group']}>
+                        <Button variant="contained" className={style['login-btn']} size="large" onClick={login}>
+                            로그인
+                        </Button>
+                        <div className={style['others']}>
+                            <Link to="/signup">회원가입</Link>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
     </>
 }
 
