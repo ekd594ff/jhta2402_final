@@ -74,6 +74,13 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.info(id));
     }
 
+    // SecurityUtil의 이메일 정보를 통해 유저 정보를 조회하는 메서드
+    @GetMapping("/email")
+    public ResponseEntity<MemberResponseDto> getMemberByEmail() {
+        MemberResponseDto memberResponseDto = memberService.getMemberByEmail();
+        return ResponseEntity.ok().body(memberResponseDto);
+    }
+
     @PatchMapping()
     public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberDto updateMemberDto) {
         log.info("memberResponseDTO={}", updateMemberDto);
