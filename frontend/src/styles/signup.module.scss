@@ -1,0 +1,31 @@
+@use "variables";
+
+.signup {
+  display: flex;
+  justify-content: center;
+  min-height: 900px;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+
+    & > form {
+      margin-top: variables.$SIGNUP_FORM_MARGIN_TOP;
+      display: flex;
+      gap: 14px;
+      flex-direction: column;
+      width: 100%;
+      max-width: variables.$LOGIN_FORM_WIDTH;
+
+      & > .submit-btn {
+        background-color: transparent;
+        box-sizing: border-box;
+        border: 0.5px solid variables.$COLOR_PRIMARY;
+        color: variables.$COLOR_PRIMARY;
+      }
+    }
+  }
+}

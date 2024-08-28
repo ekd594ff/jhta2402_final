@@ -1,7 +1,9 @@
 package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.company.CompanyRequestDto;
+import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
+import com.user.IntArea.entity.Company;
 import com.user.IntArea.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,7 +24,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CompanyRequestDto companyRequestDto) {
+    public ResponseEntity<?> create(CompanyRequestDto companyRequestDto) {
 
         companyService.create(companyRequestDto);
 
@@ -45,5 +48,12 @@ public class CompanyController {
         companyService.apply(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies (@RequestBody CompanyRequestDto companyRequestDto) {
+        List<CompanyResponseDto> companies = companyService.getAllCompanies(companyRequestDto);
+
+        return ResponseEntity.ok(companies);
     }
 }

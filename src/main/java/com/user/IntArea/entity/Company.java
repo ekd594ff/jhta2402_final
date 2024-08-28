@@ -42,6 +42,9 @@ public class Company {
     @OneToMany(mappedBy = "id")
     private List<Portfolio> portfolios;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

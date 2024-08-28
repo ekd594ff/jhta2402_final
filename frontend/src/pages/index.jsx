@@ -1,10 +1,24 @@
-import React from 'react';
-import {Link} from "react-router-dom";
+import React, {useEffect} from 'react';
+import Header from "../components/common/header.jsx";
+import Footer from "../components/common/footer.jsx";
+
+import style from "../styles/index.module.scss";
+
 
 function Index(props) {
+    useEffect(() => {
+        console.log(document.cookie);
+    }, []);
     return (
-        <div>
-        </div>
+        <>
+            <Header/>
+            <main className={style['index']}>
+                <div className={style['container']}>
+                    <section className={style['recommend']}></section>
+                </div>
+            </main>
+            <Footer/>
+        </>
     );
 }
 

@@ -1,13 +1,18 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.company.CompanyRequestDto;
+import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.entity.Company;
+import com.user.IntArea.entity.Image;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Role;
 import com.user.IntArea.repository.CompanyRepository;
+import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +21,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,6 +32,8 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final MemberRepository memberRepository;
+    private final ImageRepository imageRepository;
+    private final ImageUtil imageUtil;
 
     @Transactional
     public void create(CompanyRequestDto companyRequestDto) {
@@ -34,15 +43,28 @@ public class CompanyService {
         Member member = memberRepository.findByEmail(memberDto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("잘못된 이메일 주소입니다."));
 
-        Company company = companyRequestDto.toEntity(member);
+        Company saveCompany = companyRequestDto.toEntity(member);
 
-        companyRepository.save(company);
+        UUID refId = companyRepository.save(saveCompany).getId();
+
+        if (!companyRequestDto.getImage().isEmpty()) {
+            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
+                    .orElseThrow(() -> new NoSuchElementException("S3 오류"));
+
+            imageRepository.save(imageDto.toImage());
+        }
     }
 
     public Page<UnAppliedCompanyDto> getUnApply(Pageable pageable) {
 
         return companyRepository.getCompanyByIsApplied(false, pageable)
-                .map(company -> new UnAppliedCompanyDto(company.getMember(), company));
+                .map(company -> {
+                    Optional<Image> optionalImage = imageRepository.findByRefId(company.getId());
+
+                    return optionalImage.map(image ->
+                                    new UnAppliedCompanyDto(company.getMember(), company, image.getUrl()))
+                            .orElseGet(() -> new UnAppliedCompanyDto(company.getMember(), company));
+                });
     }
 
     @Transactional
@@ -56,5 +78,25 @@ public class CompanyService {
         member.setRole(Role.ROLE_SELLER);
 
         companyRepository.save(company);
+    }
+
+    // 회사 전체 리스트 출력
+    public List<CompanyResponseDto> getAllCompanies (CompanyRequestDto companyRequestDto) {
+        List<Company> companies = companyRepository.findAll();
+
+        return companies.stream()
+                .map(this::converToDto)
+                .toList();
+    }
+
+    private CompanyResponseDto converToDto(Company company) {
+        return new CompanyResponseDto(
+                company.getId(),
+                company.getCompanyName(),
+                company.getDescription(),
+                company.getPhone(),
+                company.getAddress(),
+                company.getIsApplied(),
+                company.getCreatedAt());
     }
 }

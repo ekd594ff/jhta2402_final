@@ -1,6 +1,10 @@
 import {useState} from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+import style from "../../styles/login.module.scss";
 
 function Login() {
 
@@ -9,7 +13,11 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const login = () => {
+    const [login, setLogin] = useState({email: "", password: ""});
+
+
+    const submit = () => {
+        const {email, password} = login;
         axios.post('/api/member/login', {
                 email: email,
                 password: password
@@ -25,11 +33,43 @@ function Login() {
     }
 
     return <>
-        <input value={email} onChange={(e) => setEmail(e.target.value)}
-               type="email" name="email" placeholder="Email"/>
-        <input value={password} onChange={(e) => setPassword(e.target.value)}
-               type="password" name="password" placeholder="Password"/>
-        <button onClick={login}>Login</button>
+        <main className={style['login']}>
+            <div className={style['container']}>
+                <form method="post">
+                    <TextField
+                        required
+                        onChange={(e) => setLogin({...login, email: e.target.value})}
+                        name="email"
+                        label="이메일"
+                        variant="standard"
+                        value={login.email}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <TextField
+                        required
+                        onChange={(e) => setLogin({...login, password: e.target.value})}
+                        name="password"
+                        label="비밀번호"
+                        variant="standard"
+                        type="password"
+                        value={login.password}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <div className={style['btn-group']}>
+                        <Button variant="contained" className={style['login-btn']} size="large" onClick={submit}>
+                            로그인
+                        </Button>
+                        <div className={style['others']}>
+                            <Link to="/signup">회원가입</Link>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
     </>
 }
 

@@ -1,0 +1,52 @@
+@use "variables";
+
+.login {
+  display: flex;
+  justify-content: center;
+  min-height: 900px;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+    & > form {
+      margin-top: variables.$LOGIN_FORM_MARGIN_TOP;
+      display: flex;
+      gap: 14px;
+      flex-direction: column;
+      width: 100%;
+      max-width: variables.$LOGIN_FORM_WIDTH;
+
+      & > .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        & > .login-btn {
+          background-color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+        }
+
+        & > .register-btn {
+          color: variables.$COLOR_PRIMARY;
+          border-color: variables.$COLOR_PRIMARY;
+        }
+
+        & > .others {
+          display: flex;
+          gap: 4px;
+          justify-content: center;
+
+          & * {
+            text-decoration: none;
+            color: #000;
+            font-size: 14px;
+          }
+
+        }
+      }
+    }
+  }
+}

@@ -11,14 +11,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -81,6 +79,33 @@ public class TokenProvider implements InitializingBean {
                 .maxAge(tokenValidityInSeconds)
                 .build();
     }
+
+    public Map<String,ResponseCookie> getLogoutToken() {
+        Map<String,ResponseCookie> resultMap = new HashMap<>();
+
+        ResponseCookie accsessTokenCookie = ResponseCookie.from("accessToken")
+                .value("")
+                .domain(domain)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(0)
+                .build();
+
+        ResponseCookie loginCookie =
+                ResponseCookie.from("login")
+                .value(UUID.randomUUID().toString())
+                .domain(domain)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        resultMap.put("accessToken", accsessTokenCookie);
+        resultMap.put("login", loginCookie);
+
+        return resultMap;
+    }
+
 
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
