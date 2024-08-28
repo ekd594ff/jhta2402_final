@@ -1,6 +1,5 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.member.UpdateMemberDto;
@@ -88,6 +87,16 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/role")
+    public ResponseEntity<?> getLogin() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/admin/role")
+    public ResponseEntity<?> getAdminRole() {
+        return ResponseEntity.ok().build();
+    }
+  
     @GetMapping("/admin/list")
     public ResponseEntity<Page<MemberResponseDto>> getMemberList(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
