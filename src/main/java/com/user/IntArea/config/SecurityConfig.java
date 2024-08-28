@@ -41,7 +41,7 @@ public class SecurityConfig {
         // 인증이 필요한 Get api
         String[] companyGetAuth = {};
         String[] imageGetAuth = {};
-        String[] memberGetAuth = {"/api/member/info"};
+        String[] memberGetAuth = {"/api/member/info", "/api/member/role"};
         String[] portfolioGetAuth = {};
         String[] quotationGetAuth = {};
         String[] quotationRequestGetAuth = {};
@@ -54,7 +54,7 @@ public class SecurityConfig {
         String[] companyApi = {};
         String[] imageApi = {};
         String[] memberApi = {"/api/member/login", "/api/member/signup"};
-        String[] duplicationApi = {"/api/duplication/email","/api/duplication/username"};
+        String[] duplicationApi = {"/api/duplication/email", "/api/duplication/username"};
         String[] portfolioApi = {};
         String[] quotationApi = {};
         String[] quotationRequestApi = {};

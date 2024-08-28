@@ -1,6 +1,5 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.member.UpdateMemberDto;
@@ -81,6 +80,16 @@ public class MemberController {
     @DeleteMapping()
     public ResponseEntity<?> deleteMember(@RequestBody MemberRequestDto memberRequestDto) {
         memberService.delete(memberRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<?> getLogin() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/admin/role")
+    public ResponseEntity<?> getAdminRole() {
         return ResponseEntity.ok().build();
     }
 }
