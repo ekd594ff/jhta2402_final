@@ -3,32 +3,28 @@
 .signup {
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 900px;
 
   & > .container {
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     display: flex;
     justify-content: center;
+    padding: 0 16px;
 
     & > form {
-      margin-top: variables.$LOGIN_FORM_MARGIN_TOP;
+      margin-top: variables.$SIGNUP_FORM_MARGIN_TOP;
       display: flex;
-      gap: 16px;
+      gap: 14px;
       flex-direction: column;
       width: 100%;
       max-width: variables.$LOGIN_FORM_WIDTH;
 
-      & > .btn-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-
-        & > .signup-btn {
-          color: variables.$COLOR_PRIMARY;
-          border-color: variables.$COLOR_PRIMARY;
-          font-weight: bold;
-        }
+      & > .submit-btn {
+        background-color: transparent;
+        box-sizing: border-box;
+        border: 0.5px solid variables.$COLOR_PRIMARY;
+        color: variables.$COLOR_PRIMARY;
       }
     }
   }

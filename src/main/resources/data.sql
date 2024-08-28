@@ -1,71 +1,71 @@
 -- admin@example.com  1234  ROLE_ADMIN
 -- user@example.com  1234  ROLE_USER
 -- seller@example.com  1234  ROLE_SELLER (seller2, seller3)
-INSERT INTO MEMBER (ID, USERNAME, EMAIL, PASSWORD, ROLE, PLATFORM, CREATEDAT, UPDATEDAT)
+INSERT INTO MEMBER (ID, USERNAME, EMAIL, PASSWORD, ROLE, PLATFORM, ISDELETED, CREATEDAT, UPDATEDAT)
 VALUES ('c0bbf8bb-a6f2-4445-aaa3-2892e551ff4c', 'admin', 'admin@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_ADMIN', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_ADMIN', 'SERVER', FALSE, NOW(), NOW()),
        ('f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'username', 'user@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('cf6e8329-59a2-458b-b1ee-693d70d128fd', 'username2', 'user2@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('5677b0b6-7b63-42c8-936c-a6d07c4793eb', 'username3', 'user3@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('c1b6ca53-0437-4eeb-959e-ec3ec97139d3', 'username4', 'user4@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('8ccf8a1a-3e8d-48a1-a508-d2b99ec4e631', 'username5', 'user5@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('323e4567-e89b-12d3-a456-426614174002', 'username6', 'user6@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('423e4567-e89b-12d3-a456-426614174003', 'username7', 'user7@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('523e4567-e89b-12d3-a456-426614174004', 'username8', 'user8@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('623e4567-e89b-12d3-a456-426614174005', 'username9', 'user9@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('723e4567-e89b-12d3-a456-426614174006', 'username10', 'user10@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('823e4567-e89b-12d3-a456-426614174007', 'username11', 'user11@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('923e4567-e89b-12d3-a456-426614174008', 'username12', 'user12@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('a23e4567-e89b-12d3-a456-426614174009', 'username13', 'user13@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('a8a8cbf7-ae99-4b45-81ee-7d99b72aa317', 'seller', 'seller@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
        ('6f3f2761-0fa0-43f3-bd22-e658e2a5d7df', 'seller2', 'seller2@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
        ('e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', 'seller3', 'seller3@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', NOW(), NOW()),
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
        ('35e54eec-1eae-46b8-aacc-b005be7c56f3', 'seller4', 'seller4@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', NOW(), NOW());
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW());
 
 
-INSERT INTO COMPANY (ID, MEMBERID, COMPANYNAME, DESCRIPTION, PHONE, ADDRESS, ISAPPLIED, CREATEDAT, UPDATEDAT)
+INSERT INTO COMPANY (ID, MEMBERID, COMPANYNAME, DESCRIPTION, PHONE, ADDRESS, ISAPPLIED, ISDELETED, CREATEDAT, UPDATEDAT)
 VALUES ('d7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'a8a8cbf7-ae99-4b45-81ee-7d99b72aa317', 'company1', NULL,
-        '010-2345-6789', 'address1', TRUE, NOW(), NOW()),
+        '010-2345-6789', 'address1', TRUE, FALSE, NOW(), NOW()),
        ('168017c2-79ca-4c87-9eb1-1f97204150a2', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'company2', NULL,
-        '010-1234-5678', 'address2', FALSE, NOW(), NOW()),
+        '010-1234-5678', 'address2', FALSE, FALSE, NOW(), NOW()),
        ('48782f22-0d19-4548-a605-10327389ba6b', 'cf6e8329-59a2-458b-b1ee-693d70d128fd', 'company3', NULL,
-        '010-1234-5678', 'address3', FALSE, NOW(), NOW()),
+        '010-1234-5678', 'address3', FALSE, FALSE, NOW(), NOW()),
        ('a1c4d6b4-5e2c-4b7e-9c4d-9f5d0f5e2c11', '6f3f2761-0fa0-43f3-bd22-e658e2a5d7df', 'company4', 'description4',
-        '010-3456-7890', 'address4', TRUE, NOW(), NOW()),
+        '010-3456-7890', 'address4', TRUE, FALSE, NOW(), NOW()),
        ('b2f4d3e6-8b8c-4a1e-9c2c-5f6a7e1c4b12', 'e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', 'company5', 'description5',
-        '010-4567-8901', 'address5', TRUE, NOW(), NOW()),
+        '010-4567-8901', 'address5', TRUE, FALSE, NOW(), NOW()),
        ('c3e5d4f7-1a9c-4d2e-8b4e-7c8d3f5b2a14', '35e54eec-1eae-46b8-aacc-b005be7c56f3', 'company6', 'description6',
-        '010-5678-9012', 'address6', TRUE, NOW(), NOW());
+        '010-5678-9012', 'address6', TRUE, FALSE, NOW(), NOW());
 
 
-INSERT INTO PORTFOLIO (ID, COMPANYID, TITLE, DESCRIPTION, CREATEDAT, UPDATEDAT)
+INSERT INTO PORTFOLIO (ID, COMPANYID, TITLE, DESCRIPTION, ISDELETED, CREATEDAT, UPDATEDAT)
 VALUES ('136780e7-9ead-46fc-8526-32fa58fe5846', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'title1', 'description1',
-        NOW(), NOW()),
+        FALSE, NOW(), NOW()),
        ('f7ee9484-9c7e-4868-8d5c-0e344727e220', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'title2', 'description2',
-        NOW(), NOW()),
+        FALSE, NOW(), NOW()),
        ('8f2656be-2ba6-48f0-852c-0ce7901c7694', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'title3', 'description3',
-        NOW(), NOW()),
+        FALSE, NOW(), NOW()),
        ('32a53d61-d796-4dd5-85e5-de5ae790e3d0', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'title4', 'description4',
-        NOW(), NOW()),
+        FALSE, NOW(), NOW()),
        ('a84a9e98-3eb0-4542-9bd0-94b54de5276f', 'a1c4d6b4-5e2c-4b7e-9c4d-9f5d0f5e2c11', 'title5', 'description5',
-        NOW(), NOW());
+        FALSE, NOW(), NOW());
 
 
 INSERT INTO SOLUTION (ID, PORTFOLIOID, TITLE, DESCRIPTION, PRICE, CREATEDAT, UPDATEDAT)
@@ -132,12 +132,19 @@ VALUES ('48782f22-0d19-4548-a605-10327389ba6b', 'c0bbf8bb-a6f2-4445-aaa3-2892e55
         'adminProfile', NOW(), NOW()),
        ('20c59349-688b-490e-8639-75a1cc162975', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'url2', 'filename2',
         'userProfile', NOW(), NOW()),
-       ('f073ce1d-3efa-4271-95ed-8aa6a2963fd8', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'url3', 'filename3',
-        'userProfile', NOW(), NOW()),
 
-       ('d3f8e6c7-4b1e-4a8a-bb3c-7a4f1b8e5e4b', '136780e7-9ead-46fc-8526-32fa58fe5846', 'url4', 'filename4',
+       ('f073ce1d-3efa-4271-95ed-8aa6a2963fd8', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68',
+        'https://intarea.s3.ap-northeast-2.amazonaws.com/upload/240828/0_0503f9b5-c6e3-4148-8531-3a1927306360.jpg',
+        '0_0503f9b5-c6e3-4148-8531-3a1927306360.jpg',
+        'companyProfile', NOW(), NOW()),
+
+       ('d3f8e6c7-4b1e-4a8a-bb3c-7a4f1b8e5e4b', '136780e7-9ead-46fc-8526-32fa58fe5846',
+        'https://intarea.s3.ap-northeast-2.amazonaws.com/upload/240827/0_fe16c1f2-0f77-4a6e-9ac7-f24a23ed88e8.webp',
+        '0_fe16c1f2-0f77-4a6e-9ac7-f24a23ed88e8.webp',
         'portfolio1-1', NOW(), NOW()),
-       ('b0a1c2d3-e4f5-6789-0abc-def123456789', '136780e7-9ead-46fc-8526-32fa58fe5846', 'url5', 'filename5',
+       ('b0a1c2d3-e4f5-6789-0abc-def123456789', '136780e7-9ead-46fc-8526-32fa58fe5846',
+        'https://intarea.s3.ap-northeast-2.amazonaws.com/upload/240827/1_821535a6-8ae8-4966-ab8d-3a98777c7f1c.jpg',
+        '1_821535a6-8ae8-4966-ab8d-3a98777c7f1c.jpg',
         'portfolio1-2', NOW(), NOW()),
        ('51fdd0d5-c12d-40ff-8200-e7de572923e7', '136780e7-9ead-46fc-8526-32fa58fe5846', 'url6', 'filename6',
         'portfolio1-3', NOW(), NOW()),

@@ -4,6 +4,7 @@ import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -44,6 +45,9 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
 
     @CreatedDate
     private LocalDateTime createdAt;

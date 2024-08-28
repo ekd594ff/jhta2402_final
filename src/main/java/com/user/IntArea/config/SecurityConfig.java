@@ -41,7 +41,7 @@ public class SecurityConfig {
         // 인증이 필요한 Get api
         String[] companyGetAuth = {};
         String[] imageGetAuth = {};
-        String[] memberGetAuth = {"/api/member/info"};
+        String[] memberGetAuth = {"/api/member/info", "/api/member/role"};
         String[] portfolioGetAuth = {};
         String[] quotationGetAuth = {};
         String[] quotationRequestGetAuth = {};
@@ -51,9 +51,10 @@ public class SecurityConfig {
         String[] solutionGetAuth = {};
 
         // 인증이 필요하지 않은 Get이 아닌 api
-        String[] companyApi = {"/api/company/"};
+        String[] companyApi = {};
         String[] imageApi = {};
         String[] memberApi = {"/api/member/login", "/api/member/signup"};
+        String[] duplicationApi = {"/api/duplication/email", "/api/duplication/username"};
         String[] portfolioApi = {};
         String[] quotationApi = {};
         String[] quotationRequestApi = {};
@@ -92,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers(companyApi).permitAll()
                         .requestMatchers(imageApi).permitAll()
                         .requestMatchers(memberApi).permitAll()
+                        .requestMatchers(duplicationApi).permitAll()
                         .requestMatchers(portfolioApi).permitAll()
                         .requestMatchers(quotationApi).permitAll()
                         .requestMatchers(quotationRequestApi).permitAll()
