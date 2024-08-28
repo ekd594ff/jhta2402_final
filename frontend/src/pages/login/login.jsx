@@ -40,7 +40,7 @@ function Login() {
                         required
                         onChange={(e) => setLogin({...login, email: e.target.value})}
                         name="email"
-                        label="Email"
+                        label="이메일"
                         variant="standard"
                         value={login.email}
                         InputLabelProps={{
@@ -51,7 +51,7 @@ function Login() {
                         required
                         onChange={(e) => setLogin({...login, password: e.target.value})}
                         name="password"
-                        label="Password"
+                        label="비밀번호"
                         variant="standard"
                         type="password"
                         value={login.password}

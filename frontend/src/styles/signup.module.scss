@@ -15,10 +15,11 @@
     & > form {
       margin-top: variables.$SIGNUP_FORM_MARGIN_TOP;
       display: flex;
-      gap: 12px;
+      gap: 14px;
       flex-direction: column;
       width: 100%;
       max-width: variables.$LOGIN_FORM_WIDTH;
+
       & > .submit-btn {
         background-color: transparent;
         box-sizing: border-box;
