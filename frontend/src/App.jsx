@@ -8,6 +8,8 @@ import Admin from "./pages/admin/admin.jsx";
 import Mypage from "./pages/login/Mypage.jsx";
 import Header from "./components/common/header.jsx";
 
+import PortfolioDetail from "./pages/portfolio/portfolioDetail.jsx";
+
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
@@ -26,10 +28,15 @@ function App() {
                     <Route path="/signup" element={<Signup />}/>
                     <Route path="/admin" element={<Admin />}/>
                     <Route path="/mypage" element={<Mypage />}/>
+                    <Route path="/" element={<Index/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/signup" element={<Signup/>}/>
+                    <Route path="/admin/*" element={<Admin/>}/>
+                    <Route path="/portfolio/:id" element={<PortfolioDetail/>}/>
                 </Routes>
             </BrowserRouter>
         </div>
     );
 }
 
-export default App
+export default App;
