@@ -1,9 +1,17 @@
 import {Route, Routes} from "react-router-dom";
 
 import AdminIndex from "./pages/index.jsx";
+import {useEffect} from "react";
+import axios from "axios";
 
 
-function Admin() {
+function AdminPortfolioList() {
+
+    useEffect(() => {
+        axios.get("/api/portfolio/search?searchWord=title&page=0&size=10")
+            .then((res) => console.log(res));
+    }, []);
+
     return <>
         <aside></aside>
         <main>
@@ -14,4 +22,4 @@ function Admin() {
     </>
 }
 
-export default Admin;
+export default AdminPortfolioList;
