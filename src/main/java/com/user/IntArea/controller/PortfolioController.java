@@ -1,6 +1,7 @@
 package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
+import com.user.IntArea.dto.portfolio.PortfolioDetailDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.entity.Portfolio;
@@ -40,6 +41,10 @@ public class PortfolioController {
         return portfolioService.getCompanyPortfoliosByCompanyManager();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PortfolioDetailDto> getPortfolioById(@PathVariable UUID id) {
+        return ResponseEntity.ok().body(portfolioService.getPortfolioById(id));
+    }
 
 
     @GetMapping("/test")

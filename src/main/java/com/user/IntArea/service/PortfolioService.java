@@ -3,19 +3,15 @@ package com.user.IntArea.service;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
+import com.user.IntArea.dto.portfolio.PortfolioDetailDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
-import com.user.IntArea.entity.Company;
-import com.user.IntArea.entity.Member;
-import com.user.IntArea.entity.Portfolio;
-import com.user.IntArea.repository.CompanyRepository;
-import com.user.IntArea.repository.MemberRepository;
-import com.user.IntArea.repository.PortfolioRepository;
+import com.user.IntArea.entity.*;
+import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -26,6 +22,8 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final SolutionRepository solutionRepository;
+    private final ImageRepository imageRepository;
 
 
     // 포트폴리오에 접근하는 멤버가 그 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
@@ -39,6 +37,27 @@ public class PortfolioService {
             throw new NoSuchElementException("");
         }
         ;
+    }
+
+    public PortfolioDetailDto getPortfolioById(UUID id) {
+        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(() -> new NoSuchElementException(""));
+        List<Solution> solutionDtos = solutionRepository.findAllByPortfolioId(portfolio.getId());
+        List<String> portfolioUrls = imageRepository.findAllByRefId(portfolio.getId())
+                .stream().map(Image::getUrl)
+                .toList();
+
+        String companyImageUrl = null;
+        Optional<Image> optionalImage = imageRepository.findByRefId(portfolio.getCompany().getId());
+        if (optionalImage.isPresent()) {
+            companyImageUrl = optionalImage.get().getUrl();
+        }
+
+        return PortfolioDetailDto.builder()
+                .portfolio(portfolio)
+                .imageUrl(portfolioUrls)
+                .companyUrl(companyImageUrl)
+                .solution(solutionDtos)
+                .build();
     }
 
 
