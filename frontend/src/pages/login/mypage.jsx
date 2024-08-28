@@ -11,13 +11,8 @@ const Mypage = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const email = Cookies.get('email'); // 쿠키에서 사용자 ID 가져오기
-            if (!email) {
-                setMessage('유효한 사용자가 아닙니다.');
-                return;
-            }
             try {
-                const response = await axios.get(`/api/member/email?email=${email}`); // 이메일로 사용자 정보 가져오기
+                const response = await axios.get('/api/member/email'); // 이메일로 사용자 정보 가져오기
                 setUserData({
                     email: response.data.email,
                     username: response.data.username,
@@ -68,12 +63,12 @@ const Mypage = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="password">비밀번호:</label>
+                    <label htmlFor="email">이메일:</label>
                     <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={userData.password}
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={userData.email}
                         onChange={handleChange}
                         required
                     />
