@@ -9,6 +9,10 @@ import com.user.IntArea.common.jwt.TokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -82,5 +86,12 @@ public class MemberController {
     public ResponseEntity<?> deleteMember(@RequestBody MemberRequestDto memberRequestDto) {
         memberService.delete(memberRequestDto);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/admin/list")
+    public ResponseEntity<Page<MemberResponseDto>> getMemberList(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<MemberResponseDto> memberResponseDtos = memberService.getMemberList(pageable);
+        return ResponseEntity.ok().body(memberResponseDtos);
     }
 }
