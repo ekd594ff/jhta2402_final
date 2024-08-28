@@ -5,6 +5,8 @@ import com.user.IntArea.entity.Member;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @Data
 public class CompanyRequestDto {
 
