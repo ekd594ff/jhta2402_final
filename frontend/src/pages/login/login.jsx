@@ -10,23 +10,22 @@ function Login() {
 
     const navigate = useNavigate()
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    // const login = () => {
+    //     axios.post('/api/member/login', {
+    //             email: email,
+    //             password: password
+    //         },
+    //         {
+    //             withCredentials: true
+    //         }
+    //     ).then(res => {
+    //             alert("login Success")
+    //             navigate("/")
+    //         }
+    //     ).catch(err => alert(err));
+    // }
 
-    const login = () => {
-        axios.post('/api/member/login', {
-                email: email,
-                password: password
-            },
-            {
-                withCredentials: true
-            }
-        ).then(res => {
-                alert("login Success")
-                navigate("/")
-            }
-        ).catch(err => alert(err));
-    }
+    const [login, setLogin] = useState({email : "", password : ""});
 
     return <>
         <main className={style['login']}>
@@ -34,24 +33,24 @@ function Login() {
                 <form method="post">
                     <TextField
                         required
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setLogin({...login, email: e.target.value})}
                         name="email"
-                        id="outlined-required"
                         label="Email"
                         variant="standard"
-                        value={email}
+                        value={login.email}
+                        InputLabelProps={{ shrink: true }}
                     />
                     <TextField
                         required
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => setLogin({...login, password: e.target.value})}
                         name="password"
-                        id="outlined-required"
                         label="Password"
                         variant="standard"
-                        value={password}
+                        value={login.password}
+                        InputLabelProps={{ shrink: true }}
                     />
                     <div className={style['btn-group']}>
-                        <Button variant="contained" className={style['login-btn']} size="large" onClick={login}>
+                        <Button variant="contained" className={style['login-btn']} size="large">
                             로그인
                         </Button>
                         <div className={style['others']}>

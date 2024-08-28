@@ -1,6 +1,6 @@
 @use "variables";
 
-.login {
+.signup {
   display: flex;
   justify-content: center;
   min-height: 100vh;
@@ -24,23 +24,10 @@
         flex-direction: column;
         gap: 12px;
 
-        & > .login-btn {
-          background-color: variables.$COLOR_PRIMARY;
-          font-weight: bold;
-        }
-
-        & > .register-btn {
+        & > .signup-btn {
           color: variables.$COLOR_PRIMARY;
-        }
-
-        & > .others {
-          display: flex;
-          gap: 4px;
-          justify-content: center;
-          & > a {
-            color: variables.$FONT_COLOR_700;
-            text-decoration: none;
-          }
+          border-color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
         }
       }
     }
