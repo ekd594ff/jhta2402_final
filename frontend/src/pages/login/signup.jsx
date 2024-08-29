@@ -45,7 +45,8 @@ function Signup() {
             })
     }, 150);
 
-    const submit = () => {
+    const submit = (event) => {
+        event.preventDefault();
         for(const key in validation) {
             const item = validation[key];
             if(!item) {
@@ -82,7 +83,15 @@ function Signup() {
     return <>
         <main className={style['signup']}>
             <div className={style['container']}>
-                <form>
+                <Link to="/">
+                    <img className={style['logo']} alt="logo" src="/logo.svg"/>
+                </Link>
+                <form onKeyDown={(event) => {
+                    const key = event.key;
+                    if(key === 'Enter') {
+                        submit(event);
+                    }
+                }}>
                     <TextField value={signUp.email} onChange={(e) => {
                         const value = e.target.value;
                         setSignUp({...signUp, email: value});
