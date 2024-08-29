@@ -4,7 +4,8 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 import Header from "../components/common/header.jsx";
 import Footer from "../components/common/footer.jsx";
 
-import RecommendSwiperSlide from "../components/index/recommend-slide-content.jsx";
+import RecommendSlideContent from "../components/index/recommend-slide-content.jsx";
+import PortfolioListItem  from "../components/index/portfolio-list-item.jsx";
 
 import {Pagination} from 'swiper/modules';
 
@@ -14,6 +15,10 @@ import 'swiper/css/pagination';
 import style from "../styles/index.module.scss";
 
 function Index() {
+
+    const [recommendList, setRecommendList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+
     useEffect(() => {
         console.log(document.cookie);
     }, []);
@@ -30,15 +35,22 @@ function Index() {
                             }}
                             modules={[Pagination]}
                             className={style['recommend-swiper']}
-                        >
+                        >{recommendList.map((item, index) =>
+                            <SwiperSlide key={index}>
+                                <RecommendSlideContent value={item+index}/>
+                            </SwiperSlide>)}
                         </Swiper>
                     </section>
                     <section className={style['section']}>
-                        <div className={style['section-top']}>
-                            <p>강력 추천 인테리어 업체</p>
+                        <div className={style['section-title']}>
+                            추천 인테리어 업체
                         </div>
                         <div className={style['section-content']}>
-                            <ul></ul>
+                            <ul className={style['portfolio-list']}>
+                                {portfolioList.map((item, index) => {
+                                    return <PortfolioListItem value={item} key={index}/>
+                                })}
+                            </ul>
                         </div>
                     </section>
                 </div>
