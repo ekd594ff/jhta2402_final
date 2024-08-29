@@ -9,6 +9,7 @@ const Mypage = () => {
         email: '',
         password: '',
     });
+    const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const navigate = useNavigate();
@@ -40,10 +41,29 @@ const Mypage = () => {
         });
     };
 
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.patch('/api/member', userData); // 사용자 정보 수정 요청
+            const formData = new FormData();
+            formData.append('username', userData.username);
+            formData.append('password', userData.password);
+
+            // 이미지 업로드 요청
+            if (selectedFile) {
+                formData.append('file', selectedFile);
+            }
+
+            // 프로필 수정 요청
+            await axios.patch('/api/member/profile', formData, {
+                header: {
+                    'Content-Type' : 'multipart/form-data',
+                },
+            });
+
             setMessage('정보가 성공적으로 수정되었습니다.');
             setOpenSnackbar(true);
         } catch (error) {
@@ -96,10 +116,10 @@ const Mypage = () => {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField
+                        <input
                             type="file"
                             accept="image/*"
-                            onChange={(e) => setSelectedImage(e.target.files[0])}
+                            onChange={handleFileChange}
                         />
                     </Grid>
                     <Grid item xs={12}>

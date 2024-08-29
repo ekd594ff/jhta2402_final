@@ -94,13 +94,14 @@ public class MemberService {
 
     @Transactional
     public void updateProfile(UpdateProfileDto updateProfileDto) {
-        String email = SecurityUtil.getCurrentMember().get().getEmail();
+        String email = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("로그인 되지 않았습니다.")).getEmail();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("updateProfile error"));
 
-        // 사용자 이름 및 이메일 업데이트
+        // 사용자 이름 및 비밀번호 업데이트
         member.setUsername(updateProfileDto.getUsername());
-        member.setEmail(updateProfileDto.getEmail());
+        member.setPassword(updateProfileDto.getPassword());
 
         // 프로필 이미지가 있는 경우 업로드
         if (updateProfileDto.getFile() != null && !updateProfileDto.getFile().isEmpty()) {

@@ -94,6 +94,13 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/profile")
+    public ResponseEntity<?> updateProfile(@Valid UpdateProfileDto updateProfileDto) {
+        log.info("Updating profile for member: {}", updateProfileDto.getUsername());
+        memberService.updateProfile(updateProfileDto);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping()
     public ResponseEntity<?> deleteMember(@RequestBody MemberRequestDto memberRequestDto) {
         memberService.delete(memberRequestDto);

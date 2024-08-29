@@ -7,6 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UpdateProfileDto {
 
     private String username;
-    private String email;
+    private String password;
     private MultipartFile file;
 }
