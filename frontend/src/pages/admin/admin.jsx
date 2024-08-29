@@ -34,6 +34,7 @@ import {useEffect, useLayoutEffect, useState} from "react";
 import axios from "axios";
 
 
+
 function NestedList() {
     const [open, setOpen] = React.useState(true);
 
@@ -53,49 +54,47 @@ function NestedList() {
             }
         >
             <ListItemButton>
-                <ListItemText primary="Member"/>
+                <Link to={"member"}><ListItemText primary="Member"/></Link>
             </ListItemButton>
             <ListItemButton>
                 <Link to={"/login"}><ListItemText primary="Company"/></Link>
             </ListItemButton>
             <ListItemButton>
-                <ListItemText primary="Portfolio"/>
+                <Link to={"portfolio"}><ListItemText primary="Portfolio"/></Link>
             </ListItemButton>
             <ListItemButton>
-                <ListItemText primary="Review"/>
+                <Link to={"review"}><ListItemText primary="Review"/></Link>
             </ListItemButton>
         </List>
     );
 }
 
-function createData(id, name, calories, fat, carbs, protein) {
-    return {
-        id,
-        name,
-        calories,
-        fat,
-        carbs,
-        protein,
-    };
-}
+// function createData(id, name, calories, fat, carbs, protein) {
+//     return {
+//         id,
+//         name,
+//         calories,
+//         fat,
+//         carbs,
+//         protein,
+//     };
+// }
 
-const rows = [
-    createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-    createData(2, 'Donut', 452, 25.0, 51, 4.9),
-    createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-    createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-    createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-    createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-    createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-    createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-    createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-    createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-    createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
-
-//const [memberData, setMemberData] = useState([]);
+// const rows = [
+//     createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
+//     createData(2, 'Donut', 452, 25.0, 51, 4.9),
+//     createData(3, 'Eclair', 262, 16.0, 24, 6.0),
+//     createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
+//     createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
+//     createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
+//     createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
+//     createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
+//     createData(9, 'KitKat', 518, 26.0, 65, 7.0),
+//     createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
+//     createData(11, 'Marshmallow', 318, 0, 81, 2.0),
+//     createData(12, 'Nougat', 360, 19.0, 9, 37.0),
+//     createData(13, 'Oreo', 437, 18.0, 63, 4.0),
+// ];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -277,12 +276,60 @@ EnhancedTableToolbar.propTypes = {
 };
 
 function EnhancedTable() {
+    const [memberData, setMemberData] = useState([]);
+    // const [pageData, setPageData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    // const { size, number, totalElements, totalPages } = pageData;
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
+    const [orderBy, setOrderBy] = React.useState('createdAt');
     const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    // const [page, setPage] = React.useState(0); //페이지
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
     const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [error, setError] = useState(null);
+    // const [memberDataPerPage, setMemberDataPerPage] = React.useState(5); // 한페이지당 갯수
+
+
+    const fetchData = async (page, size) => {
+        // setLoading(true);
+        try {
+            const response = await axios.get("/api/member/admin/list", {
+                params: {page, size}
+            });
+            setMemberData(response.data.content);
+            setTotalCount(response.data.page.totalElements);
+        } catch (err) {
+            setError(err);
+        } finally {
+        }
+        setLoading(false); // 이것만 마지막에 실행
+    };
+
+    useEffect(() => {
+        fetchData(page, size);
+    }, [page, size]); // 페이지나 페이지당 데이터 수가 변경될 때마다 호출
+
+    // useEffect(() => {
+    //     try {
+    //         axios.get("/api/member/admin/list", {
+    //             params: {page, size}
+    //         })
+    //             .then(result => {
+    //                 setMemberData(result.data.content);
+    //                 // setPageData(result.data.page);
+    //                 setTotalCount(result.data.page.totalElements);
+    //             });
+    //     } catch (err){
+    //         setError(err);
+    //     } finally {
+    //         console.log(memberData);
+    //         setLoading(false);
+    //     }
+    // }, [page, size]);
+    //
+    // if (error) return <div>Error: {error.message}</div>;
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -292,7 +339,7 @@ function EnhancedTable() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = memberData.map((n) => n.id);
             setSelected(newSelected);
             return;
         }
@@ -317,14 +364,18 @@ function EnhancedTable() {
         }
         setSelected(newSelected);
     };
+    // const handleChangeMemberDataPerPage = (event) => {
+    //     setMemberDataPerPage(parseInt(event.target.value, 10));
+    //     setPage(0);
+    // };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+    const handleChangeSize = (event) => {
+        setSize(parseInt(event.target.value, 10));
+        setPage(0); // 페이지를 0으로 리셋
     };
 
     const handleChangeDense = (event) => {
@@ -335,16 +386,18 @@ function EnhancedTable() {
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * size - memberData.length) : 0;
 
     const visibleRows = React.useMemo(
         () =>
             [...memberData]
-                .sort(getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-        [order, orderBy, page, rowsPerPage],
+                .sort(getComparator(order, orderBy)),
+                // .slice(pageData.number * pageData.size, pageData.number * pageData.size + pageData.size),
+        [order, orderBy, page, size],
     );
-
+    if (loading) {
+        return <div>Loading...</div>;
+    }
     return (
         <Box sx={{width: '100%'}}>
             <Paper sx={{width: '100%', mb: 2}}>
@@ -361,7 +414,7 @@ function EnhancedTable() {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={memberData.length}
                         />
                         <TableBody>
                             {visibleRows.map((row, index) => {
@@ -396,10 +449,13 @@ function EnhancedTable() {
                                         >
                                             {row.name}
                                         </TableCell>
-                                        <TableCell align="right">{row.calories}</TableCell>
-                                        <TableCell align="right">{row.fat}</TableCell>
-                                        <TableCell align="right">{row.carbs}</TableCell>
-                                        <TableCell align="right">{row.protein}</TableCell>
+                                        <TableCell align="right">{row.email}</TableCell>
+                                        <TableCell align="right">{row.role}</TableCell>
+                                        <TableCell align="right">{row.username}</TableCell>
+                                        <TableCell align="right">{row.platform}</TableCell>
+                                        <TableCell align="right">{row.createdAt}</TableCell>
+                                        <TableCell align="right">{row.updatedAt}</TableCell>
+                                        <TableCell align="right">{row.deleted ? "true":"false"}</TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -418,12 +474,22 @@ function EnhancedTable() {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
+                    count={totalCount} // 총 데이터 수
+                    rowsPerPage={size}
                     page={page}
                     onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    // onRowsPerPageChange={handleChangeRowsPerPage}
                 />
+                {/*<TablePagination*/}
+                {/*    rowsPerPageOptions={[5, 10, 25]}*/}
+                {/*    component="div"*/}
+                {/*    count={-1}                 //행의 총개수 서버측 페이지 매김 -1*/}
+                {/*    rowsPerPage={-1}           //페이지의 행 수 모든 행 -1*/}
+                {/*    page={pageData.number}                         // 현제 페이지의 0부터 시작하는 인덱스*/}
+                {/*    onPageChange={handleChangePage}     //페이지가 변경되면 콜백 시작*/}
+                {/*    // onRowsPerPageChange={handleChangeMemberDataPerPage}*/}
+                {/*    //ActionsComponent={}              //액션을 표시하는 데 사용되는 구성 요소입니다. HTML 요소를 사용하는 문자열 또는 구성 요소.*/}
+                {/*/>*/}
             </Paper>
             <FormControlLabel
                 control={<Switch checked={dense} onChange={handleChangeDense}/>}
@@ -433,35 +499,26 @@ function EnhancedTable() {
     );
 }
 
-function Admin() {
 
+function Admin() {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading1, setIsLoading1] = useState(true);
+    // const [isLoading2, setIsLoading2] = useState(true);
     useEffect(() => {
         axios.get("/api/member/admin/role")
             .then(result => {
-                console.log(result);
-                setIsLoading(false);
+                //console.log(result);
+                setIsLoading1(false);
             })
             .catch(err => {
                 console.error(err);
                 navigate("/");
             });
-        axios.get("/api/member/admin/list?page=1&size=10")
-            .then(result => {
-                setMemberData(result.data.content);
-            });
     }, []);
-
-
-    useEffect(() => {
-        console.log(memberData);
-    }, [memberData]);
-
-
-    if (isLoading) {
+    if (isLoading1) {
         return <></>; // 또는 로딩 스피너 같은 것을 표시할 수
     }
+
     return <>
         <main className={style['index']}>
             <aside className={style['aside']}>
@@ -469,8 +526,8 @@ function Admin() {
             </aside>
             <div className={style['container']}>
                 <Routes>
-                    <Route path={"member"} element={<EnhancedTable/>}/>
-                    <Route path={"/"} element={<EnhancedTable/>}/>
+                    <Route path={"member"} element={<EnhancedTable />}/>
+                    <Route path={"/"} element={<EnhancedTable />}/>
                 </Routes>
             </div>
         </main>
