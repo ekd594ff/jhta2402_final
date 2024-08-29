@@ -14,8 +14,14 @@ function Header() {
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
     const [username, setUsername] = React.useState("");
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
+    const handleLogout = async () => {
+        try {
+            await axios.get('/api/member/logout'); // 로그아웃 API 호출
+            setIsLoggedIn(false); // 로그인 상태 업데이트
+            navigate("/"); // 인덱스 페이지로 리다이렉트
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -68,7 +74,6 @@ function Header() {
                                     'aria-labelledby': 'basic-button',
                                 }}
                             >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
                                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
