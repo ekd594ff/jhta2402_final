@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 
 import style from "../../styles/login.module.scss";
 
-function Login({setIsLoggedIn, setUsername}) {
+function Login() {
 
     const navigate = useNavigate();
 
@@ -18,9 +18,7 @@ function Login({setIsLoggedIn, setUsername}) {
         axios.post('/api/member/login', {email, password},{withCredentials: true})
             .then(res => {
                 alert("login Success");
-                setIsLoggedIn(true);
-                setUsername(email);
-                console.log("Logeed in: ", email);
+                console.log("Logged in: ", email);
                 navigate("/");
             })
             .catch(err => alert(err.response ? err.response.data.message : "로그인 실패"));
