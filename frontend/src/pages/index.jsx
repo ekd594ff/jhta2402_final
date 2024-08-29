@@ -1,20 +1,55 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import {Swiper, SwiperSlide} from 'swiper/react';
+
 import Header from "../components/common/header.jsx";
 import Footer from "../components/common/footer.jsx";
 
+import RecommendSwiperSlide from "../components/index/recommend-slide-content.jsx";
+
+import {Pagination} from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 import style from "../styles/index.module.scss";
+import RecommendSlideContent from "../components/index/recommend-slide-content.jsx";
 
 
 function Index(props) {
-    useEffect(() => {
-        console.log(document.cookie);
-    }, []);
+
+    const [recommendPortfolioList, setRecommendPortfolioList] = useState([1, 2, 3]);
+
+
     return (
         <>
             <Header/>
             <main className={style['index']}>
                 <div className={style['container']}>
-                    <section className={style['recommend']}></section>
+                    <section className={style['recommend']}>
+                        <Swiper
+                            pagination={{
+                                dynamicBullets: true,
+                            }}
+                            modules={[Pagination]}
+                            className={style['recommend-swiper']}
+                        >
+                            {
+                                recommendPortfolioList.map((item, index) => {
+                                    return <SwiperSlide key={index}>
+                                        <RecommendSlideContent value={item}/>
+                                    </SwiperSlide>
+                                })
+                            }
+                        </Swiper>
+                    </section>
+                    <section className={style['section']}>
+                        <div className={style['section-top']}>
+                            <p>강력 추천 인테리어 업체</p>
+                        </div>
+                        <div className={style['section-content']}>
+                            <ul></ul>
+                        </div>
+                    </section>
                 </div>
             </main>
             <Footer/>

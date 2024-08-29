@@ -5,10 +5,22 @@
   justify-content: center;
   min-height: 100vh;
   padding-top: variables.$HEADER_HEIGHT;
+
   & > .container {
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
     border: 0.5px solid darkcyan;
+    padding: 0 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    & > .recommend {
+      padding: 8px 0;
+      & > .recommend-swiper {
+        border-radius: 6px;
+        overflow: hidden;
+      }
+    }
   }
 }
