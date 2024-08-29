@@ -45,7 +45,7 @@ function Header() {
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    IntArea
+                    <img src="/logo.svg"/>
                 </Link>
                 <div className={style["buttons"]}>
                     {isLoggedIn ? (
