@@ -13,11 +13,13 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import style from "../styles/index.module.scss";
+import SolutionListItem from "../components/index/solution-list-item.jsx";
 
 function Index() {
 
     const [recommendList, setRecommendList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+    const [solutionList, setSolution] = useState([1,2,3,4,5,6,7,8]);
 
     useEffect(() => {
         console.log(document.cookie);
@@ -37,7 +39,7 @@ function Index() {
                             className={style['recommend-swiper']}
                         >{recommendList.map((item, index) =>
                             <SwiperSlide key={index}>
-                                <RecommendSlideContent value={item+index}/>
+                                <RecommendSlideContent value={item + index}/>
                             </SwiperSlide>)}
                         </Swiper>
                     </section>
@@ -50,6 +52,21 @@ function Index() {
                                 {portfolioList.map((item, index) => {
                                     return <PortfolioListItem value={item} key={index}/>
                                 })}
+                            </ul>
+                        </div>
+                    </section>
+                    <section className={style['section']}>
+                        <div className={style['section-title']}>
+                            추천 솔루션
+                        </div>
+                        <div className={style['section-content']}>
+                            <ul className={style['solution-list']}>
+                                <SolutionListItem/>
+                                <SolutionListItem/>
+                                <SolutionListItem/>
+                                <SolutionListItem/>
+                                <SolutionListItem/>
+                                <SolutionListItem/>
                             </ul>
                         </div>
                     </section>

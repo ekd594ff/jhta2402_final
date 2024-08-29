@@ -10,6 +10,7 @@
   top: 0;
   z-index: 9999;
   background-color: #fff;
+
   & > .container {
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
@@ -24,6 +25,7 @@
       justify-content: center;
       align-items: center;
       height: 20px;
+
       & > img {
         height: 100%;
       }
@@ -33,9 +35,36 @@
       display: flex;
       align-items: center;
       position: relative;
+
+      & > .avatar {
+        cursor: pointer;
+      }
+
       & > .menu {
+        border-radius: 5px;
         position: absolute;
-        top: 0;
+        width: 120px;
+        top: variables.$HEADER_HEIGHT + 2px;
+        right: 0;
+        background-color: #fff;
+        box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+        height: 0;
+        opacity: 0;
+        transition: height 0.5s ease, opacity 0.5s ease;
+
+        & * {
+          display: none;
+        }
+
+        &.open {
+          height: auto;
+          opacity: 1;
+          transition: height 0.5s ease, opacity 0.5s ease;
+
+          & * {
+            display: block;
+          }
+        }
       }
     }
   }
