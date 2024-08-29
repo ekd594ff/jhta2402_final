@@ -1,5 +1,39 @@
 @use "variables";
 
 .solution-list-item {
-  flex: 0 1 calc(50% - 8px);
+  flex-grow: 1;
+  width: 45%;
+  max-width: 50%;
+  padding: 16px;
+  box-sizing: border-box;
+  border: 0.5px solid #e6e6e6;
+  border-radius: 5px;
+
+  & > .container {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+
+    & > .left {
+      & > .avatar {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    & > .right {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      & > .title {
+        font-weight: bold;
+      }
+
+      & > .description {
+        color: gray;
+      }
+    }
+  }
 }
