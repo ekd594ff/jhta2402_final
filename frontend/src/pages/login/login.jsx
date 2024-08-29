@@ -6,30 +6,24 @@ import Button from '@mui/material/Button';
 
 import style from "../../styles/login.module.scss";
 
-function Login() {
+function Login({setIsLoggedIn, setUsername}) {
 
-    const navigate = useNavigate()
-
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const [login, setLogin] = useState({email: "", password: ""});
 
-
-    const submit = () => {
+    const submit = (e) => {
+        e.preventDefault(); // 기본 폼 제출 방지
         const {email, password} = login;
-        axios.post('/api/member/login', {
-                email: email,
-                password: password
-            },
-            {
-                withCredentials: true
-            }
-        ).then(res => {
-                alert("login Success")
-                navigate("/")
-            }
-        ).catch(err => alert(err));
+        axios.post('/api/member/login', {email, password},{withCredentials: true})
+            .then(res => {
+                alert("login Success");
+                setIsLoggedIn(true);
+                setUsername(email);
+                console.log("Logeed in: ", email);
+                navigate("/");
+            })
+            .catch(err => alert(err.response ? err.response.data.message : "로그인 실패"));
     }
 
     return <>

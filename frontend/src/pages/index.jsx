@@ -15,14 +15,13 @@ import style from "../styles/index.module.scss";
 import RecommendSlideContent from "../components/index/recommend-slide-content.jsx";
 
 
-function Index(props) {
-
-    const [recommendPortfolioList, setRecommendPortfolioList] = useState([1, 2, 3]);
-
-
+function Index({isLoggedIn, username, handleLogout}) {
+    useEffect(() => {
+        console.log(document.cookie);
+    }, []);
     return (
         <>
-            <Header/>
+            <Header isLoggedIn={isLoggedIn} username={username} handleLogout={handleLogout}/>
             <main className={style['index']}>
                 <div className={style['container']}>
                     <section className={style['recommend']}>
