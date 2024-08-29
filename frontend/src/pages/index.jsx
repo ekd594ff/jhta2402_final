@@ -13,14 +13,14 @@ import 'swiper/css/pagination';
 
 import style from "../styles/index.module.scss";
 
-function Index({isLoggedIn, username, handleLogout}) {
+function Index() {
     useEffect(() => {
         console.log(document.cookie);
     }, []);
 
     return (
         <>
-            <Header isLoggedIn={isLoggedIn} username={username} handleLogout={handleLogout}/>
+            <Header/>
             <main className={style['index']}>
                 <div className={style['container']}>
                     <section className={style['recommend']}>
