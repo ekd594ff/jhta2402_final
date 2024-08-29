@@ -1,54 +1,62 @@
 import * as React from 'react';
-import { Button } from "@mui/material";
+import {Button} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import style from "../../styles/header.module.scss";
+import {useEffect} from "react";
+import axios from "axios";
 
-function Header({ isLoggedIn, username, handleLogout }) {
+function Header() {
     const navigate = useNavigate();
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [username, setUsername] = React.useState("");
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickAvatar = (event) => {
+        event.stopPropagation();
+        setOpen(prev => !prev);
+    }
+
+    useEffect(() => {
+        axios.get(`/api/member/email`)
+            .then((res) => {
+                setIsLoggedIn(res.data.id !== null);
+            }).finally(() => {
+            setIsLoading(false);
+        });
+
+        document.addEventListener("click", function (event) {
+           setOpen(false);
+        });
+    }, []);
 
     return (
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    IntArea
+                    <img src="/logo.svg"/>
                 </Link>
                 <div className={style["buttons"]}>
-                    {isLoggedIn ? (
+                    {isLoading ? <></> : isLoggedIn ? (
                         <>
-                            <Avatar 
-                                alt={username} 
+                            <Avatar
+                                alt={username}
                                 src=""
-                                id="basic-button"
-                                aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}
-                                 />
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                MenuListProps={{
-                                    'aria-labelledby': 'basic-button',
-                                }}
+                                onClick={handleClickAvatar}
+                                className={style['avatar']}
+                            />
+                            <div className={`${style['menu']} ${open ? style['open'] : ""}`}
                             >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={() => {
+                                }}>Profile</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                            </Menu>
+                                <MenuItem onClick={() => {
+                                }}>Logout</MenuItem>
+                            </div>
                         </>
                     ) : (
                         <>
