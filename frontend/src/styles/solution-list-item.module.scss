@@ -1,0 +1,5 @@
+@use "variables";
+
+.solution-list-item {
+  flex: 0 1 calc(50% - 8px);
+}
