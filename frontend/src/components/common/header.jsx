@@ -19,6 +19,7 @@ function Header() {
     const handleClickAvatar = (event) => {
         event.stopPropagation();
         setOpen(prev => !prev);
+    }
     const handleLogout = async () => {
         try {
             await axios.get('/api/member/logout'); // 로그아웃 API 호출
@@ -59,11 +60,8 @@ function Header() {
                             />
                             <div className={`${style['menu']} ${open ? style['open'] : ""}`}
                             >
-                                <MenuItem onClick={() => {
-                                }}>Profile</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                                <MenuItem onClick={() => {
-                                }}>Logout</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </div>
                         </>
                     ) : (
