@@ -5,21 +5,24 @@ import Header from "../components/common/header.jsx";
 import Footer from "../components/common/footer.jsx";
 
 import RecommendSlideContent from "../components/index/recommend-slide-content.jsx";
-import PortfolioListItem  from "../components/index/portfolio-list-item.jsx";
+import PortfolioListItem from "../components/index/portfolio-list-item.jsx";
 
-import {Pagination} from 'swiper/modules';
+import {Pagination, Autoplay} from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 import style from "../styles/index.module.scss";
 import SolutionListItem from "../components/index/solution-list-item.jsx";
+import CompanyListItem from "../components/index/company-list-item.jsx";
+
 
 function Index() {
 
     const [recommendList, setRecommendList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
-    const [solutionList, setSolution] = useState([1,2,3,4,5,6,7,8]);
+    const [solutionList, setSolutionList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+    const [companyList, setCompanyList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
 
     useEffect(() => {
         console.log(document.cookie);
@@ -32,10 +35,12 @@ function Index() {
                 <div className={style['container']}>
                     <section className={style['recommend']}>
                         <Swiper
+                            autoplay={{delay: 3500}}
                             pagination={{
                                 dynamicBullets: true,
+                                disableOnInteraction: false
                             }}
-                            modules={[Pagination]}
+                            modules={[Pagination, Autoplay]}
                             className={style['recommend-swiper']}
                         >{recommendList.map((item, index) =>
                             <SwiperSlide key={index}>
@@ -45,7 +50,18 @@ function Index() {
                     </section>
                     <section className={style['section']}>
                         <div className={style['section-title']}>
-                            추천 인테리어 업체
+                            TOP 업체
+                        </div>
+                        <div className={style['section-content']}>
+                            <ul className={style['company-list']}>
+                                {companyList.map((item, index) =>
+                                    <CompanyListItem value={item} key={index}/>)}
+                            </ul>
+                        </div>
+                    </section>
+                    <section className={style['section']}>
+                        <div className={style['section-title']}>
+                            추천 포트폴리오
                         </div>
                         <div className={style['section-content']}>
                             <ul className={style['portfolio-list']}>
@@ -61,12 +77,11 @@ function Index() {
                         </div>
                         <div className={style['section-content']}>
                             <ul className={style['solution-list']}>
-                                <SolutionListItem/>
-                                <SolutionListItem/>
-                                <SolutionListItem/>
-                                <SolutionListItem/>
-                                <SolutionListItem/>
-                                <SolutionListItem/>
+                                {
+                                    solutionList.map((item, index) => {
+                                        return <SolutionListItem value={item} key={index}/>
+                                    })
+                                }
                             </ul>
                         </div>
                     </section>
