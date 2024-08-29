@@ -14,16 +14,19 @@
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
     display: flex;
-    align-content: center;
+    align-items: center;
     justify-content: space-between;
     border: 0.5px solid red;
     padding: 0 16px;
 
     & > .logoSample {
-      background-color: aqua;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 20px;
+      & > img {
+        height: 100%;
+      }
     }
 
     & > .buttons {
