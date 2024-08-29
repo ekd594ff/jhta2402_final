@@ -94,7 +94,9 @@ const rows = [
     createData(12, 'Nougat', 360, 19.0, 9, 37.0),
     createData(13, 'Oreo', 437, 18.0, 63, 4.0),
 ];
-const [memberData, setMemberData] = useState([]);
+
+//const [memberData, setMemberData] = useState([]);
+
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;

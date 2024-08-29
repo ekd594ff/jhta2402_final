@@ -12,13 +12,12 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import style from "../styles/index.module.scss";
-import RecommendSlideContent from "../components/index/recommend-slide-content.jsx";
-
 
 function Index({isLoggedIn, username, handleLogout}) {
     useEffect(() => {
         console.log(document.cookie);
     }, []);
+
     return (
         <>
             <Header isLoggedIn={isLoggedIn} username={username} handleLogout={handleLogout}/>
@@ -32,13 +31,6 @@ function Index({isLoggedIn, username, handleLogout}) {
                             modules={[Pagination]}
                             className={style['recommend-swiper']}
                         >
-                            {
-                                recommendPortfolioList.map((item, index) => {
-                                    return <SwiperSlide key={index}>
-                                        <RecommendSlideContent value={item}/>
-                                    </SwiperSlide>
-                                })
-                            }
                         </Swiper>
                     </section>
                     <section className={style['section']}>
