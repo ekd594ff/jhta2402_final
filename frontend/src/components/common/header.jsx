@@ -30,15 +30,23 @@ function Header() {
     };
 
     useEffect(() => {
-        async function a() {
-            try {
-                const value = await axios.get(`/api/member/email`);
-                setIsLoggedIn(true);
-            } catch (err) {
-                setIsLoggedIn(false);
-            }
-        }
-        a();
+        axios.get(`/api/member/email`)
+            .then((res) => {
+                console.log(res);
+                console.log(res.data.id == null);
+                setIsLoggedIn(res.data.id !== null);
+            });
+
+        // async function a() {
+        //     try {
+        //         const value = await axios.get(`/api/member/email`);
+        //         setIsLoggedIn(true);
+        //     } catch (err) {
+        //         setIsLoggedIn(false);
+        //     }
+        // }
+        //
+        // a();
     }, []);
 
     return (
