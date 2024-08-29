@@ -12,66 +12,51 @@ function Header() {
     const navigate = useNavigate();
 
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
     const [username, setUsername] = React.useState("");
+    const [open, setOpen] = React.useState(false);
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
+    const handleClickAvatar = (event) => {
+        event.stopPropagation();
+        setOpen(prev => !prev);
     }
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     useEffect(() => {
-        async function a() {
-            try {
-                const value = await axios.get(`/api/member/email`);
-                setIsLoggedIn(true);
-            } catch (err) {
-                setIsLoggedIn(false);
-            }
-        }
-        a();
+        axios.get(`/api/member/email`)
+            .then((res) => {
+                setIsLoggedIn(res.data.id !== null);
+            }).finally(() => {
+            setIsLoading(false);
+        });
+
+        document.addEventListener("click", function (event) {
+           setOpen(false);
+        });
     }, []);
 
     return (
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    IntArea
+                    <img src="/logo.svg"/>
                 </Link>
                 <div className={style["buttons"]}>
-                    {isLoggedIn ? (
+                    {isLoading ? <></> : isLoggedIn ? (
                         <>
                             <Avatar
                                 alt={username}
                                 src=""
-                                id="basic-button"
-                                aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}
+                                onClick={handleClickAvatar}
+                                className={style['avatar']}
                             />
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                MenuListProps={{
-                                    'aria-labelledby': 'basic-button',
-                                }}
+                            <div className={`${style['menu']} ${open ? style['open'] : ""}`}
                             >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={() => {
+                                }}>Profile</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                            </Menu>
+                                <MenuItem onClick={() => {
+                                }}>Logout</MenuItem>
+                            </div>
                         </>
                     ) : (
                         <>

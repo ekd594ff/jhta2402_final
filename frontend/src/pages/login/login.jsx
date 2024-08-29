@@ -18,7 +18,6 @@ function Login() {
         axios.post('/api/member/login', {email, password},{withCredentials: true})
             .then(res => {
                 alert("login Success");
-                console.log("Logged in: ", email);
                 navigate("/");
             })
             .catch(err => alert(err.response ? err.response.data.message : "로그인 실패"));
@@ -27,7 +26,15 @@ function Login() {
     return <>
         <main className={style['login']}>
             <div className={style['container']}>
-                <form method="post">
+                <Link to="/">
+                    <img className={style['logo']} alt={"logo"} src="/logo.svg"/>
+                </Link>
+                <form method="post" onKeyDown={(event) => {
+                    const key = event.key;
+                    if(key === 'Enter') {
+                        submit(event);
+                    }
+                }}>
                     <TextField
                         required
                         onChange={(e) => setLogin({...login, email: e.target.value})}
