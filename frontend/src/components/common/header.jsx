@@ -1,22 +1,45 @@
 import * as React from 'react';
-import { Button } from "@mui/material";
+import {Button} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import style from "../../styles/header.module.scss";
+import {useEffect} from "react";
+import axios from "axios";
 
-function Header({ isLoggedIn, username, handleLogout }) {
+function Header() {
     const navigate = useNavigate();
+
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    const [username, setUsername] = React.useState("");
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+    }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    useEffect(() => {
+        async function a() {
+            try {
+                const value = await axios.get(`/api/member/email`);
+                setIsLoggedIn(true);
+            } catch (err) {
+                setIsLoggedIn(false);
+            }
+        }
+        a();
+    }, []);
 
     return (
         <header className={style["header"]}>
@@ -27,15 +50,15 @@ function Header({ isLoggedIn, username, handleLogout }) {
                 <div className={style["buttons"]}>
                     {isLoggedIn ? (
                         <>
-                            <Avatar 
-                                alt={username} 
+                            <Avatar
+                                alt={username}
                                 src=""
                                 id="basic-button"
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
                                 onClick={handleClick}
-                                 />
+                            />
                             <Menu
                                 id="basic-menu"
                                 anchorEl={anchorEl}
