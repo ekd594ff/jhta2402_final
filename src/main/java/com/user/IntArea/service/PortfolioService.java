@@ -73,8 +73,8 @@ public class PortfolioService {
                     .title(portfolio.getTitle())
                     .description(portfolio.getDescription())
                     .companyName(portfolio.getCompany().getCompanyName())
-                    .createdDate(portfolio.getCreatedAt())
-                    .updatedDate(portfolio.getUpdatedAt())
+                    .createdAt(portfolio.getCreatedAt())
+                    .updatedAt(portfolio.getUpdatedAt())
                     .isDeleted(portfolio.isDeleted())
                     .build();
             return portfolioInfoDto;
@@ -142,8 +142,8 @@ public class PortfolioService {
                 .title(portfolio.getTitle())
                 .description(portfolio.getDescription())
                 .companyName(portfolio.getCompany().getCompanyName())
-                .createdDate(portfolio.getCreatedAt())
-                .updatedDate(portfolio.getUpdatedAt())
+                .createdAt(portfolio.getCreatedAt())
+                .updatedAt(portfolio.getUpdatedAt())
                 .isDeleted(portfolio.isDeleted())
                 .build();
         return portfolioInfoDto;

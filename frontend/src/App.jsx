@@ -9,6 +9,7 @@ import Mypage from "./pages/login/Mypage.jsx";
 import Header from "./components/common/header.jsx";
 
 import PortfolioDetail from "./pages/portfolio/portfolioDetail.jsx";
+import Register from "./pages/portfolio/register.jsx";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/mypage" element={<Mypage />}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/admin/*" element={<Admin/>}/>
+                    <Route path="/portfolio/registration" element={<Register/>}/>
                     <Route path="/portfolio/:id" element={<PortfolioDetail/>}/>
                 </Routes>
             </BrowserRouter>
