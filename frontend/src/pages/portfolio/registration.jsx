@@ -100,7 +100,7 @@ function Registration() {
                     <SolutionForm />
                 </Box>
 
-                <Box sx={{padding: 2, display: 'flex', flexDirection: 'column', gap: 2}}>
+                <Box sx={{padding: 1, display: 'flex', flexDirection: 'column', gap: 2}}>
                     <label><h3>회사정보</h3></label>
                     <Box sx={{padding: 1, display: 'flex', flexDirection: 'column', gap: 1}}>
                         <Stack direction="row" spacing={1}>
@@ -119,7 +119,7 @@ function Registration() {
                     </Box>
                 </Box>
 
-                <Box sx={{padding: 2, display: 'flex', flexDirection: 'row', gap: 2}}>
+                <Box sx={{padding: 1, display: 'flex', flexDirection: 'row', gap: 2}}>
                     <Button variant="contained" onClick={submitPortfolio}>등록</Button>
                     <Button variant="outlined" color="secondary" onClick={() => {/*save form*/}}>임시저장</Button>
                     <Button variant="outlined" color="success" href="#text-buttons" onClick={() => {/*previewPortfolio*/}}>포트폴리오
