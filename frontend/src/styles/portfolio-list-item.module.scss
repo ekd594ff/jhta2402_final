@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+
   & > .top {
     width: 100%;
     display: flex;
@@ -13,25 +14,35 @@
     align-items: center;
     border-radius: 5px;
     overflow: hidden;
+
     & > .thumbnail {
       width: 100%;
       display: block;
       object-fit: cover;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
+
   & > .bottom {
     width: 100%;
     font-size: small;
     display: flex;
     flex-direction: column;
     gap: 4px;
+
     & > .name {
       font-weight: bold;
     }
+
     & > .info {
       display: flex;
       align-items: center;
       gap: 8px;
+
       & > .rating {
         display: flex;
         align-items: center;
@@ -39,6 +50,7 @@
         font-weight: bold;
       }
     }
+
     & > .description {
       color: gray;
     }
