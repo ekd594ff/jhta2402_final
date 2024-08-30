@@ -1,12 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {getPageList} from "../../utils/pageUtil.jsx";
-import {Button} from "@mui/material";
+import {
+    Button,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    TextField,
+    Tooltip,
+    Typography
+} from "@mui/material";
+
+import style from "../../styles/board.module.scss";
 
 function Example() {
 
-    const contentSize = 2; // 페이지에 보여줄 Example 갯수
+    const contentSize = 4; // 페이지에 보여줄 Example 갯수
     const pageSize = 5; // Pagination 갯수 (5-> [1, 2, 3, 4, 5])
 
     const [pagination, setPagination] = useState(
@@ -15,6 +28,8 @@ function Example() {
 
     // useEffect를 동작하게 하기 위한 상태 변경
     const [trigger, setTrigger] = useState(false);
+
+    const navigator = useNavigate();
 
     useEffect(() => {
         axios.get(`/api/example?page=${pagination.page - 1}&size=${contentSize}`)
@@ -32,25 +47,11 @@ function Example() {
             })
     }, [pagination.page, trigger]);
 
-    const [exampleForm, setExampleForm] = useState({name: "", description: ""});
-
-
-    const createExample = () => {
-        axios.post("/api/example", exampleForm)
-            .then(() => {
-                setTrigger(prev => !prev);
-                setExampleForm({name: "", description: ""});
-
-                alert("created");
-            })
-            .catch(() => alert("error"))
-    }
 
     const deleteExample = (id) => {
         axios.delete(`/api/example/${id}`)
             .then(() => {
                 setTrigger(prev => !prev);
-                setExampleForm({name: "", description: ""});
                 alert("complete");
             })
             .catch(() => alert("error"))
@@ -60,58 +61,78 @@ function Example() {
         axios.delete(`/api/admin/example/${id}`)
             .then(() => {
                 setTrigger(prev => !prev);
-                setExampleForm({name: "", description: ""});
                 alert("complete");
             })
             .catch(() => alert("error"))
     }
 
     return (
-        <>
-            <div>
-                <label htmlFor="name">이름</label>
-                <input id="name" value={exampleForm.name}
-                       onChange={(e) => setExampleForm({...exampleForm, name: e.target.value})}/>
-                <label htmlFor="description">설명</label>
-                <input id="description" value={exampleForm.description}
-                       onChange={(e) => setExampleForm({...exampleForm, description: e.target.value})}/>
-                <button onClick={createExample}>Create Example</button>
+        <main className={style['board']}>
+            <div className={style['container']}>
+                <div className={style['btn-box']}>
+                    <Typography variant="h4" style={{fontWeight: 'bold'}}>
+                        Board
+                    </Typography>
+                    <Button variant="contained" onClick={() => {
+                        navigator("/editor")
+                    }}>글쓰기</Button>
+                </div>
+                <Table sx={{minWidth: 700}} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Title</TableCell>
+                            <TableCell>Content</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>ID</TableCell>
+                            <TableCell> </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            exampleList.map((item, index) => {
+                                return (<TableRow className={style['row']} key={item.id} onClick={() => {
+                                    navigator(`/example/${item.id}`)
+                                }}>
+                                    <TableCell>{item.name}</TableCell>
+                                    <TableCell>{item.description}</TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {item.memberEmail}
+                                    </TableCell>
+                                    <TableCell>{item.id}</TableCell>
+                                    <TableCell>
+                                        <Tooltip title="Delete">
+                                            <IconButton size="small"
+                                                        onClick={() => deleteExample(item.id)}>🗑️</IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Admin Delete">
+                                            <IconButton size="small"
+                                                        onClick={() => deleteExampleAdmin(item.id)}>❌️</IconButton>
+                                        </Tooltip>
+                                    </TableCell>
+                                </TableRow>);
+                            })
+                        }
+                    </TableBody>
+                </Table>
+                <div className={style['pagination-box']}>
+                    {!pagination.first ? <Button
+                        onClick={() => setPagination({...pagination, page: pagination.page - 1})}>prev</Button> : <></>}
+
+                    {pagination.pageList.map((pageNum) =>
+                        <button
+                            className={`${style['pagination-btn']} ${pageNum === pagination.page ? style['selected'] : ""}`}
+                            key={pageNum}
+                            onClick={() => setPagination({...pagination, page: pageNum})}>
+                            {pageNum}
+                        </button>)}
+
+                    {!pagination.last ? <Button
+                        onClick={() => setPagination({...pagination, page: pagination.page + 1})}>
+                        next
+                    </Button> : <></>}
+                </div>
             </div>
-
-            {exampleList.map((example) => <div key={example.id}>
-                <Link to={`/example/${example.id}`}>
-                    <p>
-                        memberEmail : {example.memberEmail}
-                    </p>
-                    <p>
-                        id : {example.id}
-                    </p>
-                    <p>
-                        name : {example.name}
-                    </p>
-                    <p>
-                        description : {example.description}
-                    </p>
-                </Link>
-                <button onClick={() => deleteExample(example.id)}>Delete</button>
-                <button onClick={() => deleteExampleAdmin(example.id)}>Admin Delete</button>
-            </div>)}
-
-
-            {!pagination.first ? <Button
-                onClick={() => setPagination({...pagination, page: pagination.page - 1})}>prev</Button> : <></>}
-
-            {pagination.pageList.map((pageNum) =>
-                <Button key={pageNum}
-                        onClick={() => setPagination({...pagination, page: pageNum})}>
-                    {pageNum}
-                </Button>)}
-
-            {!pagination.last ? <Button
-                onClick={() => setPagination({...pagination, page: pagination.page + 1})}>
-                next
-            </Button> : <></>}
-        </>
+        </main>
     );
 }
 

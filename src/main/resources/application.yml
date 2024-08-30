@@ -8,9 +8,9 @@ spring:
     name: home
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/cocolabhub
-    username: cocolabhub
-    password: cocolabhub
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: sm15883082
   jpa:
     hibernate:
       ddl-auto: create

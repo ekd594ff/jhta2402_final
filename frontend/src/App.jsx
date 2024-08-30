@@ -7,6 +7,7 @@ import Login from "./pages/login/login.jsx";
 import Signup from "./pages/login/signup.jsx";
 import Example from "./pages/example/example.jsx";
 import ExampleDetail from "./pages/example/exampleDetail.jsx";
+import Editor from "./pages/editor/editor.jsx";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/" element={<Index/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/signup" element={<Signup/>}/>
+                    <Route path="/editor" element={<Editor/>}/>
                     <Route path="/example" element={<Example/>}/>
                     <Route path="/example/:id" element={<ExampleDetail/>}/>
                 </Routes>

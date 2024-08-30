@@ -1,0 +1,48 @@
+.example-detail {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  & > .container {
+    margin-top: 24px;
+    padding: 0 8px;
+    width: 100%;
+    max-width: 1200px;
+    & > .btn-box {
+      display: flex;
+      justify-content: space-between;
+      padding: 32px 0;
+    }
+    & > .description {
+      font-size: 24px;
+      min-height: 360px;
+    }
+    & > .comment-box {
+      display: flex;
+      gap: 32px;
+      & >.comment-input {
+        flex-grow: 1;
+      }
+    }
+    & > .comment-item {
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      & > .top {
+        display: flex;
+        font-size: 14px;
+        gap: 8px;
+        color: gray;
+        & > .id {
+          width: 150px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      & > .content {
+        font-weight: bold;
+      }
+    }
+  }
+}

@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+
+import style from "../../styles/example-detail.module.scss"
+import {Button, TextField, Typography} from "@mui/material";
 
 function ExampleDetail(props) {
 
@@ -15,6 +18,8 @@ function ExampleDetail(props) {
     const [commentList, setCommentList] = useState([]);
 
     const [description, setDescription] = useState("");
+
+    const navigator = useNavigate();
 
     useEffect(() => {
         axios.get(`/api/example/${id}`)
@@ -44,37 +49,37 @@ function ExampleDetail(props) {
     }
 
     return (
-        <>
-            <div>
-                <p>
-                    id : {example.id}
-                </p>
-                <p>
-                    name : {example.name}
-                </p>
-                <p>
-                    description : {example.description}
-                </p>
+        <main className={style['example-detail']}>
+            <div className={style['container']}>
+                <Typography variant="h4" style={{fontWeight: 'bold'}}>
+                    {example.name}
+                </Typography>
+                <p className={style['description']}>{example.description}</p>
+                <div className={style['btn-box']}>
+                    <Button variant="contained" onClick={() => {
+                        navigator("/example")
+                    }} color="success">목록</Button>
+                    <Button variant="contained" onClick={() => {
+                    }} color="error">삭제</Button>
+                </div>
+                <div className={style['comment-box']}>
+                    <TextField className={style['comment-input']} InputLabelProps={{shrink: true}} label="댓글쓰기"
+                               variant="standard" value={description}
+                               onChange={(e) => setDescription(e.target.value)}/>
+                    <Button variant="contained" onClick={createComment}>댓글 쓰기</Button>
+                </div>
+                {commentList.map((comment) => <div className={style['comment-item']} key={comment.id}>
+                    <div className={style['top']}>
+                        <div className={style['id']}>🇮🇩: {`${comment.id}`}</div>
+                        <div className={style['email']}>✉: {comment.memberEmail}</div>
+                    </div>
+                    <div className={style['content']}>
+                        {comment.description}
+                    </div>
+                </div>)}
             </div>
 
-            <br/>
-            <label htmlFor="description">Description</label>
-            <input value={description} onChange={(e) => setDescription(e.target.value)}/>
-            <button onClick={createComment}>코멘트 생성</button>
-            <br/>
-
-            {commentList.map((comment) => <div key={comment.id}>
-                <p>
-                    {comment.id}
-                </p>
-                <p>
-                    {comment.memberEmail}
-                </p>
-                <p>
-                    {comment.description}
-                </p>
-            </div>)}
-        </>
+        </main>
     );
 }
 
