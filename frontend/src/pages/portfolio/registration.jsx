@@ -15,9 +15,10 @@ import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 
-import ImageUpload from './imageUpload.jsx'
+import ImageUpload from '../../components/portfolio/imageUpload.jsx'
+import SolutionForm from "../../components/portfolio/solutionForm.jsx";
 
-function Register() {
+function Registration() {
 
     const navigate = useNavigate();
 
@@ -50,10 +51,6 @@ function Register() {
         description: "",
     })
 
-    const otherImages = [
-        // 여기에 이미지 URL 배열을 넣습니다.
-    ];
-
     const submitPortfolio = () => {
         axios.post("/api/portfolio",
             portfolioInfo,
@@ -67,13 +64,13 @@ function Register() {
 
     return (
         <div >
-            <Box sx={{padding: 5}}>
+            <Box sx={{padding: 4}}>
 
-                <Box sx={{ padding: 0, textAlign: 'center' }}>
+                <Box sx={{ padding: 2, textAlign: 'center' }}>
                     <h1>새 포트폴리오 등록</h1>
                 </Box>
 
-                <Box sx={{padding: 0}}>
+                <Box sx={{padding: 2}}>
                     <TextField onChange={(e) => setPortfolioInfo({...portfolioInfo, title: e.target.value})}
                                type="email"
                                id="title"
@@ -93,54 +90,39 @@ function Register() {
                     />
                 </Box>
 
-                <Box sx={{padding: 5}}>
+                <Box sx={{padding: 1}}>
                     <label><h3>포트폴리오 이미지 등록</h3></label>
                     <ImageUpload />
                 </Box>
 
-                <Box sx={{padding: 5, display: 'flex', flexDirection: 'column', gap: 2}}>
-                    <h3>포트폴리오 유효기간</h3>
-                    <TextField
-                        label="자동등록일시"
-                        type="datetime-local"
-                        /*value={startDate}
-                        onChange={handleStartDateChange}*/
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <TextField
-                        label="자동만료일시"
-                        type="datetime-local"
-                        /*value={endDate}
-                        onChange={handleEndDateChange}*/
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                <Box sx={{padding: 1}}>
+                    <label><h3>솔루션 등록</h3></label>
+                    <SolutionForm />
                 </Box>
 
-                <Box sx={{padding: 5, display: 'flex', flexDirection: 'column', gap: 2}}>
+                <Box sx={{padding: 2, display: 'flex', flexDirection: 'column', gap: 2}}>
                     <label><h3>회사정보</h3></label>
-                    <Stack direction="row" spacing={1}>
-                        <label htmlFor="">업체명</label>
-                        <Chip
-                            avatar={<Avatar alt="" src={companyInfo.companyName}/>}
-                            label={companyInfo.companyName}
-                            color="primary"
-                            variant="outlined"
-                        />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                        <label htmlFor="">연락처</label>
-                        <Chip label={companyInfo.phone} color="primary" variant="outlined"/>
-                    </Stack>
+                    <Box sx={{padding: 1, display: 'flex', flexDirection: 'column', gap: 1}}>
+                        <Stack direction="row" spacing={1}>
+                            <label htmlFor="">업체명</label>
+                            <Chip
+                                avatar={<Avatar alt="" src={companyInfo.companyName}/>}
+                                label={companyInfo.companyName}
+                                color="primary"
+                                variant="outlined"
+                            />
+                        </Stack>
+                        <Stack direction="row" spacing={1}>
+                            <label htmlFor="">연락처</label>
+                            <Chip label={companyInfo.phone} color="primary" variant="outlined"/>
+                        </Stack>
+                    </Box>
                 </Box>
 
-                <Box sx={{padding: 5, display: 'flex', flexDirection: 'row', gap: 2}}>
+                <Box sx={{padding: 2, display: 'flex', flexDirection: 'row', gap: 2}}>
                     <Button variant="contained" onClick={submitPortfolio}>등록</Button>
-                    <Button variant="outlined" color="secondary" onClick={{/*saveForm*/}}>임시저장</Button>
-                    <Button variant="outlined" color="success" href="#text-buttons" onClick={{/*previewPortfolio*/}}>포트폴리오
+                    <Button variant="outlined" color="secondary" onClick={() => {/*save form*/}}>임시저장</Button>
+                    <Button variant="outlined" color="success" href="#text-buttons" onClick={() => {/*previewPortfolio*/}}>포트폴리오
                         미리보기</Button>
                 </Box>
             </Box>
@@ -148,4 +130,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default Registration;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import ImageGallerySlider from "./imageGallerySlider.jsx";
+import ImageRepresentative from "./imageRepresentative.jsx";
 
 const ImageUpload = () => {
     const [representativeImage, setRepresentativeImage] = useState(null);
@@ -21,7 +22,7 @@ const ImageUpload = () => {
     };
 
     return (
-        <>
+        <div>
             <Box sx={{ padding: 2, textAlign: 'left' }}>
                 <Stack spacing={2}>
                     <label>
@@ -45,26 +46,15 @@ const ImageUpload = () => {
                 </Stack>
             </Box>
 
-            <Box sx={{padding: 5}}>
-                <Stack spacing={1} direction="row" flexWrap="wrap">
-                    {representativeImage && (
-                        <img
-                            src={representativeImage}
-                            alt="Representative"
-                            style={{
-                                width: '150px',
-                                height: 'auto',
-                                marginRight: '10px',
-                                border: '2px solid blue' // 파란색 테두리 추가
-                            }}
-                        />
-                    )}
-                </Stack>
+            <Box sx={{padding: 1}}>
+                <div>
+                    <ImageRepresentative representativeImage={representativeImage}/>
+                </div>
                 <div>
                     <ImageGallerySlider otherImages={otherImages}/>
                 </div>
             </Box>
-        </>
+        </div>
     );
 };
 
