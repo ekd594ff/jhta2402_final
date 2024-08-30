@@ -3,7 +3,9 @@ import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
-import style from "../../styles/index.module.scss";
+
+import style from "../../styles/portfolio-detail.module.scss";
+
 
 function PortfolioDetail() {
 
@@ -64,7 +66,19 @@ function PortfolioDetail() {
     return (
         <>
             <Header/>
-            <main key={portfolioInfo.portfolioId} className={style['index']}>
+            <main className={style['portfolio-detail']}>
+                <div className={style['container']}></div>
+            </main>
+            <Footer/>
+        </>
+    );
+}
+
+export default PortfolioDetail;
+
+/*
+
+<main key={portfolioInfo.portfolioId} className={style['index']}>
                 <div>
                     {portfolioInfo.portfolioId}
                     <br/>
@@ -115,9 +129,6 @@ function PortfolioDetail() {
 
                 </div>
             </main>
-            <Footer/>
-        </>
-    );
-}
 
-export default PortfolioDetail;
+
+* */

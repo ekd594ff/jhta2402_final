@@ -23,6 +23,7 @@ function Index() {
     const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
     const [solutionList, setSolutionList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
     const [companyList, setCompanyList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+    const [hotPortfolioList ,setHotPortfolioList] = useState([1,2,3,4]);
 
     useEffect(() => {
         console.log(document.cookie);
@@ -82,6 +83,18 @@ function Index() {
                                         return <SolutionListItem value={item} key={index}/>
                                     })
                                 }
+                            </ul>
+                        </div>
+                    </section>
+                    <section className={style['section']}>
+                        <div className={style['section-title']}>
+                            요즘 뜨는 시공사
+                        </div>
+                        <div className={style['section-content']}>
+                            <ul className={style['portfolio-list']}>
+                                {hotPortfolioList.map((item, index) => {
+                                    return <PortfolioListItem value={item} key={index}/>
+                                })}
                             </ul>
                         </div>
                     </section>

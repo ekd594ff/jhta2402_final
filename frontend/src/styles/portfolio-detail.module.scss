@@ -1,0 +1,11 @@
+@use 'variables';
+
+.portfolio-detail {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+
+  & > .container {
+    width: variables.$CONTAINER_WIDTH;
+  }
+}
