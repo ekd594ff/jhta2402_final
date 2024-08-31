@@ -10,7 +10,7 @@
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
-    padding: 0 8px;
+    padding: 0 16px;
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -43,6 +43,9 @@
         & > .solution-list {
           width: 100%;
           gap: 8px;
+        }
+        & > .company-list {
+          gap: 16px;
         }
       }
     }

@@ -1,5 +1,6 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.company.CompanyPortfolioDetailDto;
 import com.user.IntArea.dto.company.CompanyRequestDto;
 import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
@@ -29,6 +30,12 @@ public class CompanyController {
         companyService.create(companyRequestDto);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/info")
+    public CompanyPortfolioDetailDto getCompanyById() {
+
+        return companyService.getCompanyById();
     }
 
     @GetMapping("/admin/unapply")

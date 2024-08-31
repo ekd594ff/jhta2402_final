@@ -8,6 +8,7 @@ import Mypage from "./pages/login/Mypage.jsx";
 
 import PortfolioDetail from "./pages/portfolio/portfolioDetail.jsx";
 import CreateCompany from "./pages/company/create.jsx";
+import Registration from "./pages/portfolio/registration.jsx";
 
 function App() {
     return (
@@ -18,10 +19,9 @@ function App() {
                     <Route path="/signup" element={<Signup/>}/>
                     <Route path="/mypage" element={<Mypage/>}/>
                     <Route path="/login" element={<Login/>}/>
-
                     <Route path="/company/create" element={<CreateCompany/>}/>
-
                     <Route path="/admin/*" element={<Admin/>}/>
+                    <Route path="/portfolio/registration" element={<Registration/>}/>
                     <Route path="/portfolio/:id" element={<PortfolioDetail/>}/>
                 </Routes>
             </BrowserRouter>
