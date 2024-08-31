@@ -14,8 +14,8 @@ public class PortfolioInfoDto {
     private String title;
     private String description;
     private String companyName;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 //    private List<Solution> solution;
 //    private List<QuotationRequest> quotationRequests;
     private boolean isDeleted;
@@ -25,19 +25,19 @@ public class PortfolioInfoDto {
         this.title = portfolio.getTitle();
         this.description = portfolio.getDescription();
         this.companyName = portfolio.getCompany().getCompanyName();
-        this.createdDate = portfolio.getCreatedAt();
-        this.updatedDate = portfolio.getUpdatedAt();
+        this.createdAt = portfolio.getCreatedAt();
+        this.updatedAt = portfolio.getUpdatedAt();
         this.isDeleted = portfolio.isDeleted();
     }
 
     @Builder
-    public PortfolioInfoDto(UUID id, String title, String description, String companyName, LocalDateTime createdDate, LocalDateTime updatedDate, boolean isDeleted) {
+    public PortfolioInfoDto(UUID id, String title, String description, String companyName, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isDeleted) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.companyName = companyName;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.isDeleted = isDeleted;
     }
 }
