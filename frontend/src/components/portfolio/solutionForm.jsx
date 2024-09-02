@@ -1,10 +1,11 @@
+import React, { useState, useRef } from 'react';
 import Box from "@mui/material/Box";
 import {Button} from "@mui/material";
-import {useState} from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import style from "../../styles/_variables.scss";
 
 const ItemTypes = {
     SOLUTION: 'solution',
@@ -86,14 +87,26 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
         },
     });
 
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemTypes.SOLUTION,
+        item: { index },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+
+    drag(drop(ref));
+
     return (
-        <Box key={index}
-             sx={{
-                 padding: 2,
-                 border: '1px solid #ccc',
-                 borderRadius: '4px',
-                 marginBottom: 2,
-             }}
+        <Box
+            ref={ref}
+            key={index}
+            sx={{
+             padding: 2,
+             border: '1px solid #ccc',
+             borderRadius: '4px',
+             marginBottom: 2,
+            }}
         >
             <Stack
                 key={index}
@@ -140,11 +153,13 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
                         <option value="KRW">원 (KRW)</option>
                     </select>
                 </Stack>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleRemoveSolution(index)}
-                >삭제</Button>
+                <div className={style['deleteBtn']}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => handleRemoveSolution(index)}
+                    >삭제</Button>
+                </div>
+
             </Stack>
         </Box>
     );
