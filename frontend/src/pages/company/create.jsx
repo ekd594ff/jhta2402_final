@@ -98,117 +98,126 @@ function CreateCompany() {
         open({onComplete: handleComplete});
     };
 
-    return (
-        <>
-            <Header/>
-            <main className={style['main']}>
-                <div className={style['container']}>
-                    <h2 className={style['page-title']}>회사 등록</h2>
-                    <p className={style['page-subtitle']}>회사 등록 후, 승인을 받으면 포트폴리오를 작성할 수 있습니다.</p>
-                    <div className={style['input-div']}>
-                        <TextField className={style['text-field']}
-                                   value={companyInfo.companyName}
-                                   onChange={(e) => setCompanyInfo(
-                                       {...companyInfo, companyName: e.target.value})}
-                                   onKeyDown={(event) => {
-                                       if (event.key === 'Enter') {
+    return (<>
+        <Header/>
+        <main className={style['main']}>
+            <div className={style['container']}>
+                <h2 className={style['page-title']}>회사 등록</h2>
+                <p className={style['page-subtitle']}>회사 등록 후, 승인을 받으면 포트폴리오를 작성할 수 있습니다.</p>
+                <div className={style['input-div']}>
+                    <TextField className={style['text-field']}
+                               value={companyInfo.companyName}
+                               onChange={(e) => setCompanyInfo(
+                                   {...companyInfo, companyName: e.target.value})}
+                               onKeyDown={(event) => {
+                                   if (event.key === 'Enter') {
 
-                                           event.preventDefault();
+                                       event.preventDefault();
+                                   }
+                               }}
+                               type="text"
+                               name="companyName"
+                               placeholder=""
+                               variant="standard"
+                               label="회사 이름"
+                               required={true}
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
+                               }}/>
+                    <TextField className={style['text-field']}
+                               value={companyInfo.phone}
+                               onChange={(e) => setCompanyInfo(
+                                   {...companyInfo, phone: e.target.value})}
+                               type="text"
+                               name="phone"
+                               placeholder=""
+                               variant="standard"
+                               label="회사 전화번호"
+                               required={true}
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
+                               }}/>
+                </div>
+                <div className={style['input-div']}>
+                    <TextField className={style['text-field']}
+                               value={companyInfo.description}
+                               onChange={(e) => setCompanyInfo(
+                                   {...companyInfo, description: e.target.value})}
+                               type="text"
+                               multiline
+                               rows={5}
+                               name="description"
+                               placeholder=""
+                               variant="outlined"
+                               label="회사 설명"
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
+                               }}/>
+                </div>
+                <div className={style['input-div-address']}>
+                    <div className={style['address-div']}>
+                        <TextField
+                            className={style['text-field']}
+                            value={companyInfo.address}
+                            type="text"
+                            name="address"
+                            placeholder=""
+                            variant="standard"
+                            label="회사 주소"
+                            required={true}
+                            slotProps={{
+                                htmlInput: {readOnly: true},
+
+                                inputLabel: {
+                                    shrink: true,
+                                }
+                            }} />
+                        <div className={style['padding']}/>
+                        <TextField className={style['text-field-detail']}
+                                   value={detailAddress}
+                                   onChange={(e) => {
+                                       setDetailAddress(e.target.value);
+                                   }}
+                                   type="text"
+                                   name="detailAddress"
+                                   placeholder=""
+                                   variant="standard"
+                                   label="상세 주소"
+                                   required={true}
+                                   slotProps={{
+                                       inputLabel: {
+                                           shrink: true,
                                        }
-                                   }}
-                                   type="text"
-                                   name="companyName"
-                                   placeholder=""
-                                   variant="standard"
-                                   label="회사 이름"
-                                   InputLabelProps={{
-                                       shrink: true,
-                                   }}
-                                   required={true}/>
-                        <TextField className={style['text-field']}
-                                   value={companyInfo.phone}
-                                   onChange={(e) => setCompanyInfo(
-                                       {...companyInfo, phone: e.target.value})}
-                                   type="text"
-                                   name="phone"
-                                   placeholder=""
-                                   variant="standard"
-                                   label="회사 전화번호"
-                                   InputLabelProps={{
-                                       shrink: true,
-                                   }}
-                                   required={true}/>
-                    </div>
-                    <div className={style['input-div']}>
-                        <TextField className={style['text-field']}
-                                   value={companyInfo.description}
-                                   onChange={(e) => setCompanyInfo(
-                                       {...companyInfo, description: e.target.value})}
-                                   type="text"
-                                   multiline
-                                   rows={5}
-                                   name="description"
-                                   placeholder=""
-                                   variant="outlined"
-                                   label="회사 설명"
-                                   InputLabelProps={{
-                                       shrink: true,
                                    }}/>
                     </div>
-                    <div className={style['input-div-address']}>
-                        <div className={style['address-div']}>
-                            <TextField className={style['text-field']}
-                                       value={companyInfo.address}
-                                       type="text"
-                                       name="address"
-                                       placeholder=""
-                                       variant="standard"
-                                       label="회사 주소"
-                                       InputLabelProps={{
-                                           shrink: true,
-                                       }}
-                                       required={true}
-                                       inputProps={{readOnly: true}}
-                            />
-                            <div className={style['padding']}/>
-                            <TextField className={style['text-field-detail']}
-                                       value={detailAddress}
-                                       onChange={(e) => {
-                                           setDetailAddress(e.target.value);
-                                       }}
-                                       type="text"
-                                       name="detailAddress"
-                                       placeholder=""
-                                       variant="standard"
-                                       label="상세 주소"
-                                       InputLabelProps={{
-                                           shrink: true,
-                                       }}
-                                       required={true}/>
-                        </div>
-                        <Button className={style['sub-button']} variant="outlined"
-                                onClick={findAddress}>주소 찾기</Button>
-                    </div>
-                    <div className={style['image-div']}>
-                        <img src={image} className={style['image-blob']}/>
-                        <Button className={style['button']}
-                                variant="outlined" component="label">
-                            <input id="image" name="image" type="file" onChange={(e) => {
-                                setCompanyInfo({...companyInfo, image: e.target.files[0]});
-                                previewImage(e.target.files[0]);
-                            }}
-                                   hidden/>회사 이미지 등록
-                        </Button>
-                    </div>
-
-                    <div className={style['button-div']}>
-                        <Button variant="contained" color="success" onClick={createCompany}>회사 등록</Button>
-                    </div>
+                    <Button className={style['sub-button']} variant="outlined"
+                            onClick={findAddress}>주소 찾기</Button>
                 </div>
-            </main>
-            <Footer/>
-        </>
-    );
+                <div className={style['image-div']}>
+                    <img src={image} className={style['image-blob']}/>
+                    <Button className={style['button']}
+                            variant="outlined" component="label">
+                        <input id="image" name="image" type="file" onChange={(e) => {
+                            setCompanyInfo({...companyInfo, image: e.target.files[0]});
+                            previewImage(e.target.files[0]);
+                        }}
+                               hidden/>회사 이미지 등록
+                    </Button>
+                </div>
+
+                <div className={style['button-div']}>
+                    <Button variant="contained" color="success" onClick={createCompany}>회사 등록</Button>
+                </div>
+            </div>
+        </main>
+        <Footer/>
+    </>);
 }
 
 export default CreateCompany;
