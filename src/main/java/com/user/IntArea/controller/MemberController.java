@@ -103,11 +103,27 @@ public class MemberController {
     public ResponseEntity<?> getAdminRole() {
         return ResponseEntity.ok().build();
     }
-  
+
     @GetMapping("/admin/list")
     public ResponseEntity<Page<MemberResponseDto>> getMemberList(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<MemberResponseDto> memberResponseDtos = memberService.getMemberList(pageable);
-        return ResponseEntity.ok().body(memberResponseDtos);
+        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberList(pageable);
+        return ResponseEntity.ok().body(memberResponseDtoPage);
+    }
+
+    @GetMapping("/admin/list/search")
+    public ResponseEntity<Page<MemberResponseDto>> getSearchMember(@RequestParam int page, @RequestParam int size,
+                                                                   @RequestParam(defaultValue = "createdAt") String sort,
+                                                                   @RequestParam(defaultValue = "true") Boolean sortOrder,
+                                                                   @RequestParam(defaultValue = "") String filterColumn,
+                                                                   @RequestParam(defaultValue = "") String filterValue) {
+        Pageable pageable;
+        if (sortOrder) {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        }
+        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, filterColumn, filterValue);
+        return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 }

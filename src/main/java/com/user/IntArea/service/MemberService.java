@@ -71,8 +71,38 @@ public class MemberService {
     }
 
     public Page<MemberResponseDto> getMemberList(Pageable pageable) {
-        return memberRepository.findAll(pageable)
-                .map(MemberResponseDto::new);
+        return memberRepository.findAll(pageable).map(MemberResponseDto::new);
+    }
+
+    public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, String filterColumn, String filterValue) {
+        switch (filterColumn) {
+            case "email" -> {
+                return memberRepository.findAllByEmailContains(filterValue, pageable).map(MemberResponseDto::new);
+            }
+            case "role" -> {
+                return memberRepository.findAllByRoleContains(filterValue, pageable).map(MemberResponseDto::new);
+            }
+            case "username" -> {
+                return memberRepository.findAllByUsernameContains(filterValue, pageable).map(MemberResponseDto::new);
+            }
+            case "platform" -> {
+                return memberRepository.findAllByPlatformContains(filterValue, pageable).map(MemberResponseDto::new);
+            }
+            case "createdAt" -> {
+                return memberRepository.findAllByCreatedAtContains(filterValue, pageable).map(MemberResponseDto::new);
+            }
+            case "updatedAt" -> {
+                return memberRepository.findAllByUpdatedAtContains(filterValue, pageable).map(MemberResponseDto::new);
+            }
+            case "deleted" -> {
+                if (filterValue.equals("true")) {
+                    return memberRepository.findAllByDeletedIs(true, pageable).map(MemberResponseDto::new);
+                } else {
+                    return memberRepository.findAllByDeletedIs(false, pageable).map(MemberResponseDto::new);
+                }
+            }
+        }
+        throw new RuntimeException("filterColumn이 잘못됨");
     }
 
     public MemberResponseDto getMemberByEmail() {
