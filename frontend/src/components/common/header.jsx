@@ -20,6 +20,15 @@ function Header() {
         event.stopPropagation();
         setOpen(prev => !prev);
     }
+    const handleLogout = async () => {
+        try {
+            await axios.get('/api/member/logout'); // 로그아웃 API 호출
+            setIsLoggedIn(false); // 로그인 상태 업데이트
+            navigate("/"); // 인덱스 페이지로 리다이렉트
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
+    }
 
     useEffect(() => {
         axios.get(`/api/member/email`)
@@ -51,11 +60,8 @@ function Header() {
                             />
                             <div className={`${style['menu']} ${open ? style['open'] : ""}`}
                             >
-                                <MenuItem onClick={() => {
-                                }}>Profile</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                                <MenuItem onClick={() => {
-                                }}>Logout</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </div>
                         </>
                     ) : (
