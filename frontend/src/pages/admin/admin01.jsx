@@ -11,15 +11,15 @@ import ListItemText from '@mui/material/ListItemText';
 import {useEffect, useLayoutEffect, useState} from "react";
 import axios from "axios";
 import Paper from '@mui/material/Paper';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from "@mui/material";
-import Stack from "@mui/material/Stack";
-import {Pagination} from "swiper/modules";
+import {DataGrid} from "@mui/x-data-grid";
+import {TablePagination} from "@mui/material";
+
 
 function NestedList() {
     const [open, setOpen] = React.useState(true);
-    const navigate = useNavigate();
-    const handleClick = (location) => {
-        navigate(location);
+
+    const handleClick = () => {
+        setOpen(!open);
     };
 
     return (
@@ -33,35 +33,80 @@ function NestedList() {
                 </ListSubheader>
             }
         >
-            <ListItemButton onClick={() => handleClick("member")}>
-                Member
+            <ListItemButton>
+                <Link to={"member"}><ListItemText primary="Member"/></Link>
             </ListItemButton>
-            <ListItemButton onClick={() => handleClick("company")}>
-                Company
+            <ListItemButton>
+                <Link to={"company"}><ListItemText primary="Company"/></Link>
             </ListItemButton>
-            <ListItemButton onClick={() => handleClick("portfolio")}>
-                Portfolio
+            <ListItemButton>
+                <Link to={"portfolio"}><ListItemText primary="Portfolio"/></Link>
             </ListItemButton>
-            <ListItemButton onClick={() => handleClick("review")}>
-                Review
+            <ListItemButton>
+                <Link to={"review"}><ListItemText primary="Review"/></Link>
             </ListItemButton>
         </List>
     );
 }
+// const columns = [
+//     { field: 'id', headerName: 'ID'},
+//     { field: 'firstName', headerName: 'First name' },
+//     { field: 'lastName', headerName: 'Last name'},
+//     {
+//         field: 'age',
+//         headerName: 'Age',
+//         type: 'number',
+//         width: 90,
+//     },
+//     {
+//         field: 'fullName',
+//         headerName: 'Full name',
+//         description: 'This column has a value getter and is not sortable.',
+//         sortable: false,
+//         valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+//     },
+// ];
 
-function DataTable() {
+// const rows = [
+//     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+//     { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+//     { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+//     { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+//     { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+//     { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+//     { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+//     { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+//     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+// ];
+
+const paginationModel = { page: 0, pageSize: 5 };
+
+function DataTable01() {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalCount, setTotalCount] = useState(0);
     const path = useLocation()
     const pathname = path.pathname.split("/admin/")[1];
+    const [columns, setColumns] = useState([]);
+
     const fetchData = async (pathname,page, size) => {
         try {
             const response =
                 await axios.get(`/api/${pathname}/admin/list`, {
                     params: {page, size}
                 });
+
+            // 동적으로 컬럼 정의 생성
+            if (response.data.content.length > 0) {
+                const cols = Object.keys(response.data.content[0]).map(key => ({
+                    field: key,
+                    headerName: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자 대문자
+                    width: 200, // 기본 너비 설정
+                }));
+                setColumns(cols);
+            }
+
             setData(response.data.content); // 실제 데이터 구조에 맞게 수정
             setTotalCount(response.data.page.totalElements); // 전체 데이터 수
         } catch (error) {
@@ -75,53 +120,23 @@ function DataTable() {
         console.log("rowsPerPage=" + rowsPerPage);
         console.log(pathname);
         console.log(data);
-    }, [pathname,page, rowsPerPage]);
+    }, [pathname,page, rowsPerPage,totalCount]);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0); // 페이지를 0으로 리셋
-    };
 
     return (
-        <Paper>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {data.length ? Object.keys(data[0]).map((column) => (
-                                <TableCell key={column}>{column}</TableCell>
-                            )) : <></>}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data.map((item) => (
-                            <TableRow key={item.id}>
-                                {Object.keys(item).map((column, index) => (
-                                    <TableCell key={`${item.id}_${index}`}>{`${item[column]}`}</TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={totalCount}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+        <Paper sx={{ height: 400, width: '100%' }}>
+            <DataGrid
+                rows={data}
+                columns={columns}
+                checkboxSelection
+                filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
+                totalcount={totalCount}
             />
         </Paper>
     );
 }
 
-function Admin() {
+function Admin01() {
     const navigate = useNavigate();
     const [isLoading1, setIsLoading1] = useState(true);
     // const [isLoading2, setIsLoading2] = useState(true);
@@ -147,15 +162,15 @@ function Admin() {
             </aside>
             <div className={style['container']}>
                 <Routes>
-                    <Route path={"company"} element={<DataTable/>}/>
-                    <Route path={"portfolio"} element={<DataTable/>}/>
-                    <Route path={"review"} element={<DataTable/>} />
-                    <Route path={"member"} element={<DataTable/>}/>
-                    <Route path={"/"} element={<DataTable/>}/>
+                    <Route path={"company"} element={<DataTable01/>}/>
+                    <Route path={"portfolio"} element={<DataTable01/>}/>
+                    <Route path={"review"} element={<DataTable01/>} />
+                    <Route path={"member"} element={<DataTable01/>}/>
+                    <Route path={"/"} element={<DataTable01/>}/>
                 </Routes>
             </div>
         </main>
     </>
 }
 
-export default Admin;
+export default Admin01;
