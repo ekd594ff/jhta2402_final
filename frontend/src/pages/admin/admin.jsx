@@ -56,7 +56,7 @@ function NestedList() {
                 <ListItemText primary="Member"/>
             </ListItemButton>
             <ListItemButton>
-                <Link to={"/login"}><ListItemText primary="Company"/></Link>
+                <Link to={"/frontend/src/assets/login"}><ListItemText primary="Company"/></Link>
             </ListItemButton>
             <ListItemButton>
                 <ListItemText primary="Portfolio"/>
