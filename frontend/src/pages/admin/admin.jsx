@@ -1,4 +1,4 @@
-import {Link, Route, Routes, useNavigate} from "react-router-dom";
+import {Link, Route, Routes, useLocation, useNavigate} from "react-router-dom";
 
 import AdminIndex from "./pages/index.jsx";
 
@@ -8,36 +8,10 @@ import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-// import PropTypes from 'prop-types';
-// import {alpha} from '@mui/material/styles';
-// import Box from '@mui/material/Box';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TablePagination from '@mui/material/TablePagination';
-// import TableRow from '@mui/material/TableRow';
-// import TableSortLabel from '@mui/material/TableSortLabel';
-// import Toolbar from '@mui/material/Toolbar';
-// import Typography from '@mui/material/Typography';
-// import Paper from '@mui/material/Paper';
-// import Checkbox from '@mui/material/Checkbox';
-// import IconButton from '@mui/material/IconButton';
-// import Tooltip from '@mui/material/Tooltip';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Switch from '@mui/material/Switch';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import FilterListIcon from '@mui/icons-material/FilterList';
-// import {visuallyHidden} from '@mui/utils';
 import {useEffect, useLayoutEffect, useState} from "react";
 import axios from "axios";
-// import * as React from 'react';
-import {DataGrid} from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow} from "@mui/material";
-import {number} from "prop-types";
-
 
 function NestedList() {
     const [open, setOpen] = React.useState(true);
@@ -89,13 +63,13 @@ function DataTable() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalCount, setTotalCount] = useState(0);
-
-    // API에서 데이터 가져오기
-    const fetchData = async (page, rowsPerPage) => {
+    const path = useLocation()
+    const pathname = path.pathname.split("/admin/")[1];
+    const fetchData = async (pathname,page, size) => {
         try {
             const response =
-                await axios.get(`/api/member/admin/list?page=${page}&size=${rowsPerPage}`, {
-                    params: {page, rowsPerPage}
+                await axios.get(`/api/${pathname}/admin/list`, {
+                    params: {page, size}
                 });
             setData(response.data.content); // 실제 데이터 구조에 맞게 수정
             setTotalCount(response.data.page.totalElements); // 전체 데이터 수
@@ -105,10 +79,11 @@ function DataTable() {
     };
 
     useEffect(() => {
-        fetchData(page, rowsPerPage); // 페이지는 0부터 시작하므로 +1
+        fetchData(pathname,page, rowsPerPage); // 페이지는 0부터 시작하므로 +1
         console.log("page=" + page);
         console.log("rowsPerPage=" + rowsPerPage);
-    }, [page, rowsPerPage]);
+        console.log(pathname);
+    }, [pathname,page, rowsPerPage]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -116,7 +91,6 @@ function DataTable() {
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
-
         setPage(0); // 페이지를 0으로 리셋
     };
 
@@ -183,7 +157,7 @@ function Admin() {
                 <Routes>
                     <Route path={"company"} element={<DataTable/>}/>
                     <Route path={"portfolio"} element={<DataTable/>}/>
-                    <Route path={"review"} element={<DataTable/>}/>
+                    <Route path={"review"} element={<DataTable/>} />
                     <Route path={"member"} element={<DataTable/>}/>
                     <Route path={"/"} element={<DataTable/>}/>
                 </Routes>
