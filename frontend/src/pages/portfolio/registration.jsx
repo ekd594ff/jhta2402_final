@@ -18,6 +18,8 @@ import Box from "@mui/material/Box";
 import ImageUpload from '../../components/portfolio/imageUpload.jsx'
 import SolutionForm from "../../components/portfolio/solutionForm.jsx";
 
+import style from "../../styles/portfolio-registration.module.scss";
+
 function Registration() {
 
     const navigate = useNavigate();
@@ -64,7 +66,7 @@ function Registration() {
 
     return (
         <div >
-            <Box sx={{padding: 4}}>
+            <Box className={style["btn1"]} sx={{padding: 4}}>
 
                 <Box sx={{ padding: 2, textAlign: 'center' }}>
                     <h1>새 포트폴리오 등록</h1>
@@ -101,7 +103,7 @@ function Registration() {
                 </Box>
 
                 <Box sx={{padding: 1, display: 'flex', flexDirection: 'column', gap: 2}}>
-                    <label><h3>회사정보</h3></label>
+                    <label><h3>업체정보</h3></label>
                     <Box sx={{padding: 1, display: 'flex', flexDirection: 'column', gap: 1}}>
                         <Stack direction="row" spacing={1}>
                             <label htmlFor="">업체명</label>
@@ -119,8 +121,8 @@ function Registration() {
                     </Box>
                 </Box>
 
-                <Box sx={{padding: 1, display: 'flex', flexDirection: 'row', gap: 2}}>
-                    <Button variant="contained" onClick={submitPortfolio}>등록</Button>
+                <Box className={style["btn2"]} sx={{padding: 1, display: 'flex', flexDirection: 'row', gap: 2}}>
+                    <Button className={style["register-btn"]} variant="contained" onClick={submitPortfolio}>등록</Button>
                     <Button variant="outlined" color="secondary" onClick={() => {/*save form*/}}>임시저장</Button>
                     <Button variant="outlined" color="success" href="#text-buttons" onClick={() => {/*previewPortfolio*/}}>포트폴리오
                         미리보기</Button>
