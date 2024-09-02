@@ -116,6 +116,7 @@ function DataTable() {
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
+
         setPage(0); // 페이지를 0으로 리셋
     };
 
