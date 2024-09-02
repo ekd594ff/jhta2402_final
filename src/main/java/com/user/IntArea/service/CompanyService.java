@@ -2,6 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
+import com.user.IntArea.dto.company.CompanyPortfolioDetailDto;
 import com.user.IntArea.dto.company.CompanyRequestDto;
 import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,6 +36,14 @@ public class CompanyService {
     private final MemberRepository memberRepository;
     private final ImageRepository imageRepository;
     private final ImageUtil imageUtil;
+
+    private Company getCompanyOfMember() {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(""));
+        Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException(""));
+        return company;
+    }
 
     @Transactional
     public void create(CompanyRequestDto companyRequestDto) {
@@ -53,6 +63,20 @@ public class CompanyService {
 
             imageRepository.save(imageDto.toImage());
         }
+    }
+
+    public CompanyPortfolioDetailDto getCompanyById() {
+
+        Company company = getCompanyOfMember();
+
+        Optional<Image> image = imageRepository.findByRefId(company.getId());
+
+        String url = null;
+        if (image.isPresent()) {
+            url = image.get().getUrl();
+        }
+
+        return new CompanyPortfolioDetailDto(company, url);
     }
 
     public Page<UnAppliedCompanyDto> getUnApply(Pageable pageable) {
@@ -81,7 +105,7 @@ public class CompanyService {
     }
 
     // 회사 전체 리스트 출력
-    public List<CompanyResponseDto> getAllCompanies (CompanyRequestDto companyRequestDto) {
+    public List<CompanyResponseDto> getAllCompanies(CompanyRequestDto companyRequestDto) {
         List<Company> companies = companyRepository.findAll();
 
         return companies.stream()
