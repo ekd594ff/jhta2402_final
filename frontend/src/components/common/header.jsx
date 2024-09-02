@@ -38,7 +38,7 @@ function Header() {
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    <img src="/logo.svg"/>
+                    <img src="/logo.svg" alt="home"/>
                 </Link>
                 <div className={style["buttons"]}>
                     {isLoading ? <></> : isLoggedIn ? (

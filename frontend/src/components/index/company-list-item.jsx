@@ -4,6 +4,9 @@ function CompanyListItem(props) {
     const {value} = props;
     return <li className={style['company-list-item']}>
         <div className={style['rank']}>{value}</div>
+        <div className={style['info']}>
+            <span className={style['name']}>{`업체명_${value}`}</span>
+        </div>
         <img alt={'company'} src={`https://picsum.photos/seed/${Date.now() + value}/1200/800`}/>
     </li>;
 }
