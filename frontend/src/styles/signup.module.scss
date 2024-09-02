@@ -26,11 +26,9 @@
       width: 100%;
       max-width: variables.$LOGIN_FORM_WIDTH;
 
-      & > .submit-btn {
-        background-color: transparent;
-        box-sizing: border-box;
-        border: 0.5px solid variables.$COLOR_PRIMARY;
+      & > .register-btn {
         color: variables.$COLOR_PRIMARY;
+        border-color: variables.$COLOR_PRIMARY;
       }
     }
   }

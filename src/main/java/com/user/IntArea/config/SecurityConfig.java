@@ -4,6 +4,7 @@ import com.user.IntArea.common.jwt.JwtSecurityConfig;
 import com.user.IntArea.common.jwt.TokenProvider;
 import com.user.IntArea.common.jwt.error.JwtAccessDeniedHandler;
 import com.user.IntArea.common.jwt.error.JwtAuthenticationEntryPoint;
+import com.user.IntArea.common.oauth.CustomOAuth2FailureHandler;
 import com.user.IntArea.common.oauth.CustomOAuth2SuccessHandler;
 import com.user.IntArea.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -136,7 +138,8 @@ public class SecurityConfig {
                                 .baseUri("/api/login/oauth2/code/*"))
                         .userInfoEndpoint(userinfo -> userinfo
                                 .userService(customOAuth2UserService))
-                        .successHandler(customOAuth2SuccessHandler))
+                        .successHandler(customOAuth2SuccessHandler)
+                        .failureHandler(customOAuth2FailureHandler))
 
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(jwtAccessDeniedHandler)

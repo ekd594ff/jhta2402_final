@@ -1,6 +1,7 @@
 package com.user.IntArea.common.exception;
 
 import com.user.IntArea.common.exception.custom.LoginInfoNotFoundException;
+import com.user.IntArea.common.exception.custom.OAuth2UserAlreadyException;
 import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +45,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LoginInfoNotFoundException.class)
     protected ResponseEntity<MemberResponseDto> handleDuplicateKeyException(LoginInfoNotFoundException e) {
         return ResponseEntity.ok().body(e.getMemberResponseDto());
+    }
+
+    // OAuth2 로그인 시, 해당 이메일로 가입된 멤버가 다른 플랫폼일 때
+    @ExceptionHandler(OAuth2UserAlreadyException.class)
+    protected ResponseEntity<?> handleDuplicateKeyException(OAuth2UserAlreadyException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 }

@@ -19,7 +19,12 @@ function Signup() {
         password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
         email: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
     });
-    const [validation, setValidation] = useState({email: false, password: false, passwordConfirm: false, username: false});
+    const [validation, setValidation] = useState({
+        email: false,
+        password: false,
+        passwordConfirm: false,
+        username: false
+    });
 
     const checkUsernameDebounce = debounce((username) => {
         axios.post('/api/duplication/username', {
@@ -47,9 +52,9 @@ function Signup() {
 
     const submit = (event) => {
         event.preventDefault();
-        for(const key in validation) {
+        for (const key in validation) {
             const item = validation[key];
-            if(!item) {
+            if (!item) {
                 window.alert("입력한 정보가 올바르지 않습니다. 다시 확인해주세요");
                 return;
             }
@@ -88,7 +93,7 @@ function Signup() {
                 </Link>
                 <form onKeyDown={(event) => {
                     const key = event.key;
-                    if(key === 'Enter') {
+                    if (key === 'Enter') {
                         submit(event);
                     }
                 }}>
@@ -189,7 +194,7 @@ function Signup() {
                                        shrink: true,
                                    }
                                }}/>
-                    <Button disableRipple variant="contained" className={style['submit-btn']} size="large" onClick={submit}>
+                    <Button variant="outlined" className={style['register-btn']} size="large" onClick={submit}>
                         회원가입
                     </Button>
                 </form>

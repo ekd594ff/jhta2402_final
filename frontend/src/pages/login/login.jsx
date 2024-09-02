@@ -1,10 +1,12 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import {useNavigate, Link} from "react-router-dom";
+import {useNavigate, Link, useSearchParams} from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 import style from "../../styles/login.module.scss";
+import {Alert, Icon, Snackbar} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 function Login() {
 
@@ -22,6 +24,23 @@ function Login() {
             })
             .catch(err => alert(err.response ? err.response.data.message : "로그인 실패"));
     }
+
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        message: "",
+    });
+
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const errorMessage = searchParams.get("error");
+
+        if (errorMessage !== null) {
+            setSnackbarState({
+                message: `${errorMessage}로 가입한 계정입니다. 다른 방법으로 로그인해주세요.`,
+                open: true});
+        }
+    }, []);
 
     const naverLogin = () => {
         window.location.href = "http://localhost:8080/oauth2/authorization/naver";
@@ -78,23 +97,50 @@ function Login() {
                         <Button variant="contained" className={style['login-btn']} size="large" onClick={submit}>
                             로그인
                         </Button>
-                        <div className={style['others']}>
-                            <Link to="/signup">회원가입</Link>
-                        </div>
+                        <Button variant="outlined" className={style['register-btn']} size="large" onClick={submit}>
+                            회원가입
+                        </Button>
                     </div>
-                    <div>
-                        <Button variant="outlined" onClick={naverLogin}>
-                            네이버 로그인
-                        </Button>
-                        <Button variant="outlined" onClick={googleLogin}>
-                            구글 로그인
-                        </Button>
-                        <Button variant="outlined" onClick={kakaoLogin}>
-                            카카오 로그인
-                        </Button>
+                    <div className={style['div-social']}>
+                        <div className={style["separator"]}>간편 로그인</div>
+                        <div className={style["btn-group-social"]}>
+                            <IconButton className={style["login-icon-button"]} aria-label="small"
+                                        onClick={naverLogin} size="small" children={
+                                <Icon className={style["icon-circle"]}>
+                                    <img src="/icon/naver-circle.svg" alt="naver-logo"/>
+                                </Icon>}
+                            />
+                            <IconButton className={style["login-icon-button"]} aria-label="small"
+                                        onClick={kakaoLogin} size="small" children={
+                                <Icon className={style["icon-circle"]}>
+                                    <img src="/icon/kakao-circle.svg" alt="kakao-logo"/>
+                                </Icon>}
+                            />
+                            <IconButton className={style["login-icon-button"]} aria-label="small"
+                                        onClick={googleLogin} size="small" children={
+                                <Icon className={style["icon-circle"]}>
+                                    <img src="/icon/google-circle.svg" alt="google-logo"/>
+                                </Icon>}
+                            />
+                        </div>
                     </div>
                 </form>
             </div>
+
+            <Snackbar
+                anchorOrigin={{vertical: "top", horizontal: "center"}}
+                open={snackbarState.open}
+                onClose={() => setSnackbarState({...snackbarState, open: false})}
+                message={snackbarState.message}>
+                <Alert
+                    onClose={() => setSnackbarState({...snackbarState, open: false})}
+                    severity="error"
+                    variant="outlined"
+                    sx={{width: '100%'}}
+                >
+                    {snackbarState.message}
+                </Alert>
+            </Snackbar>
         </main>
     </>;
 }
