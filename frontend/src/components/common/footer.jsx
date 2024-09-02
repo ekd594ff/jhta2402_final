@@ -7,7 +7,7 @@ function Footer() {
             <div className={style['logo']}>
                 <img src="/logo_footer.svg" alt="logo"/>
             </div>
-            <div className={style['team']}>{makers.map(item => <span>{item}</span>)}</div>
+            <div className={style['team']}>{makers.map(item => <span key={item}>{item}</span>)}</div>
             <div className={style['github']}>
                 <img src="/icon/github.svg" alt="github"/>
                 <a href="https://github.com/ekd594ff/jhta2402_final" target="_blank">Github Repository</a>
