@@ -4,9 +4,14 @@ import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
-import style from "../../styles/portfolio-detail.module.scss";
 import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
+import style from "../../styles/portfolio-detail.module.scss";
+import {Backdrop} from "@mui/material";
+import List from "@mui/material/List";
+import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
+import Divider from '@mui/material/Divider';
 
+const solutionAJAXPromise = (portfolioId) => axios.get(`/api/solution/portfolio/${portfolioId}`);
 
 function PortfolioDetail() {
 
@@ -14,7 +19,9 @@ function PortfolioDetail() {
     const navigate = useNavigate();
 
     const [selectedPortfolioImg, setSelectedPortfolioImg] = useState("");
-    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [solutionList, setSolutionList] = useState([]);
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: "",
@@ -39,7 +46,7 @@ function PortfolioDetail() {
     const size = 3;
 
     useEffect(() => {
-        axios.get(`/api/portfolio/${id}`)
+        const portFolioAJAXPromise = axios.get(`/api/portfolio/${id}`)
             .then((res) => {
                 console.log("\n\n--------------------portfolio--------------------\n", res.data);
                 setPortfolioInfo({
@@ -50,6 +57,12 @@ function PortfolioDetail() {
             .catch(() => {
                 alert("유효하지 않은 페이지입니다.");
                 navigate(-1);
+            });
+
+        Promise.all([portFolioAJAXPromise, solutionAJAXPromise(id)])
+            .then(([portfolioResult, solutionResult]) => {
+                const {data} = solutionResult;
+                setSolutionList(data);
             });
     }, []);
 
@@ -67,6 +80,20 @@ function PortfolioDetail() {
             }).catch((err) => console.log(err));
     }, [reviewInfo.page]);
 
+    useEffect(() => {
+        if (portfolioImgList.length) {
+            setSelectedPortfolioImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`);
+        }
+    }, [portfolioImgList]);
+
+    useEffect(() => {
+        if (modalOpen) {
+            document.body.classList.add("modal");
+        } else {
+            document.body.classList.remove("modal");
+        }
+    }, [modalOpen]);
+
     return (
         <>
             <Header/>
@@ -76,25 +103,67 @@ function PortfolioDetail() {
                         <div className={style['left']}>
                             <div className={style['selected-img']}>
                                 <div className={style['selected-img-wrapper']}>
-                                    <img alt="selected-img" src={`https://picsum.photos/seed/picsum/1200/800`}/>
-                                </div>
-                            </div>
-                            <div className={style['img-list']}>
-                                <ul className={style['list']}>
                                     {
-                                        portfolioImgList.map((item, index) => <PortfolioImgListItem key={index}
-                                                                                                    value={item}/>)
+                                        selectedPortfolioImg ?
+                                            <img alt="selected-img"
+                                                 src={selectedPortfolioImg} onClick={() => {
+                                                setModalOpen(prev => !prev);
+                                            }}/> :
+                                            <></>
                                     }
-                                </ul>
+                                </div>
                             </div>
                         </div>
                         <div className={style['right']}>
-
+                            <div className={style['info']}>
+                                <div>
+                                    <span className={style['company-name']}>{`업체명_${portfolioInfo.companyName}`}</span>
+                                </div>
+                                <div>
+                                    <span className={style['title']}>{`포트폴리오제목_${portfolioInfo.title}`}</span>
+                                </div>
+                                <div>
+                                    <span
+                                        className={style['description']}>{`포트폴리오 상세_${portfolioInfo.description}`}</span>
+                                </div>
+                            </div>
+                            <div className={style['solution-list-title']}>인테리어 솔루션</div>
+                            <List className={style['portfolio-solution-list']}>
+                                {solutionList.map((item, index) => {
+                                    const render = [(
+                                        <PortfolioSolutionListItem key={`${item.id}_${index}`} value={item}/>)];
+                                    if (index !== solutionList.length - 1) {
+                                        render.push(<Divider variant="middle" key={`${item.id}_${index}_${index}`}/>);
+                                    }
+                                    return render;
+                                })}
+                            </List>
+                        </div>
+                    </div>
+                    <div className={style['middle']}>
+                        <div className={style['img-list']}>
+                            <ul className={style['list']}>
+                                {
+                                    portfolioImgList.map((item, index) => <PortfolioImgListItem key={index}
+                                                                                                setter={setSelectedPortfolioImg}
+                                                                                                value={item}/>)
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>
             </main>
             <Footer/>
+            <Backdrop
+                className={style['modal']}
+                open={modalOpen}
+                onClick={() => {
+                    setModalOpen(false);
+                }}
+            >
+                <img alt="selected-img"
+                     src={selectedPortfolioImg}/>
+            </Backdrop>
         </>
     );
 }
