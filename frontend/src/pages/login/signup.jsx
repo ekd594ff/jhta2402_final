@@ -45,7 +45,8 @@ function Signup() {
             })
     }, 150);
 
-    const submit = () => {
+    const submit = (event) => {
+        event.preventDefault();
         for(const key in validation) {
             const item = validation[key];
             if(!item) {
@@ -82,7 +83,15 @@ function Signup() {
     return <>
         <main className={style['signup']}>
             <div className={style['container']}>
-                <form>
+                <Link to="/">
+                    <img className={style['logo']} alt="logo" src="/logo.svg"/>
+                </Link>
+                <form onKeyDown={(event) => {
+                    const key = event.key;
+                    if(key === 'Enter') {
+                        submit(event);
+                    }
+                }}>
                     <TextField value={signUp.email} onChange={(e) => {
                         const value = e.target.value;
                         setSignUp({...signUp, email: value});
@@ -106,8 +115,10 @@ function Signup() {
                                variant="standard"
                                label="이메일"
                                helperText={signUpMsg.email}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={signUp.username}
                                onChange={(e) => {
@@ -133,8 +144,10 @@ function Signup() {
                                variant="standard"
                                label="닉네임"
                                helperText={signUpMsg.username}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={signUp.password}
                                onChange={(e) => {
@@ -159,8 +172,10 @@ function Signup() {
                                placeholder="영문 숫자조합 8자리 이상"
                                variant="standard"
                                helperText={signUpMsg.password}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}
                                type="password"
@@ -169,8 +184,10 @@ function Signup() {
                                placeholder="비밀번호 확인"
                                variant="standard"
                                helperText={signUpMsg.passwordConfirm}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <Button disableRipple variant="contained" className={style['submit-btn']} size="large" onClick={submit}>
                         회원가입
@@ -178,7 +195,7 @@ function Signup() {
                 </form>
             </div>
         </main>
-    </>
+    </>;
 }
 
 export default Signup;

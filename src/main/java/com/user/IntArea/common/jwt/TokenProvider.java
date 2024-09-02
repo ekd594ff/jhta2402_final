@@ -1,8 +1,7 @@
 package com.user.IntArea.common.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +10,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class TokenProvider implements InitializingBean {
     private final String secret;
     private final long tokenValidityInSeconds;
     private final long tokenValidityInMilliseconds;
-    private Key key;
+    private SecretKey secretKey;
     private final String domain;
 
     public TokenProvider(
@@ -42,11 +42,10 @@ public class TokenProvider implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS512.key().build().getAlgorithm());
     }
 
-    public ResponseCookie createAccessToken(Authentication authentication) {
+    public ResponseCookie getAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -55,10 +54,10 @@ public class TokenProvider implements InitializingBean {
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
         String jwt = Jwts.builder()
-                .setSubject(authentication.getName())
+                .subject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
+                .signWith(secretKey)
+                .expiration(validity)
                 .compact();
 
         return ResponseCookie.from("accessToken")
@@ -80,10 +79,10 @@ public class TokenProvider implements InitializingBean {
                 .build();
     }
 
-    public Map<String,ResponseCookie> getLogoutToken() {
-        Map<String,ResponseCookie> resultMap = new HashMap<>();
+    public Map<String, ResponseCookie> getLogoutToken() {
+        Map<String, ResponseCookie> resultMap = new HashMap<>();
 
-        ResponseCookie accsessTokenCookie = ResponseCookie.from("accessToken")
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken")
                 .value("")
                 .domain(domain)
                 .path("/")
@@ -94,13 +93,13 @@ public class TokenProvider implements InitializingBean {
 
         ResponseCookie loginCookie =
                 ResponseCookie.from("login")
-                .value(UUID.randomUUID().toString())
-                .domain(domain)
-                .path("/")
-                .maxAge(0)
-                .build();
+                        .value(UUID.randomUUID().toString())
+                        .domain(domain)
+                        .path("/")
+                        .maxAge(0)
+                        .build();
 
-        resultMap.put("accessToken", accsessTokenCookie);
+        resultMap.put("accessToken", accessTokenCookie);
         resultMap.put("login", loginCookie);
 
         return resultMap;
@@ -109,11 +108,11 @@ public class TokenProvider implements InitializingBean {
 
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
+                .parser()
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
 
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
@@ -127,7 +126,7 @@ public class TokenProvider implements InitializingBean {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -139,5 +138,25 @@ public class TokenProvider implements InitializingBean {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+
+    public Cookie getAccessServletCookie(Authentication authentication) {
+
+        return toServletCookie(getAccessToken(authentication));
+    }
+
+    public Cookie getLoginServletCookie() {
+
+        return toServletCookie(getLoginToken());
+    }
+
+    private Cookie toServletCookie(ResponseCookie responseCookie) {
+
+        Cookie cookie = new Cookie(responseCookie.getName(), responseCookie.getValue());
+        cookie.setMaxAge((int) responseCookie.getMaxAge().getSeconds());
+        cookie.setPath("/");
+        cookie.setHttpOnly(responseCookie.isHttpOnly());
+        cookie.setSecure(responseCookie.isSecure());
+        return cookie;
     }
 }

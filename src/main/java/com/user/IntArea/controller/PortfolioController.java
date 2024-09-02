@@ -29,7 +29,7 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoDtos(pageable);
     }
 
-    @GetMapping("/list-in-company/{id}")
+    @GetMapping("/list/company/{id}")
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
@@ -60,7 +60,7 @@ public class PortfolioController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/company/list-in-company")
+    @GetMapping("/company/list/company")
     public Page<PortfolioInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getCompanyPortfolioInfoDtosByCompanyManager(pageable);
@@ -94,7 +94,7 @@ public class PortfolioController {
         return portfolioService.getAllPortfolioInfoDtosByAdmin(pageable);
     }
 
-    @GetMapping("/admin/list-in-company/{id}")
+    @GetMapping("/admin/list/company/{id}")
     public Page<PortfolioInfoDto> getAllPortfolioInfoDtosOfCompanyByAdmin(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getAllPortfolioInfoDtosOfCompanyByAdmin(companyId, pageable);

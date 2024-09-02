@@ -17,12 +17,11 @@ public class SecurityUtil {
     public static Optional<MemberDto> getCurrentMember() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
             log.debug("Security Context에 인증 정보가 없습니다.");
             return Optional.empty();
         }
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String role = String.valueOf(userDetails.getAuthorities().stream().findFirst()
                 .orElseThrow(() -> new UsernameNotFoundException("로그인 정보가 없습니다. 다시 시도해주세요.")));
 
