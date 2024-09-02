@@ -115,8 +115,10 @@ function Signup() {
                                variant="standard"
                                label="이메일"
                                helperText={signUpMsg.email}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={signUp.username}
                                onChange={(e) => {
@@ -142,8 +144,10 @@ function Signup() {
                                variant="standard"
                                label="닉네임"
                                helperText={signUpMsg.username}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={signUp.password}
                                onChange={(e) => {
@@ -168,8 +172,10 @@ function Signup() {
                                placeholder="영문 숫자조합 8자리 이상"
                                variant="standard"
                                helperText={signUpMsg.password}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}
                                type="password"
@@ -178,8 +184,10 @@ function Signup() {
                                placeholder="비밀번호 확인"
                                variant="standard"
                                helperText={signUpMsg.passwordConfirm}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <Button disableRipple variant="contained" className={style['submit-btn']} size="large" onClick={submit}>
                         회원가입
@@ -187,7 +195,7 @@ function Signup() {
                 </form>
             </div>
         </main>
-    </>
+    </>;
 }
 
 export default Signup;

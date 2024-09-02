@@ -43,7 +43,7 @@ public class MemberController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        ResponseCookie accessToken = tokenProvider.createAccessToken(authentication);
+        ResponseCookie accessToken = tokenProvider.getAccessToken(authentication);
         ResponseCookie loginToken = tokenProvider.getLoginToken();
 
         return ResponseEntity.ok()

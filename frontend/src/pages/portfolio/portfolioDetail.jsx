@@ -3,12 +3,18 @@ import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
-import style from "../../styles/index.module.scss";
+
+import style from "../../styles/portfolio-detail.module.scss";
+import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
+
 
 function PortfolioDetail() {
 
     const {id} = useParams();
     const navigate = useNavigate();
+
+    const [selectedPortfolioImg, setSelectedPortfolioImg] = useState("");
+    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: "",
@@ -64,7 +70,40 @@ function PortfolioDetail() {
     return (
         <>
             <Header/>
-            <main key={portfolioInfo.portfolioId} className={style['index']}>
+            <main className={style['portfolio-detail']}>
+                <div className={style['container']}>
+                    <div className={style['top']}>
+                        <div className={style['left']}>
+                            <div className={style['selected-img']}>
+                                <div className={style['selected-img-wrapper']}>
+                                    <img alt="selected-img" src={`https://picsum.photos/seed/picsum/1200/800`}/>
+                                </div>
+                            </div>
+                            <div className={style['img-list']}>
+                                <ul className={style['list']}>
+                                    {
+                                        portfolioImgList.map((item, index) => <PortfolioImgListItem key={index}
+                                                                                                    value={item}/>)
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div className={style['right']}>
+
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <Footer/>
+        </>
+    );
+}
+
+export default PortfolioDetail;
+
+/*
+
+<main key={portfolioInfo.portfolioId} className={style['index']}>
                 <div>
                     {portfolioInfo.portfolioId}
                     <br/>
@@ -115,9 +154,6 @@ function PortfolioDetail() {
 
                 </div>
             </main>
-            <Footer/>
-        </>
-    );
-}
 
-export default PortfolioDetail;
+
+* */
