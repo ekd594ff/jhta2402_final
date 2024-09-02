@@ -42,8 +42,10 @@ function Login() {
                         label="이메일"
                         variant="standard"
                         value={login.email}
-                        InputLabelProps={{
-                            shrink: true,
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            }
                         }}
                     />
                     <TextField
@@ -54,8 +56,10 @@ function Login() {
                         variant="standard"
                         type="password"
                         value={login.password}
-                        InputLabelProps={{
-                            shrink: true,
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            }
                         }}
                     />
                     <div className={style['btn-group']}>
@@ -69,7 +73,7 @@ function Login() {
                 </form>
             </div>
         </main>
-    </>
+    </>;
 }
 
 export default Login;
