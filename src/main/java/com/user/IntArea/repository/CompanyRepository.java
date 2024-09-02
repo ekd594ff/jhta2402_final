@@ -14,4 +14,6 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
     Page<Company> getCompanyByIsApplied(Boolean isApplied, Pageable pageable);
 
     Optional<Company> getCompanyByMember(Member member);
+
+    Page<Company> findAll(Pageable pageable);
 }

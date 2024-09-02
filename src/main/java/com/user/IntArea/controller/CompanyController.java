@@ -58,9 +58,16 @@ public class CompanyController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies (@RequestBody CompanyRequestDto companyRequestDto) {
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies(@RequestBody CompanyRequestDto companyRequestDto) {
         List<CompanyResponseDto> companies = companyService.getAllCompanies(companyRequestDto);
 
         return ResponseEntity.ok(companies);
+    }
+
+    @GetMapping("/admin/list")
+    public ResponseEntity<Page<CompanyResponseDto>> getAllCompany(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<CompanyResponseDto> companyResponseDtoPage = companyService.getAllCompany(pageable);
+        return ResponseEntity.ok().body(companyResponseDtoPage);
     }
 }

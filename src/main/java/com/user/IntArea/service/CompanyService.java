@@ -123,4 +123,8 @@ public class CompanyService {
                 company.getIsApplied(),
                 company.getCreatedAt());
     }
+
+    public Page<CompanyResponseDto> getAllCompany(Pageable pageable) {
+        return companyRepository.findAll(pageable).map(this::converToDto);
+    }
 }
