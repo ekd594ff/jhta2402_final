@@ -43,15 +43,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     @Query("SELECT p from Portfolio p left join Company c on p.company.id = c.id where c.id = :companyId and p.id = :id and p.isDeleted = false and 1=1") // (Todo) p.isActivated = true
     Portfolio findByIdByCompanyManager(UUID id, UUID companyId);
 
-//    @Query("SELECT new com.user.IntArea.dto.portfolio.PortfolioSearchDto(p.title, c.companyName, p.description, i.url) " +
-//            "FROM Portfolio p " +
-//            "INNER JOIN p.company c ON p.company.id = c.id " +
-//            "LEFT JOIN Image i ON i.refId = p.id " +
-//            "WHERE p.isDeleted = false " +
-//            "AND (p.title LIKE %:searchWord% OR p.description LIKE %:searchWord% OR c.companyName LIKE %:searchWord%) " +
-//            "GROUP BY p.id")
-//    Page<PortfolioSearchDto> searchPortfolios(@Param("searchWord") String searchWord, Pageable pageable);
-
     @Query(value = "SELECT p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url) " +
             "FROM Portfolio p " +
             "INNER JOIN Company c ON c.id = p.companyId " +
@@ -64,19 +55,5 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             nativeQuery = true
     )
     Page<Object[]> searchPortfolios(String searchWord, Pageable pageable);
-
-
-
-
-//            "SELECT new com.user.IntArea.dto.portfolio.PortfolioSearchDto(p.title, c.companyName, p.description, i.url) " +
-//            "FROM Portfolio p " +
-//            "JOIN p.company c " +
-//            "LEFT JOIN Image i ON p.id = i.refId " +
-//            "WHERE p.isDeleted = false " +
-//            "AND (p.title LIKE %:searchWord% " +
-//            "OR p.description LIKE %:searchWord% " +
-//            "OR c.companyName LIKE %:searchWord%) " +
-//            "GROUP BY p.id, c.companyName, i.url"
-
 
 }
