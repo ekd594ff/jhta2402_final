@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import style from "../../styles/_variables.scss";
+// import style from "../../styles/_variables.scss";
 
 const ItemTypes = {
     SOLUTION: 'solution',

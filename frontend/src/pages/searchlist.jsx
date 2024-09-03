@@ -51,33 +51,29 @@ function SearchList() {
         <div>
             <Header />
             <Typography variant="h6" style={{ marginTop: '80px' }}>검색 결과</Typography>
-            <List>
+            <Grid container spacing={2}>
                 {results.length > 0 ? (
                     results.map((item, index) => (
-                        <ListItem key={index} divider>
-                            <ListItemText
-                                primary={item.title}
-                                secondary={
-                                    <>
-                                        <span style={{ color: 'black' }}>{item.description}</span>
-                                        <br />
-                                        <span style={{ color: 'gray' }}>{item.companyName}</span>
-                                    </>
-                                }
-                            />
-                            <Grid container spacing={1}>
-                                {item.imageUrls && item.imageUrls.map((url, imgIndex) => (
-                                    <Grid item key={imgIndex} style={{ marginLeft: '8px' }}>
-                                        <img src={`https://picsum.photos/seed/${imgIndex}/600/400`} alt={`image-${imgIndex}`} style={{ width: '100px', height: 'auto', borderRadius: '4px' }} />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </ListItem>
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Card>
+                                <CardMedia
+                                    component="img"
+                                    height="140"
+                                    image={item.imageUrls[0] || '/placeholder-image-url.jpg'} // 기본 이미지 추가
+                                    alt={item.title}
+                                />
+                                <CardContent>
+                                    <Typography variant="h6" component="div">{item.title}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{item.description}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{item.companyName}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     ))
                 ) : (
                     <Typography>No results found</Typography>
                 )}
-            </List>
+            </Grid>
             {hasMore && (
                 <Button variant="contained" color="primary" onClick={loadMoreResults} disabled={loading}>
                     {loading ? 'Loading...' : '더보기'}
