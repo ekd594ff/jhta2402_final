@@ -1,8 +1,7 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
-import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
-import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
+import com.user.IntArea.dto.portfolio.*;
+import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,6 +39,13 @@ public class PortfolioController {
     public Page<PortfolioInfoDto> searchOpenPortfolioInfoDtos(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
+    }
+
+    // (일반 권한) 검색된 포트폴리오 반환 엔드포인트
+    @GetMapping("/search/detailed")
+    public Page<PortfolioSearchDto> searchPortfolios(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return portfolioService.getPortfolios(searchWord, pageable);
     }
 
     @GetMapping("/{id}")
@@ -121,5 +128,4 @@ public class PortfolioController {
     public void hardDeletePortfolioInfoDtoByAdmin(@PathVariable(name = "id") UUID portfolioId) {
         portfolioService.deletePortfolioByAdmin(portfolioId);
     }
-
 }

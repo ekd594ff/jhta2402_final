@@ -2,17 +2,16 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
-import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
-import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
-import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
-import com.user.IntArea.entity.Company;
-import com.user.IntArea.entity.Member;
-import com.user.IntArea.entity.Portfolio;
+import com.user.IntArea.dto.portfolio.*;
+import com.user.IntArea.entity.*;
 import com.user.IntArea.repository.CompanyRepository;
+import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import com.user.IntArea.repository.PortfolioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +21,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PortfolioService {
 
+
     private final PortfolioRepository portfolioRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
-    
+    private final ImageRepository imageRepository;
+
     // 포트폴리오에 접근하는 멤버가 그 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
     private void isCompanyManager(Portfolio portfolio) {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
@@ -63,6 +64,12 @@ public class PortfolioService {
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(UUID companyId, Pageable pageable) {
         Page<Portfolio> portfolios = portfolioRepository.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
         return portfolios.map(PortfolioInfoDto::new);
+    }
+
+    // (일반 권한) 검색된 포트폴리오 검색 메서드
+    public Page<PortfolioSearchDto> getPortfolios(String searchWord, Pageable pageable) {
+        return portfolioRepository.searchPortfolios(searchWord, pageable)
+                .map(result ->  new PortfolioSearchDto((String) result[0], (String) result[1], (String) result[2], (String[]) result[3]));
     }
 
     // (일반 권한) 특정한 하나의 포트폴리오 InfoDto 불러오기
@@ -198,6 +205,15 @@ public class PortfolioService {
 //        portfolio.setActivated(!isActivated);
         portfolioRepository.save(portfolio);
     }
+
+//    public Page<PortfolioSearchDto> searchPortfolios(String searchWord, Pageable pageable) {
+//
+//        Page<PortfolioSearchDto> portfolioSearchDtos = portfolioRepository.searchPortfolios(searchWord, pageable);
+//
+//
+//        return portfolioRepository.searchPortfolios(searchWord, pageable);
+//    }
+
 
 
 }

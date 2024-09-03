@@ -9,6 +9,7 @@ import Mypage from "./pages/login/Mypage.jsx";
 import PortfolioDetail from "./pages/portfolio/portfolioDetail.jsx";
 import CreateCompany from "./pages/company/create.jsx";
 import Registration from "./pages/portfolio/registration.jsx";
+import SearchList from "./pages/searchlist.jsx";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/admin/*" element={<Admin/>}/>
                     <Route path="/portfolio/registration" element={<Registration/>}/>
                     <Route path="/portfolio/:id" element={<PortfolioDetail/>}/>
+                    <Route path="/search/detailed" element={<SearchList/>}/>
                 </Routes>
             </BrowserRouter>
         </div>

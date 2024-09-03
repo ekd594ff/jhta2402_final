@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {Link, useNavigate} from "react-router-dom";
 import Menu from '@mui/material/Menu';
@@ -15,10 +15,26 @@ function Header() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [username, setUsername] = React.useState("");
     const [open, setOpen] = React.useState(false);
+    const [searchTerm, setSearchTerm] = React.useState("");
 
     const handleClickAvatar = (event) => {
         event.stopPropagation();
         setOpen(prev => !prev);
+    }
+    const handleLogout = async () => {
+        try {
+            await axios.get('/api/member/logout'); // 로그아웃 API 호출
+            setIsLoggedIn(false); // 로그인 상태 업데이트
+            navigate("/"); // 인덱스 페이지로 리다이렉트
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
+    }
+
+    const handleSearch = () => {
+        if (searchTerm) {
+            navigate(`/search/detailed?query=${searchTerm}`);
+        }
     }
 
     useEffect(() => {
@@ -38,8 +54,19 @@ function Header() {
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    <img src="/logo.svg" alt="home"/>
+                    <img src="/logo.svg"/>
                 </Link>
+                {/* 검색 기능 추가 */}
+                <div className={style["search"]}>
+                    <TextField
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="검색어 입력"
+                        variant="outlined"
+                        size="small"
+                    />
+                    <Button onClick={handleSearch} variant="contained">검색</Button>
+                </div>
                 <div className={style["buttons"]}>
                     {isLoading ? <></> : isLoggedIn ? (
                         <>
@@ -51,11 +78,8 @@ function Header() {
                             />
                             <div className={`${style['menu']} ${open ? style['open'] : ""}`}
                             >
-                                <MenuItem onClick={() => {
-                                }}>Profile</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                                <MenuItem onClick={() => {
-                                }}>Logout</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </div>
                         </>
                     ) : (
