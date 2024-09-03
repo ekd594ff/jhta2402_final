@@ -45,7 +45,7 @@ const ImageUpload = () => {
             <Box sx={{ padding: 2, textAlign: 'left' }}>
                 <Stack spacing={2}>
                     <label>
-                        이미지 업로드(다수 등록 가능, 최대 {MAX_IMAGES}개)
+                        이미지 업로드(한 번에 다수 등록 가능, 최대 {MAX_IMAGES}개)
                         <input
                             type="file"
                             id="formFileMultiple"
@@ -53,9 +53,7 @@ const ImageUpload = () => {
                             onChange={handleOtherImagesChange}
                             disabled={otherImages.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
                         />
-                        <p>
-                            <h7>{`현재 등록된 이미지: ${otherImages.length}/${MAX_IMAGES}`}</h7>
-                        </p>
+                        <h6>{`현재 등록된 이미지: ${otherImages.length}/${MAX_IMAGES}`}</h6>
                     </label>
                 </Stack>
             </Box>
