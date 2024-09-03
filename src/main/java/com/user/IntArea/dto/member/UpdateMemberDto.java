@@ -11,4 +11,7 @@ public class UpdateMemberDto {
     private String password;
     @Pattern(regexp = "^[가-힣A-Za-z0-9]{2,16}$", message = "이름을 입력해주세요")
     private String username;
+
+    public void setProfileImageUrl(String url) {
+    }
 }

@@ -1,8 +1,12 @@
 package com.user.IntArea.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.member.UpdateMemberDto;
+import com.user.IntArea.dto.member.UpdateProfileDto;
 import com.user.IntArea.service.MemberService;
 import com.user.IntArea.common.jwt.TokenProvider;
 import jakarta.validation.Valid;
@@ -20,8 +24,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -85,6 +91,13 @@ public class MemberController {
     public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberDto updateMemberDto) {
         log.info("memberResponseDTO={}", updateMemberDto);
         memberService.update(updateMemberDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<?> updateProfile(@Valid UpdateProfileDto updateProfileDto) {
+        log.info("Updating profile for member: {}", updateProfileDto.getUsername());
+        memberService.updateProfile(updateProfileDto);
         return ResponseEntity.ok().build();
     }
 

@@ -1,5 +1,6 @@
 package com.user.IntArea.entity;
 
+import com.user.IntArea.dto.solution.SolutionDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -49,5 +50,15 @@ public class Solution {
         this.description = description;
         this.portfolio = portfolio;
         this.price = price;
+    }
+
+    public SolutionDto toSolutionDto() {
+        return SolutionDto.builder()
+                .id(this.id)
+                .title(this.title)
+                .description(this.description)
+                .price(this.price)
+                .createdAt(this.createdAt)
+                .build();
     }
 }
