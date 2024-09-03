@@ -7,8 +7,8 @@ import Admin from "./pages/admin/admin.jsx";
 import Mypage from "./pages/login/Mypage.jsx";
 
 import PortfolioDetail from "./pages/portfolio/portfolioDetail.jsx";
-import CreateCompany from "./pages/company/create.jsx";
 import Registration from "./pages/portfolio/registration.jsx";
+import CreateEditCompany from "./pages/company/createEdit.jsx";
 import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
 
@@ -21,7 +21,8 @@ function App() {
                     <Route path="/signup" element={<Signup/>}/>
                     <Route path="/mypage" element={<Mypage/>}/>
                     <Route path="/login" element={<Login/>}/>
-                    <Route path="/company/create" element={<CreateCompany/>}/>
+                    <Route path="/company/create" element={<CreateEditCompany/>}/>
+                    <Route path="/company/edit" element={<CreateEditCompany/>}/>
                     <Route path="/admin/*" element={<Admin/>}/>
                     <Route path="/portfolio/registration" element={<Registration/>}/>
                     <Route path="/portfolio/:id" element={<PortfolioDetail/>}/>

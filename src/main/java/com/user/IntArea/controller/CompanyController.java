@@ -32,6 +32,14 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/edit")
+    public ResponseEntity<?> update(CompanyRequestDto companyRequestDto) {
+
+        companyService.update(companyRequestDto);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/info")
     public CompanyPortfolioDetailDto getCompanyById() {
 
@@ -58,7 +66,7 @@ public class CompanyController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies (@RequestBody CompanyRequestDto companyRequestDto) {
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies(@RequestBody CompanyRequestDto companyRequestDto) {
         List<CompanyResponseDto> companies = companyService.getAllCompanies(companyRequestDto);
 
         return ResponseEntity.ok(companies);

@@ -70,7 +70,7 @@ public class SecurityConfig {
         String[] solutionApi = {};
 
         // SELLER 권한이 필요한 api
-        String[] sellerApi = {};
+        String[] sellerApi = {"/api/*/seller/**"};
 
         // ADMIN 권한이 필요한 api
         String[] adminApi = {"/api/*/admin/**"};

@@ -5,7 +5,6 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-// import style from "../../styles/_variables.scss";
 
 const ItemTypes = {
     SOLUTION: 'solution',
@@ -114,7 +113,7 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
                 spacing={2}
                 sx={{ marginTop: 2, alignItems: 'left' }}
             >
-                <Typography variant="h7">{`${index + 1}번째 솔루션`}</Typography>
+                <Typography variant="h6">{`${index + 1}번째 솔루션`}</Typography>
                 <input
                     type="text"
                     name="title"
@@ -153,7 +152,7 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
                         <option value="KRW">원 (KRW)</option>
                     </select>
                 </Stack>
-                <div className={style['deleteBtn']}>
+                <div>
                     <Button
                         variant="outlined"
                         onClick={() => handleRemoveSolution(index)}

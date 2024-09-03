@@ -1,5 +1,9 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
+import com.user.IntArea.dto.portfolio.PortfolioDraftDto;
+import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
+import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
 import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.service.PortfolioService;
@@ -53,6 +57,11 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoById(portfolioId);
     }
 
+    @GetMapping("/list/random")
+    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(@RequestParam int count) {
+        return portfolioService.getRandomPortfolioInfoDtos(count);
+    }
+
     // seller
 
     @PostMapping
@@ -82,6 +91,12 @@ public class PortfolioController {
     public void activatePortfolioInfoDtoByCompany(@RequestParam UUID portfolioId, @RequestParam Boolean activated) {
         portfolioService.activatePortfolio(portfolioId, activated);
     }
+
+    /*@PostMapping("/draft") // 초안 임시저장 기능(서비스 매서드 미구현)
+    public ResponseEntity<?> saveDraftPortfolio(@RequestBody PortfolioDraftDto portfolioDraftDto) {
+        //portfolioService.saveDraft(portfolioDraftDto);
+        return ResponseEntity.ok().build();
+    }*/
 
     // admin
 
