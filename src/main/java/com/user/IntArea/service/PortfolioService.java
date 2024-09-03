@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +82,13 @@ public class PortfolioService {
         } catch(Exception e) {
             throw new NoSuchElementException("");
         }
+    }
+
+    // (일반 권한) 특정한 갯수만큼 램덤한 포트폴리오 InfoDto 불러오기
+    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(int count) {
+        List<Portfolio> portfolios = portfolioRepository.getRandomPortfolioInfoDtos(count);
+        List<PortfolioInfoDto> portfolioInfoDtos = portfolios.stream().map(PortfolioInfoDto::new).collect(Collectors.toList());
+        return portfolioInfoDtos;
     }
 
     // seller 권한
@@ -198,6 +206,5 @@ public class PortfolioService {
 //        portfolio.setActivated(!isActivated);
         portfolioRepository.save(portfolio);
     }
-
 
 }
