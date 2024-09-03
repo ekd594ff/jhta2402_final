@@ -1,12 +1,15 @@
 package com.user.IntArea.repository;
 
+import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Portfolio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
@@ -37,4 +40,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
 
     @Query("SELECT p from Portfolio p left join Company c on p.company.id = c.id where c.id = :companyId and p.id = :id and p.isDeleted = false and 1=1") // (Todo) p.isActivated = true
     Portfolio findByIdByCompanyManager(UUID id, UUID companyId);
+
+    @Query(value = "SELECT * FROM portfolio ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
+    List<Portfolio> getRandomPortfolioInfoDtos(@Param("count") int count);
 }

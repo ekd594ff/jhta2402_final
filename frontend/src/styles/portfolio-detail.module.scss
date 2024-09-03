@@ -12,7 +12,7 @@
     box-sizing: border-box;
 
     & > .top {
-      height: calc(variables.$CONTAINER_WIDTH / 2);
+      height: calc(#{variables.$CONTAINER_WIDTH} / 2);
       display: flex;
 
       & > .left {
