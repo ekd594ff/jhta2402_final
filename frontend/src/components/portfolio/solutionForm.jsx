@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef} from 'react';
 import Box from "@mui/material/Box";
 import {Button} from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import style from "../../styles/_variables.scss";
+import {DndProvider, useDrag, useDrop} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
+//import style from "../../styles/_variables.scss";
 
 const ItemTypes = {
     SOLUTION: 'solution',
@@ -13,10 +13,10 @@ const ItemTypes = {
 
 const SolutionForm = () => {
 
-    const [solutions, setSolutions ] = useState([]);
+    const [solutions, setSolutions] = useState([]);
 
     const addSolution = () => {
-        setSolutions([...solutions, { title: '', description: '', price: '' }]);
+        setSolutions([...solutions, {title: '', description: '', price: ''}]);
     };
 
     const moveSolution = (dragIndex, hoverIndex) => {
@@ -45,7 +45,7 @@ const SolutionForm = () => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <Box sx={{ padding: 1, textAlign: 'left' }}>
+            <Box sx={{padding: 1, textAlign: 'left'}}>
                 <Button id="addSolution" onClick={addSolution}>+솔루션 추가</Button>
                 <div>
                     {solutions.map((solution, index) => (
@@ -65,11 +65,18 @@ const SolutionForm = () => {
     );
 }
 
-const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleCurrencyChange, handleRemoveSolution}) => {
+const SolutionItem = ({
+                          solution,
+                          index,
+                          moveSolution,
+                          handleInputChange,
+                          handleCurrencyChange,
+                          handleRemoveSolution
+                      }) => {
 
     const ref = React.useRef(null);
 
-    const [ , drop] = useDrop({
+    const [, drop] = useDrop({
         accept: ItemTypes.SOLUTION,
         hover(item) {
             if (!ref.current) {
@@ -87,9 +94,9 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
         },
     });
 
-    const [{ isDragging }, drag] = useDrag({
+    const [{isDragging}, drag] = useDrag({
         type: ItemTypes.SOLUTION,
-        item: { index },
+        item: {index},
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -102,17 +109,17 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
             ref={ref}
             key={index}
             sx={{
-             padding: 2,
-             border: '1px solid #ccc',
-             borderRadius: '4px',
-             marginBottom: 2,
+                padding: 2,
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                marginBottom: 2,
             }}
         >
             <Stack
                 key={index}
                 direction="column"
                 spacing={2}
-                sx={{ marginTop: 2, alignItems: 'left' }}
+                sx={{marginTop: 2, alignItems: 'left'}}
             >
                 <Typography variant="h7">{`${index + 1}번째 솔루션`}</Typography>
                 <input
@@ -121,14 +128,14 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
                     placeholder="title"
                     value={solution.title}
                     onChange={(event) => handleInputChange(index, event)}
-                    style={{ width: '100%', height:'30px', padding: '0px' }}
+                    style={{width: '100%', height: '30px', padding: '0px'}}
                 ></input>
                 <textarea
                     name="description"
                     placeholder="description"
                     value={solution.description}
                     onChange={(event) => handleInputChange(index, event)}
-                    style={{ width: '100%', height:'100px', padding: '0px' }}
+                    style={{width: '100%', height: '100px', padding: '0px'}}
                 ></textarea>
                 <Stack direction="row" spacing={1}>
                     <input
@@ -137,7 +144,13 @@ const SolutionItem = ({solution, index, moveSolution, handleInputChange, handleC
                         placeholder="price"
                         value={solution.price}
                         onChange={(event) => handleInputChange(index, event)}
-                        style={{ width: '80%', height: '30px', padding: '0px', border: '1px solid #ccc', borderRadius: '4px' }}
+                        style={{
+                            width: '80%',
+                            height: '30px',
+                            padding: '0px',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px'
+                        }}
                     />
                     <select
                         value={solution.currency}

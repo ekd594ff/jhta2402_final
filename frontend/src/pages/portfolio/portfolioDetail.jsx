@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
+
 
 import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
 import style from "../../styles/portfolio-detail.module.scss";
@@ -10,18 +11,18 @@ import {Backdrop} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import Divider from '@mui/material/Divider';
+import Button from "@mui/material/Button";
 
 const solutionAJAXPromise = (portfolioId) => axios.get(`/api/solution/portfolio/${portfolioId}`);
 
 function PortfolioDetail() {
-
     const {id} = useParams();
     const navigate = useNavigate();
 
-    const [selectedPortfolioImg, setSelectedPortfolioImg] = useState("");
-    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     const [modalOpen, setModalOpen] = useState(false);
     const [solutionList, setSolutionList] = useState([]);
+    const [modalImg, setModalImg] = useState("");
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: "",
@@ -82,7 +83,7 @@ function PortfolioDetail() {
 
     useEffect(() => {
         if (portfolioImgList.length) {
-            setSelectedPortfolioImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`);
+            setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`);
         }
     }, [portfolioImgList]);
 
@@ -94,6 +95,16 @@ function PortfolioDetail() {
         }
     }, [modalOpen]);
 
+    const handleScroll = (event) => {
+        const container = event.target;
+        const scrollAmount = event.deltaY;
+        container.scrollTo({
+            top: 0,
+            left: container.scrollLeft + scrollAmount,
+            behavior: 'smooth'
+        });
+    };
+
     return (
         <>
             <Header/>
@@ -104,10 +115,11 @@ function PortfolioDetail() {
                             <div className={style['selected-img']}>
                                 <div className={style['selected-img-wrapper']}>
                                     {
-                                        selectedPortfolioImg ?
+                                        portfolioImgList[0] ?
                                             <img alt="selected-img"
-                                                 src={selectedPortfolioImg} onClick={() => {
+                                                 src={modalImg} onClick={() => {
                                                 setModalOpen(prev => !prev);
+                                                setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`)
                                             }}/> :
                                             <></>
                                     }
@@ -138,18 +150,10 @@ function PortfolioDetail() {
                                     return render;
                                 })}
                             </List>
+                            <Button className={style['solution-list-submit']} size="large" disableRipple>신청하기</Button>
                         </div>
                     </div>
                     <div className={style['middle']}>
-                        <div className={style['img-list']}>
-                            <ul className={style['list']}>
-                                {
-                                    portfolioImgList.map((item, index) => <PortfolioImgListItem key={index}
-                                                                                                setter={setSelectedPortfolioImg}
-                                                                                                value={item}/>)
-                                }
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </main>
@@ -161,14 +165,16 @@ function PortfolioDetail() {
                     setModalOpen(false);
                 }}
             >
-                <img alt="selected-img"
-                     src={selectedPortfolioImg}/>
+                <img alt="modal image"
+                     src={modalImg}/>
             </Backdrop>
         </>
-    );
+    )
+        ;
 }
 
 export default PortfolioDetail;
+
 
 /*
 

@@ -1,51 +1,51 @@
-@use "variables";
-
-h1 {
-  color: variables.$COLOR_PRIMARY;
-}
-
-h3 {
-  color: variables.$COLOR_PRIMARY;
-}
-
-label > h3 {
-  color: variables.$COLOR_PRIMARY;
-}
-
-.btn-primary {
-  color: variables.$COLOR_PRIMARY;
-  background-color: variables.$COLOR_PRIMARY;
-}
-
-.delete-btn {
-  color: variables.$COLOR_PRIMARY;
-  background-color: white;
-  //font-weight: bold;
-}
-
-.deleteBtn {
-  color: variables.$COLOR_PRIMARY !important;
-  background-color: white;
-}
-
-.customButton {
-  color: variables.$COLOR_PRIMARY !important;
-  border-color: variables.$COLOR_PRIMARY !important;
-
-  &:hover {
-    background-color: rgba(250, 77, 86, 0.08) !important;
-    border-color: variables.$COLOR_PRIMARY !important;
-  }
-}
-
-
-div {
-  & > .btn1 {
-    & > .btn2 {
-      & > .register-btn {
-        background-color: variables.$COLOR_PRIMARY;
-        color: white;
-      }
-    }
-  }
-}
+//@use "variables";
+//
+//h1 {
+//  color: variables.$COLOR_PRIMARY;
+//}
+//
+//h3 {
+//  color: variables.$COLOR_PRIMARY;
+//}
+//
+//label > h3 {
+//  color: variables.$COLOR_PRIMARY;
+//}
+//
+//.btn-primary {
+//  color: variables.$COLOR_PRIMARY;
+//  background-color: variables.$COLOR_PRIMARY;
+//}
+//
+//.delete-btn {
+//  color: variables.$COLOR_PRIMARY;
+//  background-color: white;
+//  //font-weight: bold;
+//}
+//
+//.deleteBtn {
+//  color: variables.$COLOR_PRIMARY !important;
+//  background-color: white;
+//}
+//
+//.customButton {
+//  color: variables.$COLOR_PRIMARY !important;
+//  border-color: variables.$COLOR_PRIMARY !important;
+//
+//  &:hover {
+//    background-color: rgba(250, 77, 86, 0.08) !important;
+//    border-color: variables.$COLOR_PRIMARY !important;
+//  }
+//}
+//
+//
+//div {
+//  & > .btn1 {
+//    & > .btn2 {
+//      & > .register-btn {
+//        background-color: variables.$COLOR_PRIMARY;
+//        color: white;
+//      }
+//    }
+//  }
+//}

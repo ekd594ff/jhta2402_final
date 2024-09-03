@@ -24,9 +24,20 @@
     width: variables.$CONTAINER_WIDTH;
     padding: 32px 16px 64px 16px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+
+    .middle {
+      width: 100%;
+      overflow: hidden;
+
+      & .swiper {
+        background-color: lightgray;
+      }
+    }
 
     & > .top {
-      height: calc(variables.$CONTAINER_WIDTH / 2);
       display: flex;
 
       & > .left {
@@ -64,7 +75,13 @@
         padding-left: 20px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 16px;
+
+        & > .solution-list-submit {
+          background-color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+          color: #fff;
+        }
 
         & > .solution-list-title {
           font-weight: bold;
@@ -77,8 +94,7 @@
           display: flex;
           flex-direction: column;
           gap: 16px;
-          padding: 16px 8px;
-          height: calc(variables.$PORTFOLIO_SOLUTION_LIST_ITEM_HEIGHT * 3 + 32px);
+          height: calc(#{variables.$PORTFOLIO_SOLUTION_LIST_ITEM_HEIGHT} * 3 + 32px);
           overflow-x: hidden;
           overflow-y: scroll;
 
@@ -92,6 +108,7 @@
         }
 
         & > .info {
+          flex-grow: 1;
           display: flex;
           flex-direction: column;
           gap: 8px;
@@ -116,34 +133,10 @@
             font-size: 20px;
             width: 100%;
             display: block;
-            height: 120px;
           }
-        }
-      }
-    }
-
-    & > .middle {
-      & > .img-list {
-        overflow: scroll;
-        overflow-x: hidden;
-
-        &::-webkit-scrollbar {
-          width: 5px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background-color: #989898;
-        }
-
-        & > .list {
-          flex-direction: column;
-          display: flex;
-          gap: 5px;
-          box-sizing: border-box;
-          margin: 0;
-          list-style: none;
         }
       }
     }
   }
 }
+
