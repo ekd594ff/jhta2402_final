@@ -37,7 +37,10 @@ VALUES ('c0bbf8bb-a6f2-4445-aaa3-2892e551ff4c', 'admin', 'admin@example.com',
        ('e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', 'seller3', 'seller3@example.com',
         '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
        ('35e54eec-1eae-46b8-aacc-b005be7c56f3', 'seller4', 'seller4@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW());
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
+       ('d4dfb2e2-0e66-41df-bf32-0509ff4089f4', 'typhoon0678', 'typhoon0678@gmail.com',
+        '$2a$10$mqdWk3omxb5qF.C//c2MouPLJQYPmNtf5iFM/E.YGzLtrX7VP.R.e', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW());
+
 
 
 INSERT INTO COMPANY (ID, MEMBERID, COMPANYNAME, DESCRIPTION, PHONE, ADDRESS, ISAPPLIED, ISDELETED, CREATEDAT, UPDATEDAT)

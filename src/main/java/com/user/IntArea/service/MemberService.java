@@ -2,11 +2,15 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.exception.custom.LoginInfoNotFoundException;
 import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
+import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
+import com.user.IntArea.dto.member.*;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.*;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
+import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +20,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,6 +32,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageUtil imageUtil;
+    private final ImageRepository imageRepository;
 
     public void signup(MemberRequestDto memberRequestDto) {
 
@@ -86,4 +94,39 @@ public class MemberService {
         return new MemberResponseDto(member);
     }
 
+    @Transactional
+    public void updateProfile(UpdateProfileDto updateProfileDto) {
+        String email = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("로그인 되지 않았습니다.")).getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("updateProfile error"));
+
+        // 사용자 이름 및 비밀번호 업데이트
+        member.setUsername(updateProfileDto.getUsername());
+        member.setPassword(updateProfileDto.getPassword());
+
+        // 프로필 이미지가 있는 경우 업로드
+        if (updateProfileDto.getFile() != null && !updateProfileDto.getFile().isEmpty()) {
+            Optional<ImageDto> imageDtoOptional = uploadProfileImage(updateProfileDto.getFile());
+            imageDtoOptional.ifPresent(imageDto -> {
+                imageRepository.save(imageDto.toImage());
+            });
+        }
+    }
+
+    @Transactional
+    public Optional<ImageDto> uploadProfileImage(MultipartFile file) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("현재 로그인한 사용자가 없습니다."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
+
+        Optional<ImageDto> imageDtoOptional = imageUtil.uploadS3(file, member.getId(), 0);
+
+        imageDtoOptional.ifPresent(imageDto -> {
+            imageRepository.save(imageDto.toImage());
+        });
+        return imageDtoOptional;
+    }
 }

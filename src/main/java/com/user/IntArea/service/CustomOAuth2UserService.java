@@ -1,5 +1,6 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.common.exception.custom.OAuth2UserAlreadyException;
 import com.user.IntArea.common.oauth.CustomOAuth2User;
 import com.user.IntArea.common.oauth.dto.*;
 import com.user.IntArea.entity.Member;
@@ -54,9 +55,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
         } else {
 
-            // 변경사항만 업데이트
             member = optionalMember.get();
 
+            if (!member.getPlatform().equals(oAuth2Response.getPlatform())) {
+
+                // 플랫폼이 같지 않은 경우 -> 중복 회원가입을 막기 위해 throw Exception
+                throw new OAuth2UserAlreadyException(member.getPlatform().getPlatform());
+            }
+
+            // 변경사항만 업데이트
             member.setUsername(oAuth2Response.getName());
             member.setPlatform(oAuth2Response.getPlatform());
             memberRepository.save(member);
