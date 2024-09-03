@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -105,25 +106,35 @@ public class MemberController {
     }
 
     @GetMapping("/admin/list")
-    public ResponseEntity<Page<MemberResponseDto>> getMemberList(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<Page<MemberResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberList(pageable);
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 
-    @GetMapping("/admin/list/search")
-    public ResponseEntity<Page<MemberResponseDto>> getSearchMember(@RequestParam int page, @RequestParam int size,
-                                                                   @RequestParam(defaultValue = "createdAt") String sort,
-                                                                   @RequestParam(defaultValue = "true") Boolean sortOrder,
-                                                                   @RequestParam(defaultValue = "") String filterColumn,
-                                                                   @RequestParam(defaultValue = "") String filterValue) {
+    @GetMapping("/admin/list/filter/contains")
+    public ResponseEntity<Page<MemberResponseDto>> getSearchMember(@RequestParam int page, @RequestParam(name = "pageSize") int size,
+                                                                   @RequestParam(defaultValue = "createdAt",required = false) String sortField,
+                                                                   @RequestParam(defaultValue = "desc",required = false) String sort,
+                                                                   @RequestParam(required = false) String filterColumn,
+                                                                   @RequestParam(required = false) String filterValue) {
+        log.info("sortField={}",sortField);
+        log.info("sort={}",sort);
+        log.info("filterColumn={}",filterColumn);
+        System.out.println(filterColumn);
+        log.info("filterValue={}",filterValue);
+        System.out.println(filterValue);
+
+        Optional<String> filterColumnOptional = Optional.ofNullable(filterColumn);
+        Optional<String> filterValueOptional = Optional.ofNullable(filterValue);
+
         Pageable pageable;
-        if (sortOrder) {
-            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        if (sort.equals("desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
         } else {
-            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+            pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, filterColumn, filterValue);
+        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, filterColumnOptional, filterValueOptional);
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -74,33 +75,37 @@ public class MemberService {
         return memberRepository.findAll(pageable).map(MemberResponseDto::new);
     }
 
-    public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, String filterColumn, String filterValue) {
-        switch (filterColumn) {
-            case "email" -> {
-                return memberRepository.findAllByEmailContains(filterValue, pageable).map(MemberResponseDto::new);
-            }
-            case "role" -> {
-                return memberRepository.findAllByRoleContains(filterValue, pageable).map(MemberResponseDto::new);
-            }
-            case "username" -> {
-                return memberRepository.findAllByUsernameContains(filterValue, pageable).map(MemberResponseDto::new);
-            }
-            case "platform" -> {
-                return memberRepository.findAllByPlatformContains(filterValue, pageable).map(MemberResponseDto::new);
-            }
-            case "createdAt" -> {
-                return memberRepository.findAllByCreatedAtContains(filterValue, pageable).map(MemberResponseDto::new);
-            }
-            case "updatedAt" -> {
-                return memberRepository.findAllByUpdatedAtContains(filterValue, pageable).map(MemberResponseDto::new);
-            }
-            case "deleted" -> {
-                if (filterValue.equals("true")) {
-                    return memberRepository.findAllByDeletedIs(true, pageable).map(MemberResponseDto::new);
-                } else {
-                    return memberRepository.findAllByDeletedIs(false, pageable).map(MemberResponseDto::new);
+    public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "email" -> {
+                    return memberRepository.findAllByEmailContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "role" -> {
+                    return memberRepository.findAllByRole(Role.valueOf(filterValue.get()), pageable).map(MemberResponseDto::new);
+                }
+                case "username" -> {
+                    return memberRepository.findAllByUsernameContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "platform" -> {
+                    return memberRepository.findAllByPlatform(Platform.valueOf(filterValue.get()), pageable).map(MemberResponseDto::new);
+                }
+                case "createdAt" -> {
+                    return memberRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return memberRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "deleted" -> {
+                    if (filterValue.get().equals("true")) {
+                        return memberRepository.findAllByIsDeletedIs(true, pageable).map(MemberResponseDto::new);
+                    } else {
+                        return memberRepository.findAllByIsDeletedIs(false, pageable).map(MemberResponseDto::new);
+                    }
                 }
             }
+        } else {
+            return memberRepository.findAll(pageable).map(MemberResponseDto::new);
         }
         throw new RuntimeException("filterColumn이 잘못됨");
     }
