@@ -7,6 +7,7 @@ import style from "../../styles/company-create.module.scss";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {useDaumPostcodePopup} from "react-daum-postcode";
+import {checkLogin, checkRoleTest, checkSeller} from "../../utils/loginUtil.jsx";
 
 function CreateEditCompany() {
 
@@ -24,21 +25,25 @@ function CreateEditCompany() {
         imageUrl: "",
     });
 
-    useEffect(() => {
-        if (isEdit) {
-            axios.get("/api/company/info", {withCredentials: true})
-                .then((res) => {
-                    setCompanyInfo({
-                        ...companyInfo,
-                        companyName: res.data.companyName,
-                        description: res.data.description || "",
-                        phone: res.data.phone,
-                        address: res.data.address,
-                        imageUrl: res.data.url
-                    });
-                })
-        }
-    }, []);
+    const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
+
+    if (isEdit) {
+
+        Promise.all([checkSeller(), getCompanyInfo()])
+            .then(([_, res]) => {
+                setCompanyInfo({
+                    ...companyInfo,
+                    companyName: res.data.companyName,
+                    description: res.data.description || "",
+                    phone: res.data.phone,
+                    address: res.data.address,
+                    imageUrl: res.data.url
+                });
+            });
+    } else {
+        checkRoleTest();
+    }
+
 
     const checkInput = () => {
         if (companyInfo.companyName === "") {

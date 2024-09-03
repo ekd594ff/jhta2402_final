@@ -123,4 +123,9 @@ public class MemberController {
         Page<MemberResponseDto> memberResponseDtos = memberService.getMemberList(pageable);
         return ResponseEntity.ok().body(memberResponseDtos);
     }
+
+    @GetMapping("/seller/role")
+    public ResponseEntity<?> getSellerRole() {
+        return ResponseEntity.ok().build();
+    }
 }
