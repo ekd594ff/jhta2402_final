@@ -65,7 +65,7 @@ function Registration() {
     }
 
     return (
-        <div >
+        <div>
             <Box className={style["btn1"]} sx={{padding: 4}}>
 
                 <Box sx={{ padding: 2, textAlign: 'center' }}>
