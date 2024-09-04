@@ -31,7 +31,7 @@ public class ReviewController {
     }
 
     @GetMapping("/admin/list")
-    public ResponseEntity<Page<ReviewPortfolioDetailDto>> getAllReview(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<Page<ReviewPortfolioDetailDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllReview(pageable);
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
