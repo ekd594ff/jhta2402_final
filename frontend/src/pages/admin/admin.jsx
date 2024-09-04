@@ -156,10 +156,14 @@ function DataTable() {
         // console.log("filterModel.value.length=", filterModel.value.length);
         // console.log("sortModel.field.length=", sortModel.field.length);
         let sortField;
+        let filterValue;
         if (sortModel) {
             sortField = sortModel.field;
         }
-        if (filterModel.value || sortField) { // filterModel, sortModel 값 확인 후 분기
+        if (filterModel) {
+            filterValue = filterModel.value;
+        }
+        if (filterValue || sortField) { // filterModel, sortModel 값 확인 후 분기
             fetchFilterdData(filterModel, sortModel, pathname, paginationModel); // 매개변수 수정
         } else {
             fetchData(pathname, paginationModel);
@@ -171,6 +175,11 @@ function DataTable() {
         setPaginationModel({page: 0, pageSize: 5})
     }, [pathname, sortModel, filterModel]);
 
+    useEffect(() => {
+        setSortModel({field: "", sort:"" });
+        setFilterModel({field: "", value: ""});
+        setPaginationModel({page: 0, pageSize: 5});
+    }, [pathname]);
     const handleFilterModelChange = (model) => {
         console.log('filterModel', model);
         setFilterModel(model.items[0])
@@ -198,7 +207,6 @@ function DataTable() {
                 filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
                 paginationMode="server"
                 sortingMode="server"
-                // filterModel={filterModel}
                 rowCount={totalCount}
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}

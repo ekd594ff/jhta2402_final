@@ -133,12 +133,9 @@ public class MemberController {
         log.info("sortField={}",sortField);
         log.info("sort={}",sort);
         log.info("filterColumn={}",filterColumn);
-        System.out.println(filterColumn);
         log.info("filterValue={}",filterValue);
+        System.out.println(filterColumn);
         System.out.println(filterValue);
-
-        Optional<String> filterColumnOptional = Optional.ofNullable(filterColumn);
-        Optional<String> filterValueOptional = Optional.ofNullable(filterValue);
 
         Pageable pageable;
         if (sort.equals("desc")) {
@@ -146,7 +143,7 @@ public class MemberController {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, filterColumnOptional, filterValueOptional);
+        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue));
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 

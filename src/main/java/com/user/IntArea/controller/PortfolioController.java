@@ -5,9 +5,11 @@ import com.user.IntArea.dto.portfolio.PortfolioDraftDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
+import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
 import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/portfolio")
 @RequiredArgsConstructor
+@Slf4j
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
@@ -142,5 +146,26 @@ public class PortfolioController {
     @GetMapping("/admin/hard-delete/{id}")
     public void hardDeletePortfolioInfoDtoByAdmin(@PathVariable(name = "id") UUID portfolioId) {
         portfolioService.deletePortfolioByAdmin(portfolioId);
+    }
+
+    @GetMapping("/admin/list/filter/contains")
+    public ResponseEntity<Page<PortfolioInfoDto>> getSearchReview(@RequestParam int page, @RequestParam(name = "pageSize") int size,
+                                                                          @RequestParam(defaultValue = "createdAt", required = false) String sortField,
+                                                                          @RequestParam(defaultValue = "desc", required = false) String sort,
+                                                                          @RequestParam(required = false) String filterColumn,
+                                                                          @RequestParam(required = false) String filterValue) {
+        log.info("sortField={}",sortField);
+        log.info("sort={}",sort);
+        log.info("filterColumn={}",filterColumn);
+        log.info("filterValue={}",filterValue);
+
+        Pageable pageable;
+        if (sort.equals("desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
+        }
+        Page<PortfolioInfoDto> portfolioInfoDtoPage = portfolioService.getSearchPortfolio(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
+        return ResponseEntity.ok().body(portfolioInfoDtoPage);
     }
 }
