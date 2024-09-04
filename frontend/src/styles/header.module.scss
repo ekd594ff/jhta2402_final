@@ -35,6 +35,22 @@
       display: flex;
       align-items: center;
       position: relative;
+      gap: 8px;
+
+      & > .search {
+        box-sizing: border-box;
+        background-color: variables.$color-300;
+      }
+
+      & > .login-btn {
+        color: variables.$COLOR_PRIMARY;
+        border-color: variables.$COLOR_PRIMARY;
+      }
+
+      & > .signup-btn {
+        background-color: variables.$COLOR_PRIMARY;
+        color: variables.$color-100;
+      }
 
       & > .avatar {
         cursor: pointer;

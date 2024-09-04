@@ -7,6 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import style from "../../styles/header.module.scss";
 import {useEffect} from "react";
 import axios from "axios";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from '@mui/icons-material/Search';
 
 function Header() {
     const navigate = useNavigate();
@@ -46,7 +48,7 @@ function Header() {
         });
 
         document.addEventListener("click", function (event) {
-           setOpen(false);
+            setOpen(false);
         });
     }, []);
 
@@ -54,7 +56,7 @@ function Header() {
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    <img src="/logo.svg"/>
+                    <img src="/logo.svg" alt="home"/>
                 </Link>
                 {/* 검색 기능 추가 */}
                 <div className={style["search"]}>
@@ -68,6 +70,9 @@ function Header() {
                     <Button onClick={handleSearch} variant="contained">검색</Button>
                 </div>
                 <div className={style["buttons"]}>
+                    <IconButton aria-label="search" className={style['search']}>
+                        <SearchIcon/>
+                    </IconButton>
                     {isLoading ? <></> : isLoggedIn ? (
                         <>
                             <Avatar
@@ -84,8 +89,12 @@ function Header() {
                         </>
                     ) : (
                         <>
-                            <Button onClick={() => navigate("/login")}>Login</Button>
-                            <Button onClick={() => navigate("/signup")}>Sign Up</Button>
+                            <Button className={style['login-btn']} variant="outlined"
+                                    disableRipple
+                                    onClick={() => navigate("/login")}>로그인</Button>
+                            <Button className={style['signup-btn']}
+                                    disableRipple
+                                    onClick={() => navigate("/signup")}>회원가입</Button>
                         </>
                     )}
                 </div>
