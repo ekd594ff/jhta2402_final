@@ -1,7 +1,5 @@
 import React from 'react';
 import {HTML5Backend} from "react-dnd-html5-backend";
-import style from "../../styles/portfolio-registration.module.scss";
-import Stack from "@mui/material/Stack";
 import {Box, Button, Grid2} from "@mui/material";
 import ImageItem from "./ImageItem.jsx";
 import {DndProvider} from "react-dnd";
@@ -27,13 +25,9 @@ function ImageUpload({images, setImages, otherImages, setOtherImages}) {
             url: URL.createObjectURL(file),
             file: file
         }));
-        console.log("test");
 
         setOtherImages([...otherImages, ...imageUrls]);
-        console.log(otherImages);
         setImages(files);
-
-
     };
 
     const moveImage = (dragIndex, hoverIndex) => {
@@ -54,37 +48,45 @@ function ImageUpload({images, setImages, otherImages, setOtherImages}) {
     };
 
     return (
-        <DndProvider backend={HTML5Backend} className={style["dnd-provider"]}>
-            <Stack direction="row" sx={{margin: "16px", gap: "16px"}}>
-                {/*<p>{`현재 등록된 이미지: ${otherImages.length}/${MAX_IMAGES}`}</p>*/}
-                <Button style={{borderColor: '#FA4D56', color: '#FA4D56', margin: '8px'}}
-                        variant="outlined" component="label">
-                    <input
-                        type="file"
-                        id="formFileMultiple"
-                        multiple
-                        onChange={handleOtherImagesChange}
-                        disabled={otherImages.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
-                        hidden
-                    />이미지 등록
-                </Button>
-            </Stack>
+        <DndProvider backend={HTML5Backend}>
+            <Button style={{
+                borderColor: '#FA4D56',
+                color: '#FA4D56',
+                margin: '32px 16px'
+            }}
+                    variant="outlined" component="label">
+                <input
+                    type="file"
+                    id="formFileMultiple"
+                    multiple
+                    onChange={handleOtherImagesChange}
+                    disabled={otherImages.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
+                    hidden
+                />이미지 등록
+            </Button>
 
-            <Box sx={{flexGrow: 1}}>
-                <Grid2 container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
-
-                    {otherImages.map((image, index) => (
-                        <ImageItem
-                            key={image.id}
-                            index={index}
-                            image={image}
-                            moveImage={moveImage}
-                            removeImage={removeImage} // 이미지 삭제 함수 전달
-                        />
-                    ))}
-                </Grid2>
+            <Box sx={{padding: 1}}>
+                <div>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 1, // 이미지 사이의 간격 설정
+                            justifyContent: 'flex-start', // 왼쪽 정렬
+                        }}
+                    >
+                        {otherImages.map((image, index) => (
+                            <ImageItem
+                                key={image.id}
+                                index={index}
+                                image={image}
+                                moveImage={moveImage}
+                                removeImage={removeImage} // 이미지 삭제 함수 전달
+                            />
+                        ))}
+                    </Box>
+                </div>
             </Box>
-
         </DndProvider>
     );
 }

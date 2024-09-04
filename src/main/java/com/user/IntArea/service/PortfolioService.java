@@ -10,6 +10,7 @@ import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.Portfolio;
+import com.user.IntArea.entity.Solution;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -130,8 +131,10 @@ public class PortfolioService {
         }
 
         // 솔루션 저장
-        portfolioRequestDto.getSolutions().stream().map(solutionDto ->
-                solutionRepository.save(solutionDto.toSolution(portfolio)));
+        List<Solution> solutions = portfolioRequestDto.getSolutions().stream()
+                .map(solutionDto -> solutionDto.toSolution(portfolio))
+                .toList();
+        solutionRepository.saveAll(solutions);
 
         return savedPortfolio;
     }

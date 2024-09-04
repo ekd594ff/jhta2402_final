@@ -38,7 +38,7 @@ function ImageItem({image, index, moveImage, removeImage}) {
     drag(drop(ref));
 
     return (
-        <Grid2 size={{ xs: 2, sm: 4, md: 4 }} key={index}
+        <Grid2 size={{xs: 2, sm: 4, md: 4}} key={index}
                ref={ref}
                style={{
                    position: 'relative', // 순서 태그를 배치하기 위해 position 설정
@@ -47,10 +47,10 @@ function ImageItem({image, index, moveImage, removeImage}) {
                    opacity: isDragging ? 0.5 : 1,
                    cursor: 'move',
                    margin: 'auto',
-                       flex: '1 1 180px', // 최소 너비를 설정하여 브라우저 크기에 따라 유동적으로 조정
-                       marginBottom: '8px',
-                       boxSizing: 'border-box',
-                       maxWidth: 'calc(25% + 20px)', // 최대 너비를 설정하여 큰 화면에서도 적절히 배치
+                   flex: '1 1 180px', // 최소 너비를 설정하여 브라우저 크기에 따라 유동적으로 조정
+                   marginBottom: '8px'  ,
+                   boxSizing: 'border-box',
+                   maxWidth: 'calc(25% + 20px)', // 최대 너비를 설정하여 큰 화면에서도 적절히 배치
                }}
         >
             {/* 순서 태그 */}
@@ -94,8 +94,8 @@ function ImageItem({image, index, moveImage, removeImage}) {
                     src={image.url}
                     alt={`Preview ${index + 1}`}
                     style={{
-                        width: '100px',
-                        height: '100px',
+                        width: '200px',
+                        height: '200px',
                         objectFit: "cover",
                     }}
                 />

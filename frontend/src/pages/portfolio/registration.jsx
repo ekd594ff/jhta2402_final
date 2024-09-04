@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {
     Button,
     TextField,
-    Box,
     Step,
     StepLabel,
     Stepper,
@@ -16,11 +15,9 @@ import style from "../../styles/portfolio-registration.module.scss";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import {Check} from "@mui/icons-material";
-import {HTML5Backend} from "react-dnd-html5-backend";
-import Stack from "@mui/material/Stack";
-import ImageItem from "../../components/portfolio/ImageItem.jsx";
-import {DndProvider} from "react-dnd";
 import ImageUpload from "../../components/portfolio/imageUpload.jsx";
+import SolutionForm from "../../components/portfolio/solutionForm.jsx";
+import {checkSeller} from "../../utils/loginUtil.jsx";
 
 
 function Registration() {
@@ -49,11 +46,11 @@ function Registration() {
     const [otherImages, setOtherImages] = useState([]);
 
 
-    // useEffect(페이지 처음 불러올 때 실행하기) => axios 데이터 불러오기 / 전송하기
-    useEffect(() => {
-        axios.get("/api/company/info", {withCredentials: true})  // withCredentials: true =>  요청에 로그인 쿠키를 담아서 전송
-            .then(res => setCompanyInfo(res.data));
-    }, []);
+    const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
+
+    Promise.all([checkSeller(), getCompanyInfo()])
+        .then(([_, res]) => setCompanyInfo(res.data));
+
 
     // 로컬에서 임시 저장한 내용을 불러오기
     // useEffect(() => {
@@ -66,14 +63,23 @@ function Registration() {
 
     // 포트폴리오 등록
     const submitPortfolio = () => {
+        const isEmpty = solutions.some(solution => {
+            if (solution.title === "" || solution.description === "" || solution.price === "") {
+                return true;
+            }
+        });
+
+        if (isEmpty) {
+            setSnackbarState({open: true, message: "솔루션 빈칸을 채워주세요."})
+            return;
+        }
+        if (!confirm("포트폴리오를 등록하시겠습니까?")) return;
+
         const formData = new FormData();
 
         formData.append("title", portfolioInfo.title);
         formData.append("description", portfolioInfo.description);
-        images.map(image => {
-            console.log(image)
-            formData.append("images", image)
-        });
+        images.map(image => formData.append("images", image));
         formData.append("solutionStrings", JSON.stringify(solutions));
 
 
@@ -88,21 +94,21 @@ function Registration() {
     }
 
     // 작성중인 내용 서버에 임시저장(미사용)
-    const saveDraftPortfolio = () => {
-        axios.post("/api/portfolio/draft",
-            portfolioInfo,
-            {withCredentials: true})
-            .then((res) => {
-                alert("포트폴리오가 임시 저장되었습니다.");
-            })
-            .catch(err => alert("오류가 발생했습니다. 다시 시도해주세요."));
-    }
+    // const saveDraftPortfolio = () => {
+    //     axios.post("/api/portfolio/draft",
+    //         portfolioInfo,
+    //         {withCredentials: true})
+    //         .then((res) => {
+    //             alert("포트폴리오가 임시 저장되었습니다.");
+    //         })
+    //         .catch(err => alert("오류가 발생했습니다. 다시 시도해주세요."));
+    // }
 
     // 작성중인 내용 로컬에 임시저장
-    const saveDraftToLocal = () => {
-        localStorage.setItem('portfolioDraft', JSON.stringify(portfolioInfo));
-        alert("현재 기기에 임시 저장되었습니다.");
-    }
+    // const saveDraftToLocal = () => {
+    //     localStorage.setItem('portfolioDraft', JSON.stringify(portfolioInfo));
+    //     alert("현재 기기에 임시 저장되었습니다.");
+    // }
 
     const steps = ['포트폴리오 정보 입력', '이미지 등록', '솔루션 입력'];
     const [activeStep, setActiveStep] = useState(0);
@@ -184,39 +190,6 @@ function Registration() {
         );
     }
 
-
-    // solution ----------------------------------------------
-
-    const addSolution = () => {
-
-        setSolutions([...solutions, {title: '', description: '', price: ''}]);
-    };
-
-    const moveSolution = (dragIndex, hoverIndex) => {
-        const newSolutions = [...solutions];
-        const [draggedSolution] = newSolutions.splice(dragIndex, 1);
-        newSolutions.splice(hoverIndex, 0, draggedSolution);
-        setSolutions(newSolutions);
-    };
-
-    const handleInputChange = (index, event) => {
-        const newSolutions = [...solutions];
-        newSolutions[index][event.target.name] = event.target.value;
-        setSolutions(newSolutions);
-    };
-
-    const handleCurrencyChange = (index, event) => {
-        const newSolutions = [...solutions];
-        newSolutions[index].currency = event.target.value;
-        setSolutions(newSolutions);
-    };
-
-    const handleRemoveSolution = (index) => {
-        const newSolutions = solutions.filter((_, i) => i !== index);
-        setSolutions(newSolutions);
-    };
-
-    // solution Drag&Drop
 
     return (
         <>
@@ -309,34 +282,7 @@ function Registration() {
                     </div>}
 
                     {activeStep === 2 && <div className={style["form3"]}>
-                        <Box sx={{margin: 4, padding: 1}}>
-                            {/*<DndProvider backend={HTML5Backend}>*/}
-                            {/*    <Box sx={{padding: 0, textAlign: 'left'}}>*/}
-                            {/*        <Button id="addSolution" onClick={addSolution}*/}
-                            {/*                variant="outlined"*/}
-                            {/*                style={{*/}
-                            {/*                    borderColor: '#FA4D56',*/}
-                            {/*                    color: '#FA4D56',*/}
-                            {/*                    margin: '0 0 16px 0',*/}
-                            {/*                }}*/}
-                            {/*        >솔루션 추가</Button>*/}
-                            {/*        <div>*/}
-                            {/*            {solutions.map((solution, index) => (*/}
-                            {/*                <SolutionItem*/}
-                            {/*                    className={style["solution-item"]}*/}
-                            {/*                    key={index}*/}
-                            {/*                    index={index}*/}
-                            {/*                    solution={solution}*/}
-                            {/*                    moveSolution={moveSolution}*/}
-                            {/*                    handleInputChange={handleInputChange}*/}
-                            {/*                    handleCurrencyChange={handleCurrencyChange}*/}
-                            {/*                    handleRemoveSolution={handleRemoveSolution}*/}
-                            {/*                />*/}
-                            {/*            ))}*/}
-                            {/*        </div>*/}
-                            {/*    </Box>*/}
-                            {/*</DndProvider>*/}
-                        </Box>
+                        <SolutionForm solutions={solutions} setSolutions={setSolutions}/>
 
                         <div className={style["button-div"]}>
                             <Button className={style["prev-button"]} variant="outlined"
