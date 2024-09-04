@@ -1,9 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
-
 
 import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
 import style from "../../styles/portfolio-detail.module.scss";
@@ -12,6 +11,13 @@ import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import Divider from '@mui/material/Divider';
 import Button from "@mui/material/Button";
+
+
+import {Swiper, SwiperSlide} from 'swiper/react';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 
 const solutionAJAXPromise = (portfolioId) => axios.get(`/api/solution/portfolio/${portfolioId}`);
 
@@ -65,7 +71,7 @@ function PortfolioDetail() {
                 const {data} = solutionResult;
                 setSolutionList(data);
             });
-    }, []);
+    }, [id]); // 의존성 배열 수정
 
     useEffect(() => {
         axios.get(`/api/review/portfolio/${id}?page=${reviewInfo.page}&size=${size}`)
@@ -79,7 +85,7 @@ function PortfolioDetail() {
                     }
                 );
             }).catch((err) => console.log(err));
-    }, [reviewInfo.page]);
+    }, [reviewInfo.page, id]);
 
     useEffect(() => {
         if (portfolioImgList.length) {
@@ -129,7 +135,8 @@ function PortfolioDetail() {
                         <div className={style['right']}>
                             <div className={style['info']}>
                                 <div>
-                                    <span className={style['company-name']}>{`업체명_${portfolioInfo.companyName}`}</span>
+                                    <span
+                                        className={style['company-name']}>{`업체명_${portfolioInfo.company.companyName}`}</span>
                                 </div>
                                 <div>
                                     <span className={style['title']}>{`포트폴리오제목_${portfolioInfo.title}`}</span>
@@ -154,6 +161,39 @@ function PortfolioDetail() {
                         </div>
                     </div>
                     <div className={style['middle']}>
+                        <Swiper
+                            slidesPerView={4}
+                            spaceBetween={16}
+                            pagination={{
+                                clickable: true,
+                            }}
+                            breakpoints={{
+                                960: {
+                                    slidesPerView: 4,
+                                    spaceBetween: 8
+                                },
+                                720: {
+                                    slidesPerView: 3,
+                                    spaceBetween: 6
+                                },
+                                540: {
+                                    slidesPerView: 2,
+                                    spaceBetween: 4
+                                },
+                                320: {
+                                    slidesPerView: 1,
+                                    spaceBetween: 2
+                                }
+                            }}
+                            className="mySwiper"
+                        >
+                            {portfolioImgList.map((value) => (
+                                <SwiperSlide key={value}>
+                                    <PortfolioImgListItem value={value} setter={setModalImg} modalOpener={setModalOpen}/>
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
+
                     </div>
                 </div>
             </main>
@@ -169,66 +209,7 @@ function PortfolioDetail() {
                      src={modalImg}/>
             </Backdrop>
         </>
-    )
-        ;
+    );
 }
 
 export default PortfolioDetail;
-
-
-/*
-
-<main key={portfolioInfo.portfolioId} className={style['index']}>
-                <div>
-                    {portfolioInfo.portfolioId}
-                    <br/>
-                    {portfolioInfo.title}
-                    <br/>
-                    {portfolioInfo.description}
-                    <br/>
-                    {portfolioInfo.imageUrl.map((url, index) =>
-                        <div key={index}>
-                            <img src={url}/>
-                        </div>
-                    )}
-                    <br/>
-                    <br/>
-
-                    {portfolioInfo.company.companyName}
-                    <br/>
-                    {portfolioInfo.company.description}
-                    <br/>
-                    {portfolioInfo.company.phone}
-                    <br/>
-                    <img src={portfolioInfo.company.url}/>
-                    <br/>
-                    <br/>
-
-                    {portfolioInfo.solution.map((solution) =>
-                        <div id={solution.id}>
-                            {solution.id}
-                            <br/>
-                            {solution.title}
-                            <br/>
-                            {solution.description}
-                            <br/>
-                            {solution.price}
-                        </div>)}
-                    <br/>
-                    <br/>
-
-                    {reviewInfo.review.map((review) =>
-                        <div id={review.id}>
-                            <br/>
-                            {review.title}
-                            <br/>
-                            {review.description}
-                            <br/>
-                            {review.rate}
-                        </div>)}
-
-                </div>
-            </main>
-
-
-* */
