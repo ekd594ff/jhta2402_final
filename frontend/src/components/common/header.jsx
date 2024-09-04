@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {Link, useNavigate} from "react-router-dom";
 import Menu from '@mui/material/Menu';
@@ -15,6 +15,7 @@ function Header() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [username, setUsername] = React.useState("");
     const [open, setOpen] = React.useState(false);
+    const [searchTerm, setSearchTerm] = React.useState("");
 
     const handleClickAvatar = (event) => {
         event.stopPropagation();
@@ -27,6 +28,12 @@ function Header() {
             navigate("/"); // 인덱스 페이지로 리다이렉트
         } catch (err) {
             console.error("Logout failed", err);
+        }
+    }
+
+    const handleSearch = () => {
+        if (searchTerm) {
+            navigate(`/search/detailed?query=${searchTerm}`);
         }
     }
 
@@ -47,8 +54,19 @@ function Header() {
         <header className={style["header"]}>
             <div className={style['container']}>
                 <Link to="/" className={style["logoSample"]}>
-                    <img src="/logo.svg" alt="home"/>
+                    <img src="/logo.svg"/>
                 </Link>
+                {/* 검색 기능 추가 */}
+                <div className={style["search"]}>
+                    <TextField
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="검색어 입력"
+                        variant="outlined"
+                        size="small"
+                    />
+                    <Button onClick={handleSearch} variant="contained">검색</Button>
+                </div>
                 <div className={style["buttons"]}>
                     {isLoading ? <></> : isLoggedIn ? (
                         <>
