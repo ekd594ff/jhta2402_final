@@ -1,10 +1,11 @@
 import React from 'react';
-import {DndProvider} from "react-dnd";
+import {DndProvider, useDrag, useDrop} from "react-dnd";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import {Card, Grid2, Select} from "@mui/material";
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 const ItemTypes = {
     SOLUTION: 'solution',

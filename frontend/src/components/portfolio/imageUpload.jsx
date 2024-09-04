@@ -1,6 +1,6 @@
 import React from 'react';
 import {HTML5Backend} from "react-dnd-html5-backend";
-import {Box, Button, Grid2} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import ImageItem from "./ImageItem.jsx";
 import {DndProvider} from "react-dnd";
 
