@@ -29,6 +29,34 @@
     flex-direction: column;
     gap: 64px;
 
+    & .solution-list-title, & .review-list-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .bottom {
+      & > .review-list-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        & > span {
+          color: variables.$COLOR_PRIMARY;
+        }
+      }
+
+      & > .review-list {
+        padding: 16px 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        & > li {
+          list-style: none;
+        }
+      }
+    }
+
     .middle {
 
     }
@@ -77,11 +105,6 @@
           background-color: variables.$COLOR_PRIMARY;
           font-weight: bold;
           color: #fff;
-        }
-
-        & > .solution-list-title {
-          font-weight: bold;
-          font-size: 16px;
         }
 
         & > .portfolio-solution-list {

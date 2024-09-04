@@ -9,6 +9,7 @@ import style from "../../styles/portfolio-detail.module.scss";
 import {Backdrop} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
+import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
 import Divider from '@mui/material/Divider';
 import Button from "@mui/material/Button";
 
@@ -20,6 +21,10 @@ import 'swiper/css/pagination';
 
 
 const solutionAJAXPromise = (portfolioId) => axios.get(`/api/solution/portfolio/${portfolioId}`);
+const reviewListAJAXPromise = (portfolioId, pagination) =>
+    axios.get(`/api/review/portfolio/${portfolioId}?${Object
+        .entries(pagination)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&')}`);
 
 function PortfolioDetail() {
     const {id} = useParams();
@@ -47,7 +52,9 @@ function PortfolioDetail() {
     const [reviewInfo, setReviewInfo] = useState({
         review: [],
         page: 0,
-        totalPage: 0,
+        totalPages: 0,
+        totalElements: 0,
+        size: 5
     });
 
     const size = 3;
@@ -66,26 +73,17 @@ function PortfolioDetail() {
                 navigate(-1);
             });
 
-        Promise.all([portFolioAJAXPromise, solutionAJAXPromise(id)])
-            .then(([portfolioResult, solutionResult]) => {
+        Promise.all([reviewListAJAXPromise(id, {
+            page: reviewInfo.page,
+            size: reviewInfo.size
+        }), portFolioAJAXPromise, solutionAJAXPromise(id)])
+            .then(([reviewListResult, portfolioResult, solutionResult]) => {
+                const {data: {content, page: {number, totalElements, totalPages}}} = reviewListResult;
+                setReviewInfo({...reviewInfo, page: number, totalElements, totalPages, review: content});
                 const {data} = solutionResult;
                 setSolutionList(data);
             });
     }, [id]); // 의존성 배열 수정
-
-    useEffect(() => {
-        axios.get(`/api/review/portfolio/${id}?page=${reviewInfo.page}&size=${size}`)
-            .then((res) => {
-                console.log("\n\n--------------------review--------------------\n", res.data);
-                setReviewInfo(
-                    {
-                        review: res.data.content,
-                        page: res.data.page.number,
-                        totalPage: res.data.page.totalPage,
-                    }
-                );
-            }).catch((err) => console.log(err));
-    }, [reviewInfo.page, id]);
 
     useEffect(() => {
         if (portfolioImgList.length) {
@@ -101,15 +99,11 @@ function PortfolioDetail() {
         }
     }, [modalOpen]);
 
-    const handleScroll = (event) => {
-        const container = event.target;
-        const scrollAmount = event.deltaY;
-        container.scrollTo({
-            top: 0,
-            left: container.scrollLeft + scrollAmount,
-            behavior: 'smooth'
-        });
-    };
+    useEffect(() => {
+        console.log(reviewInfo);
+    }, [
+        reviewInfo
+    ])
 
     return (
         <>
@@ -123,10 +117,11 @@ function PortfolioDetail() {
                                     {
                                         portfolioImgList[0] ?
                                             <img alt="selected-img"
-                                                 src={modalImg} onClick={() => {
-                                                setModalOpen(prev => !prev);
-                                                setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`)
-                                            }}/> :
+                                                 src={`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`}
+                                                 onClick={() => {
+                                                     setModalOpen(prev => !prev);
+                                                     setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`)
+                                                 }}/> :
                                             <></>
                                     }
                                 </div>
@@ -163,7 +158,7 @@ function PortfolioDetail() {
                     <div className={style['middle']}>
                         <Swiper
                             slidesPerView={4}
-                            spaceBetween={16}
+                            spaceBetween={32}
                             pagination={{
                                 clickable: true,
                             }}
@@ -189,11 +184,30 @@ function PortfolioDetail() {
                         >
                             {portfolioImgList.map((value) => (
                                 <SwiperSlide key={value}>
-                                    <PortfolioImgListItem value={value} setter={setModalImg} modalOpener={setModalOpen}/>
+                                    <PortfolioImgListItem value={value} setter={setModalImg}
+                                                          modalOpener={setModalOpen}/>
                                 </SwiperSlide>
                             ))}
                         </Swiper>
-
+                    </div>
+                    <div className={style['bottom']}>
+                        <div className={style['review-list-title']}>리뷰
+                            <span>{reviewInfo.totalElements || ""}</span>
+                        </div>
+                        <ul className={style['review-list']}>
+                            {
+                                reviewInfo.review.map((item, index) => {
+                                    const render = [<PortfolioReviewListItem
+                                        {...item}
+                                        key={`${index}_${index}`}/>];
+                                    if (index !== reviewInfo.review.length - 1) {
+                                        render.push(<Divider variant="middle"
+                                                             key={`${item.id}_${index}_${index}_dvd}`}/>);
+                                    }
+                                    return render;
+                                })
+                            }
+                        </ul>
                     </div>
                 </div>
             </main>
