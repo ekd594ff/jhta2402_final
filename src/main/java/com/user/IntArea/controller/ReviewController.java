@@ -1,5 +1,6 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,12 @@ public class ReviewController {
         Page<ReviewPortfolioDetailDto> portfolioDetailDtos = reviewService.getReviewByPortfolioId(id, pageable);
 
         return ResponseEntity.ok().body(portfolioDetailDtos);
+    }
+
+    @GetMapping("/admin/list")
+    public ResponseEntity<Page<ReviewPortfolioDetailDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllReview(pageable);
+        return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
     }
 }

@@ -98,7 +98,9 @@ function Login() {
                         <Button variant="contained" className={style['login-btn']} size="large" onClick={submit}>
                             로그인
                         </Button>
-                        <Button variant="outlined" className={style['register-btn']} size="large" onClick={submit}>
+                        <Button variant="outlined" className={style['register-btn']} size="large" onClick={() => {
+                            navigate("/signup");
+                        }}>
                             회원가입
                         </Button>
                     </div>

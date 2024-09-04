@@ -65,6 +65,28 @@ public class CompanyService {
         }
     }
 
+    @Transactional
+    public void update(CompanyRequestDto companyRequestDto) {
+
+        Company company = getCompanyOfMember();
+        company.setCompanyName(companyRequestDto.getCompanyName());
+        company.setPhone(companyRequestDto.getPhone());
+        company.setAddress(companyRequestDto.getAddress());
+        companyRepository.save(company);
+
+        // 기존 이미지가 있으면 삭제
+        imageRepository.findByRefId(company.getId())
+                .ifPresent(imageRepository::delete);
+
+        // 이미지가 있으면 저장
+        if (!companyRequestDto.getImage().isEmpty()) {
+            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
+                    .orElseThrow(() -> new NoSuchElementException("S3 오류"));
+
+            imageRepository.save(imageDto.toImage());
+        }
+    }
+
     public CompanyPortfolioDetailDto getCompanyById() {
 
         Company company = getCompanyOfMember();
@@ -122,5 +144,9 @@ public class CompanyService {
                 company.getAddress(),
                 company.getIsApplied(),
                 company.getCreatedAt());
+    }
+
+    public Page<CompanyResponseDto> getAllCompany(Pageable pageable) {
+        return companyRepository.findAll(pageable).map(this::converToDto);
     }
 }

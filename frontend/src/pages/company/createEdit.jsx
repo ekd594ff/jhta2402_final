@@ -1,26 +1,49 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import style from "../../styles/company-create.module.scss";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {useDaumPostcodePopup} from "react-daum-postcode";
+import {checkLogin, checkRoleTest, checkSeller} from "../../utils/loginUtil.jsx";
 
-function CreateCompany() {
+function CreateEditCompany() {
 
+    const location = useLocation();
     const navigate = useNavigate();
+    const isEdit = location.pathname.startsWith("/company/edit");
 
     const [companyInfo, setCompanyInfo] = useState({
         companyName: "",
         description: "",
         phone: "",
         address: "",
+        detailAddress: "",
         image: new File([""], ""),
+        imageUrl: "",
     });
 
-    const [detailAddress, setDetailAddress] = useState("");
+    const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
+
+    if (isEdit) {
+
+        Promise.all([checkSeller(), getCompanyInfo()])
+            .then(([_, res]) => {
+                setCompanyInfo({
+                    ...companyInfo,
+                    companyName: res.data.companyName,
+                    description: res.data.description || "",
+                    phone: res.data.phone,
+                    address: res.data.address,
+                    imageUrl: res.data.url
+                });
+            });
+    } else {
+        checkRoleTest();
+    }
+
 
     const checkInput = () => {
         if (companyInfo.companyName === "") {
@@ -29,7 +52,7 @@ function CreateCompany() {
             alert("회사 전화번호를 입력해주세요.");
         } else if (companyInfo.address === "") {
             alert("회사 주소를 입력해주세요.");
-        } else if (detailAddress === "") {
+        } else if (companyInfo.detailAddress === "") {
             alert("회사 상세 주소를 입력해주세요.");
         } else {
             return false;
@@ -38,7 +61,9 @@ function CreateCompany() {
         return true;
     }
 
-    const createCompany = () => {
+    const createEditCompany = () => {
+
+        const apiUrl = (isEdit) ? "/api/company/edit" : "/api/company";
 
         if (checkInput()) return;
 
@@ -46,14 +71,14 @@ function CreateCompany() {
         formData.append("companyName", companyInfo.companyName);
         formData.append("description", companyInfo.description);
         formData.append("phone", companyInfo.phone);
-        formData.append("address", `${companyInfo.address} ${detailAddress}`);
+        formData.append("address", `${companyInfo.address} ${companyInfo.detailAddress}`);
         formData.append("image", companyInfo.image);
 
-        axios.post("/api/company",
+        axios.post(apiUrl,
             formData,
             {withCredentials: true})
             .then((res) => {
-                alert("생성되었습니다.");
+                alert((isEdit) ? "수정되었습니다." : "생성되었습니다.");
                 navigate("/");
             }).catch(() => {
             alert("문제가 발생했습니다.");
@@ -68,7 +93,6 @@ function CreateCompany() {
     }
 
     // 다음 주소 api
-
     const handleComplete = (data) => {
         let fullAddress = data.address;
         let extraAddress = '';
@@ -87,7 +111,7 @@ function CreateCompany() {
 
         setCompanyInfo({
             ...companyInfo,
-            address: localAddress + fullAddress
+            address: localAddress + fullAddress,
         });
     };
 
@@ -102,8 +126,13 @@ function CreateCompany() {
         <Header/>
         <main className={style['main']}>
             <div className={style['container']}>
-                <h2 className={style['page-title']}>회사 등록</h2>
-                <p className={style['page-subtitle']}>회사 등록 후, 승인을 받으면 포트폴리오를 작성할 수 있습니다.</p>
+                <h2 className={style['page-title']}>
+                    {isEdit ? "회사 정보 수정" : "회사 등록"}
+                </h2>
+                {!isEdit ?
+                    <p className={style['page-subtitle']}>회사 등록 후, 승인을 받으면 포트폴리오를 작성할 수 있습니다.</p>
+                    : <div className={style["padding"]}></div>
+                }
                 <div className={style['input-div']}>
                     <TextField className={style['text-field']}
                                value={companyInfo.companyName}
@@ -180,9 +209,13 @@ function CreateCompany() {
                             }}/>
                         <div className={style['padding']}/>
                         <TextField className={style['text-field-detail']}
-                                   value={detailAddress}
+                                   value={companyInfo.detailAddress}
                                    onChange={(e) => {
-                                       setDetailAddress(e.target.value);
+                                       setCompanyInfo({
+                                           ...companyInfo,
+                                           fullAddress: `${companyInfo.address} ${e.target.value}`,
+                                           detailAddress: e.target.value
+                                       });
                                    }}
                                    type="text"
                                    name="detailAddress"
@@ -212,7 +245,9 @@ function CreateCompany() {
                 </div>
 
                 <div className={style['button-div']}>
-                    <Button variant="contained" color="success" onClick={createCompany}>회사 등록</Button>
+                    <Button variant="contained" color="success" onClick={createEditCompany}>
+                        {isEdit ? "회사 등록" : "정보 수정"}
+                    </Button>
                 </div>
             </div>
         </main>
@@ -220,4 +255,4 @@ function CreateCompany() {
     </>);
 }
 
-export default CreateCompany;
+export default CreateEditCompany;

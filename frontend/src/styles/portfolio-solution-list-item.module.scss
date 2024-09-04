@@ -1,0 +1,48 @@
+@use "variables";
+
+.portfolio-solution-list-item {
+  height: variables.$PORTFOLIO_SOLUTION_LIST_ITEM_HEIGHT;
+  border-radius: 5px;
+  display: flex;
+  gap: 8px;
+  & > .left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > .checkbox {
+      padding: 8px;
+      margin: 0;
+    }
+  }
+
+  & > .right {
+    flex-grow: 1;
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    overflow: hidden;
+
+    & .title {
+      font-size: 12px;
+      font-weight: bold;
+      color: variables.$color-800;
+    }
+
+    & .price {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    & > .bottom {
+      & > .description {
+        display: block;
+        width: 95%;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden; /* 넘치는 부분 숨기기 */
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

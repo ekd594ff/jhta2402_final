@@ -17,6 +17,10 @@
     flex-direction: column;
     height: auto;
 
+    & > .padding {
+      padding: 16px;
+    }
+
     & > .page-title {
       width: 100%;
       padding: 16px 0;

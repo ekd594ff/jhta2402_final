@@ -6,6 +6,7 @@ import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioRequestDto;
+import com.user.IntArea.dto.portfolio.PortfolioSearchDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Member;
@@ -71,6 +72,12 @@ public class PortfolioService {
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(UUID companyId, Pageable pageable) {
         Page<Portfolio> portfolios = portfolioRepository.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
         return portfolios.map(PortfolioInfoDto::new);
+    }
+
+    // (일반 권한) 검색된 포트폴리오 검색 메서드
+    public Page<PortfolioSearchDto> getPortfolios(String searchWord, Pageable pageable) {
+        return portfolioRepository.searchPortfolios(searchWord, pageable)
+                .map(result ->  new PortfolioSearchDto((String) result[0], (String) result[1], (String) result[2], (String[]) result[3]));
     }
 
     // (일반 권한) 특정한 하나의 포트폴리오 InfoDto 불러오기

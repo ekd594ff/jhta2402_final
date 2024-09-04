@@ -1,8 +1,6 @@
 import React from 'react';
-import {DndProvider, useDrag, useDrop} from "react-dnd";
-import Box from "@mui/material/Box";
+import {DndProvider} from "react-dnd";
 import Button from "@mui/material/Button";
-import {HTML5Backend} from "react-dnd-html5-backend";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -128,8 +126,7 @@ const SolutionItem = ({
                     onChange={(event) => handleInputChange(index, event)}
                 ></TextField>
                 <TextField
-                    variant="outlined"
-                    name="description"
+                    variant="outlined" name="description"
                     placeholder="솔루션 설명"
                     value={solution.description}
                     onChange={(event) => handleInputChange(index, event)}
