@@ -1,0 +1,30 @@
+package com.user.IntArea.repository;
+
+import com.user.IntArea.entity.Company;
+import com.user.IntArea.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface CompanyRepository extends JpaRepository<Company, UUID> {
+
+    Page<Company> getCompanyByIsApplied(Boolean isApplied, Pageable pageable);
+
+    Optional<Company> getCompanyByMember(Member member);
+
+    Page<Company> findAll(Pageable pageable);
+
+    Page<Company> findAllByCreatedAtContains(String createdAt, Pageable pageable);
+
+    Page<Company> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
+
+    Page<Company> findAllByIsDeletedIs(boolean isDeleted, Pageable pageable);
+
+    Page<Company> findAllByAddressContains(String address, Pageable pageable);
+
+    Page<Company> findAllByPhoneContains(String phone, Pageable pageable);
+
+}

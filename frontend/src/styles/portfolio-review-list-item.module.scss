@@ -1,0 +1,55 @@
+@use 'variables';
+
+.portfolio-review-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+
+  & > .top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    & > .username {
+      font-weight: bold;
+      color: variables.$color-900;
+      font-size: 14px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    & > .createdAt {
+      font-size: 12px;
+      color: variables.$color-700;
+    }
+  }
+
+  & > .middle {
+    & > .rate {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+
+      & > .rate-value {
+        font-size: 14.5px;
+        font-weight: bold;
+        color: variables.$color-900;
+      }
+    }
+  }
+
+  & > .bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    & > .title {
+      color: variables.$color-900;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    & > .description {
+      font-size: 16px;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+@use "variables";
+
+.signup {
+  display: flex;
+  justify-content: center;
+  min-height: 900px;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    display: flex;
+    padding: 0 16px;
+    padding-top: variables.$LOGIN_FORM_MARGIN_TOP;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+
+    & .logo {
+      height: 28px;
+    }
+
+    & > form {
+      display: flex;
+      gap: 14px;
+      flex-direction: column;
+      width: 100%;
+      max-width: variables.$LOGIN_FORM_WIDTH;
+
+      & > .register-btn {
+        color: variables.$COLOR_PRIMARY;
+        border-color: variables.$COLOR_PRIMARY;
+      }
+    }
+  }
+}
