@@ -9,13 +9,12 @@
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
-    padding: 16px 16px 64px 16px;
+    padding: 32px 16px 64px 16px;
     display: flex;
     flex-direction: column;
     gap: 64px;
     height: auto;
     & > .recommend {
-      padding: 8px 0;
       & > .recommend-swiper {
         border-radius: 6px;
         overflow: hidden;

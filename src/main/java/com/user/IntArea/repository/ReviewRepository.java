@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
             "INNER JOIN QuotationRequest qr ON qr.id = q.quotationRequest.id " +
             "WHERE qr.portfolio.id = :portfolioId ")
     Page<Review> findReviewsByPortfolioId(UUID portfolioId, Pageable pageable);
+
+    Page<Review> findAll(Pageable pageable);
 }
