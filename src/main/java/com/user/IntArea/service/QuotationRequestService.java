@@ -75,5 +75,81 @@ public class QuotationRequestService {
         return responseDto;
     }
 
+    @Transactional(readOnly = true)
+    public QuotationRequestDto getQuotationRequest(UUID id) {
+        QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(""));
 
+        // DTO 변환
+        return QuotationRequestDto.builder()
+                .memberId(quotationRequest.getMember().getId())
+                .portfolioId(quotationRequest.getPortfolio().getId())
+                .title(quotationRequest.getTitle())
+                .description(quotationRequest.getDescription())
+                .solutions(quotationRequest.getRequestSolutions().stream()
+                        .map(rs -> SolutionDto.builder()
+                                .title(rs.getSolution().getTitle())
+                                .description(rs.getSolution().getTitle())
+                                .price(rs.getSolution().getPrice())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Transactional
+    public QuotationRequestDto updateQuotationRequest(UUID id, QuotationRequestDto requestDto) {
+        QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(""));
+
+        // 업데이트
+        quotationRequest.setTitle(requestDto.getTitle());
+        quotationRequest.setDescription(requestDto.getDescription());
+
+        // 기존 솔루션 삭제 후 새로운 솔루션 추가
+        quotationRequest.getRequestSolutions().clear();
+        List<SolutionDto> solutionDtos = requestDto.getSolutions();
+        for (SolutionDto solutionDto : solutionDtos) {
+            Solution solution = Solution.builder()
+                    .title(solutionDto.getTitle())
+                    .description(solutionDto.getTitle())
+                    .portfolio(quotationRequest.getPortfolio())
+                    .price(solutionDto.getPrice())
+                    .build();
+            solutionRepository.save(solution);
+
+            RequestSolution requestSolution = RequestSolution.builder()
+                    .quotationRequest(quotationRequest)
+                    .solution(solution)
+                    .build();
+            quotationRequest.getRequestSolutions().add(requestSolution);
+        }
+        return requestDto;
+    }
+
+    @Transactional
+    public void deleteQuotationRequest(UUID id) {
+        QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(""));
+        quotationRequestRepository.delete(quotationRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuotationRequestDto> getAllQuotationRequests() {
+        List<QuotationRequest> quotationRequests = quotationRequestRepository.findAll();
+        return quotationRequests.stream()
+                .map(quotationRequest -> QuotationRequestDto.builder()
+                        .memberId(quotationRequest.getMember().getId())
+                        .portfolioId(quotationRequest.getPortfolio().getId())
+                        .title(quotationRequest.getTitle())
+                        .description(quotationRequest.getDescription())
+                        .solutions(quotationRequest.getRequestSolutions().stream()
+                                .map(rs -> SolutionDto.builder()
+                                        .title(rs.getSolution().getTitle())
+                                        .description(rs.getSolution().getTitle())
+                                        .price(rs.getSolution().getPrice())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
