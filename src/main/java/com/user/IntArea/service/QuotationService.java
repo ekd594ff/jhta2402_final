@@ -26,10 +26,7 @@ public class QuotationService {
     private final CompanyRepository companyRepository;
     private final QuotationRequestRepository quotationRequestRepository;
 
-
-    // seller
-
-    // 견적서에 접근하는 멤버가 그 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
+    // 견적서에 접근하는 멤버가 그 견적서와 연관된 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
     private void isCompanyManager(Quotation quotation) {
         Portfolio portfolio = quotation.getQuotationRequest().getPortfolio();
         if(portfolio == null) {
@@ -44,6 +41,7 @@ public class QuotationService {
         }
     }
 
+    // 현재 로그인한 멤버가 관리하는 회사 확인
     private Company getCompanyOfMember() {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
         String email = memberDto.getEmail();
@@ -52,6 +50,7 @@ public class QuotationService {
         return company;
     }
 
+    // 현재 로그인한 멤버가 해당 견적요청서의 작성자인지 확인
     private boolean isLoggedMemberQuotationRequestWriter(QuotationRequest quotationRequest) {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
         String email = memberDto.getEmail();
@@ -76,11 +75,15 @@ public class QuotationService {
         if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
-        Quotation quotation = quotationRequest.getWrittenQuotation();
-        if(quotation == null) {
-            throw new NoSuchElementException("업체가 작성된 견적서가 없습니다.");
+        try{
+            Quotation quotation = quotationRepository.getQuotationForQuotationRequest();
+            if(quotation == null) {
+                throw new NoSuchElementException("유효한 견적서가 없습니다.");
+            }
+            return quotation;
+        } catch (Exception e) {
+            throw new NoSuchElementException("알 수 없는 오류.");
         }
-        return quotation;
     }
 
     // seller

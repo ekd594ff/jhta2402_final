@@ -24,7 +24,7 @@ public class QuotationRequestService {
 
         QuotationRequest quotationRequest = QuotationRequest.builder()
                 .member(member)
-                .portfolio(portfolio)
+//                .portfolio(portfolio)
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .build();
