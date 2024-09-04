@@ -111,7 +111,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/admin/list")
-    public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam int size) {
+    public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getAllPortfolioInfoDtosByAdmin(pageable);
     }
