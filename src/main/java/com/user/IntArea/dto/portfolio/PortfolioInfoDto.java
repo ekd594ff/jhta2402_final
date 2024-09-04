@@ -16,8 +16,6 @@ public class PortfolioInfoDto {
     private String companyName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-//    private List<Solution> solution;
-//    private List<QuotationRequest> quotationRequests;
     private boolean isDeleted;
 
     public PortfolioInfoDto(Portfolio portfolio) {

@@ -27,6 +27,17 @@ export const checkAdmin = async () => {
         });
 }
 
+// Seller 검사
+export const checkSeller = async () => {
+    const navigate = useNavigate();
+
+    return await axios.get("/api/member/seller/role", {withCredentials: true})
+        .catch(() => {
+            alert("판매자 권한이 필요합니다.");
+            navigate(-1);
+        });
+}
+
 // 로그인 검사
 export const checkRoleTest = async () => {
     const navigate = useNavigate();
