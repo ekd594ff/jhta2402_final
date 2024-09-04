@@ -88,7 +88,7 @@ public class MemberService {
                     return memberRepository.findAllByUsernameContains(filterValue.get(), pageable).map(MemberResponseDto::new);
                 }
                 case "platform" -> {
-                    return memberRepository.findAllByPlatform(Platform.valueOf(filterValue.get()), pageable).map(MemberResponseDto::new);
+                    return memberRepository.findAllByPlatformContaining(filterValue.get(), pageable).map(MemberResponseDto::new);
                 }
                 case "createdAt" -> {
                     return memberRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);

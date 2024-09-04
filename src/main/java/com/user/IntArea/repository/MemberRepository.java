@@ -30,7 +30,11 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     Page<Member> findAllByPlatform(Platform platform, Pageable pageable);
 
+    @Query("select m from Member m where 1=1 and CAST(m.platform AS string) like %?1%")
+    Page<Member> findAllByPlatformContaining(String platform, Pageable pageable);
+
     Page<Member> findAllByCreatedAtContains(String createdAt, Pageable pageable);
+
 
     Page<Member> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
 
