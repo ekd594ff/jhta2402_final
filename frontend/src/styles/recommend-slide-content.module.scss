@@ -1,0 +1,24 @@
+.recommend-slide-content {
+  width: 100%;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  & > .info {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+    width: 100%;
+    padding: 16px 20px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(to top, #000, transparent);
+    color: #fff;
+  }
+}

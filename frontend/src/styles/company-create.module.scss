@@ -1,0 +1,106 @@
+@use "variables";
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+  padding-bottom: 250px;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+    & > .padding {
+      padding: 16px;
+    }
+
+    & > .page-title {
+      width: 100%;
+      padding: 16px 0;
+      text-align: center;
+      align-content: center;
+    }
+
+    & > .page-subtitle {
+      width: 100%;
+      height: auto;
+      padding: 8px 0;
+      text-align: center;
+      align-content: center;
+    }
+
+    & > .input-div {
+      display: flex;
+      padding: 16px 16px;
+
+      & > .text-field {
+        width: 100%;
+        margin: 0 8px;
+      }
+
+    }
+
+    & > .input-div-address {
+      display: flex;
+      padding: 16px 16px;
+      height: 128px;
+
+      & > .address-div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      & > .sub-button {
+        color: variables.$COLOR_PRIMARY;
+        border-color: variables.$COLOR_PRIMARY;
+        margin: 0 16px;
+        height: 36px;
+        width: 108px;
+      }
+    }
+
+    & > .image-div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 16px;
+
+      & > .button {
+        color: variables.$COLOR_PRIMARY;
+        border-color: variables.$COLOR_PRIMARY;
+        width: 144px;
+        height: 36px;
+        margin: auto;
+      }
+
+      & > .image-blob {
+        width: 128px;
+        height: 128px;
+        object-fit: contain;
+        margin: 16px;
+      }
+    }
+
+    & > .button-div {
+      display: flex;
+      justify-content: end;
+      margin: 32px;
+
+      & > Button {
+        color: white;
+        background-color: variables.$COLOR_PRIMARY;
+      }
+    }
+  }
+
+}
