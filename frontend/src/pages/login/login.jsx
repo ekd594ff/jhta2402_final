@@ -38,7 +38,8 @@ function Login() {
         if (errorMessage !== null) {
             setSnackbarState({
                 message: `${errorMessage}로 가입한 계정입니다. 다른 방법으로 로그인해주세요.`,
-                open: true});
+                open: true
+            });
         }
     }, []);
 
@@ -97,7 +98,9 @@ function Login() {
                         <Button variant="contained" className={style['login-btn']} size="large" onClick={submit}>
                             로그인
                         </Button>
-                        <Button variant="outlined" className={style['register-btn']} size="large" onClick={submit}>
+                        <Button variant="outlined" className={style['register-btn']} size="large" onClick={() => {
+                            navigate("/signup");
+                        }}>
                             회원가입
                         </Button>
                     </div>
