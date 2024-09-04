@@ -1,12 +1,16 @@
 package com.user.IntArea.dto.quotationRequest;
 
 import com.user.IntArea.dto.solution.SolutionDto;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Data
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class QuotationRequestDto {
     private UUID memberId;
     private UUID portfolioId;
