@@ -1,9 +1,11 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.quotation.QuotationCreateDto;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.service.QuotationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/quotation")
@@ -12,5 +14,12 @@ public class QuotationController {
 
     private final QuotationService quotationService;
 
+    // seller 권한
+
+    @PostMapping
+    public ResponseEntity<?> createQuotation(@RequestBody QuotationCreateDto quotationCreateDto) {
+        quotationService.create(quotationCreateDto);
+        return ResponseEntity.ok().build();
+    }
 
 }

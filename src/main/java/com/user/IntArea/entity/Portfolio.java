@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,4 +54,14 @@ public class Portfolio {
     }
 
 
+    public List<String> getPortfolioImages() {
+        List<String> images = new ArrayList<>();
+
+        return images;
+    }
+
+    public List<Quotation> getWrittenQuotations() {
+        List<Quotation> quotations = new ArrayList<>();
+        return quotations;
+    }
 }
