@@ -1,21 +1,20 @@
-import React, {useState, useRef} from 'react';
-import Box from "@mui/material/Box";
-import {Button} from "@mui/material";
+import React from 'react';
+import {DndProvider, useDrag, useDrop} from "react-dnd";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import {DndProvider, useDrag, useDrop} from 'react-dnd';
-import {HTML5Backend} from 'react-dnd-html5-backend';
-//import style from "../../styles/_variables.scss";
+import TextField from "@mui/material/TextField";
+import {Card, Grid2, Select} from "@mui/material";
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 const ItemTypes = {
     SOLUTION: 'solution',
 };
 
-const SolutionForm = () => {
-
-    const [solutions, setSolutions] = useState([]);
+function SolutionForm({solutions, setSolutions}) {
 
     const addSolution = () => {
+
         setSolutions([...solutions, {title: '', description: '', price: ''}]);
     };
 
@@ -43,24 +42,30 @@ const SolutionForm = () => {
         setSolutions(newSolutions);
     };
 
+
     return (
         <DndProvider backend={HTML5Backend}>
-            <Box sx={{padding: 1, textAlign: 'left'}}>
-                <Button id="addSolution" onClick={addSolution}>+솔루션 추가</Button>
-                <div>
-                    {solutions.map((solution, index) => (
-                        <SolutionItem
-                            key={index}
-                            index={index}
-                            solution={solution}
-                            moveSolution={moveSolution}
-                            handleInputChange={handleInputChange}
-                            handleCurrencyChange={handleCurrencyChange}
-                            handleRemoveSolution={handleRemoveSolution}
-                        />
-                    ))}
-                </div>
-            </Box>
+            <Button id="addSolution" onClick={addSolution}
+                    variant="outlined"
+                    style={{
+                        borderColor: '#FA4D56',
+                        color: '#FA4D56',
+                        margin: '32px 16px'
+                    }}
+            >솔루션 추가</Button>
+            <div>
+                {solutions.map((solution, index) => (
+                    <SolutionItem
+                        key={index}
+                        index={index}
+                        solution={solution}
+                        moveSolution={moveSolution}
+                        handleInputChange={handleInputChange}
+                        handleCurrencyChange={handleCurrencyChange}
+                        handleRemoveSolution={handleRemoveSolution}
+                    />
+                ))}
+            </div>
         </DndProvider>
     );
 }
@@ -105,77 +110,63 @@ const SolutionItem = ({
     drag(drop(ref));
 
     return (
-        <Box
-            ref={ref}
-            key={index}
-            sx={{
-                padding: 2,
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                marginBottom: 2,
-            }}
-        >
+        <Card ref={ref} variant="outlined" style={{padding: "16px", margin: "24px 0"}}>
             <Stack
                 key={index}
                 direction="column"
                 spacing={2}
                 sx={{marginTop: 2, alignItems: 'left'}}
             >
-                <Typography variant="h7">{`${index + 1}번째 솔루션`}</Typography>
-                <input
+                <Typography variant="h6">{`${index + 1}번째 솔루션`}</Typography>
+                <TextField
+                    variant="outlined"
                     type="text"
                     name="title"
-                    placeholder="title"
+                    placeholder="솔루션 제목"
                     value={solution.title}
                     onChange={(event) => handleInputChange(index, event)}
-                    style={{width: '100%', height: '30px', padding: '0px'}}
-                ></input>
-                <textarea
-                    name="description"
-                    placeholder="description"
+                ></TextField>
+                <TextField
+                    variant="outlined" name="description"
+                    placeholder="솔루션 설명"
                     value={solution.description}
                     onChange={(event) => handleInputChange(index, event)}
-                    style={{width: '100%', height: '100px', padding: '0px'}}
-                ></textarea>
-                <Stack direction="row" spacing={1}>
-                    <input
-                        type="number"
-                        name="price"
-                        placeholder="price"
-                        value={solution.price}
-                        onChange={(event) => handleInputChange(index, event)}
-                        style={{
-                            width: '80%',
-                            height: '30px',
-                            padding: '0px',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px'
-                        }}
-                    />
-                    <select
-                        value={solution.currency}
-                        onChange={(event) => handleCurrencyChange(index, event)}
-                        style={{
-                            width: '20%',
-                            height: '30px',
-                            padding: '0px',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px'
-                        }}
-                    >
-                        <option value="KRW">원 (KRW)</option>
-                    </select>
-                </Stack>
-                <div className={style['deleteBtn']}>
+                    style={{width: '100%'}}
+                ></TextField>
+                <Grid2 container spacing={1}>
+                    <Grid2 size={8}>
+                        <TextField
+                            variant="outlined"
+                            type="number"
+                            name="price"
+                            placeholder="솔루션 최소 가격"
+                            value={solution.price}
+                            onChange={(event) => handleInputChange(index, event)}
+                            style={{width: '100%'}}
+                        />
+                    </Grid2>
+                    <Grid2 size={4}>
+                        <Select
+                            value={solution.currency}
+                            defaultValue="KRW"
+                            onChange={(event) => handleCurrencyChange(index, event)}
+                            style={{width: '100%'}}
+                            variant="outlined">
+                            <option value="KRW">원 (KRW)</option>
+                        </Select>
+                    </Grid2>
+                </Grid2>
+                <div>
                     <Button
                         variant="outlined"
                         onClick={() => handleRemoveSolution(index)}
+                        style={{borderColor: '#FA4D56', color: '#FA4D56'}}
                     >삭제</Button>
                 </div>
 
             </Stack>
-        </Box>
+        </Card>
     );
-
 }
+
 export default SolutionForm;

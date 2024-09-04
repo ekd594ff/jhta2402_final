@@ -4,7 +4,7 @@ import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
-import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
+import PortfolioImgListItem from "../../components/portfolio/portfolio-img-list-item.jsx";
 import style from "../../styles/portfolio-detail.module.scss";
 import {Backdrop} from "@mui/material";
 import List from "@mui/material/List";
