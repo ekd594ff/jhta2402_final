@@ -71,4 +71,11 @@ public class CompanyController {
 
         return ResponseEntity.ok(companies);
     }
+
+    @GetMapping("/admin/list")
+    public ResponseEntity<Page<CompanyResponseDto>> getAllCompany(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<CompanyResponseDto> companyResponseDtoPage = companyService.getAllCompany(pageable);
+        return ResponseEntity.ok().body(companyResponseDtoPage);
+    }
 }
