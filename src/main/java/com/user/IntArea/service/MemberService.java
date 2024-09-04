@@ -124,7 +124,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginInfoNotFoundException(new MemberResponseDto()));
 
-        // Member를 MemberResponseDto로 변환하여 반환
+        // Member를 MemberResponseDto로 변환
         return new MemberResponseDto(member);
     }
 
