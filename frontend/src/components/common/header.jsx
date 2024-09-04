@@ -17,10 +17,12 @@ function Header() {
     const [open, setOpen] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState("");
 
+
     const handleClickAvatar = (event) => {
         event.stopPropagation();
         setOpen(prev => !prev);
     }
+
     const handleLogout = async () => {
         try {
             await axios.get('/api/member/logout'); // 로그아웃 API 호출
@@ -36,6 +38,21 @@ function Header() {
             navigate(`/search/detailed?query=${searchTerm}`);
         }
     }
+
+    const handleCompanyClick = async () => {
+        try {
+            const response = await axios.get('/api/member/seller/role');
+            const hasSellerRole = response.status;
+    
+            if (hasSellerRole === 200) {
+                navigate("/company/edit");
+            }
+        } catch (error) { // 오류 객체를 인자로 받음
+            alert("회사가 없습니다. 생성 페이지로 이동합니다.");
+            navigate("/company/create");
+        }
+    }
+    
 
     useEffect(() => {
         axios.get(`/api/member/email`)
@@ -76,9 +93,9 @@ function Header() {
                                 onClick={handleClickAvatar}
                                 className={style['avatar']}
                             />
-                            <div className={`${style['menu']} ${open ? style['open'] : ""}`}
-                            >
+                            <div className={`${style['menu']} ${open ? style['open'] : ""}`}>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
+                                <MenuItem onClick={handleCompanyClick}>Company</MenuItem> {/* 수정된 부분 */}
                                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </div>
                         </>

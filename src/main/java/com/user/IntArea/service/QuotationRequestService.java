@@ -145,7 +145,7 @@ public class QuotationRequestService {
                         .solutions(quotationRequest.getRequestSolutions().stream()
                                 .map(rs -> SolutionDto.builder()
                                         .title(rs.getSolution().getTitle())
-                                        .description(rs.getSolution().getTitle())
+                                        .description(rs.getSolution().getDescription())
                                         .price(rs.getSolution().getPrice())
                                         .build())
                                 .collect(Collectors.toList()))

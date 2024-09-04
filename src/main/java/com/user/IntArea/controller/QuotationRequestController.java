@@ -37,7 +37,7 @@ public class QuotationRequestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQuotatioinRequest(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteQuotationRequest(@PathVariable UUID id) {
         quotationRequestService.deleteQuotationRequest(id);
         return ResponseEntity.noContent().build();
     }

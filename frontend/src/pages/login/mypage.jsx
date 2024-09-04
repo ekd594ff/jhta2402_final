@@ -17,7 +17,8 @@ const Mypage = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('/api/member/email'); // 이메일로 사용자 정보 가져오기
+                const response = await axios.get('/api/member/email');
+                console.log(response); // 이메일로 사용자 정보 가져오기
                 setUserData({
                     email: response.data.email,
                     username: response.data.username,
