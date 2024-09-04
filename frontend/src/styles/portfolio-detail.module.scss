@@ -35,15 +35,30 @@
     }
 
     .bottom {
-      & > .review-list-title {
+      & > .review-list-top {
         display: flex;
-        align-items: center;
-        gap: 6px;
+        justify-content: space-between;
 
-        & > span {
-          color: variables.$COLOR_PRIMARY;
+        & > .review-list-title {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+
+          & > span {
+            color: variables.$COLOR_PRIMARY;
+          }
+        }
+
+        & > .order {
+          display: flex;
+          gap: 16px;
+
+          & > button {
+            color: variables.$COLOR_PRIMARY;
+          }
         }
       }
+
 
       & > .review-list {
         padding: 16px 0;
@@ -51,6 +66,7 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
+
         & > li {
           list-style: none;
         }
@@ -64,11 +80,41 @@
     & > .top {
       display: flex;
 
+      @include variables.media-720 {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      @include variables.media-540 {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      @include variables.media-320 {
+        flex-direction: column;
+        gap: 32px;
+      }
+
       & > .left {
         display: flex;
         box-sizing: border-box;
         width: 60%;
         gap: 4px;
+
+        @include variables.media-720 {
+          width: 100%;
+          gap: 0;
+        }
+
+        @include variables.media-540 {
+          width: 100%;
+          gap: 0;
+        }
+
+        @include variables.media-320 {
+          width: 100%;
+          gap: 0;
+        }
 
         & > .selected-img {
           flex-grow: 1;
@@ -81,6 +127,18 @@
             overflow: hidden;
             background-color: #e6e6e6;
             cursor: pointer;
+
+            @include variables.media-720 {
+              padding-top: 40%;
+            }
+
+            @include variables.media-540 {
+              padding-top: 40%;
+            }
+
+            @include variables.media-320 {
+              padding-top: 40%;
+            }
 
             & > img {
               position: absolute;
@@ -100,6 +158,21 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
+
+        @include variables.media-720 {
+          width: 100%;
+          padding-left: 0;
+        }
+
+        @include variables.media-540 {
+          width: 100%;
+          padding-left: 0;
+        }
+
+        @include variables.media-320 {
+          width: 100%;
+          padding-left: 0;
+        }
 
         & > .solution-list-submit {
           background-color: variables.$COLOR_PRIMARY;
