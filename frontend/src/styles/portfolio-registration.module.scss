@@ -1,51 +1,141 @@
 @use "variables";
 
-.h1 {
-  color: variables.$COLOR_PRIMARY;
+
+.stepConnectorClasses.active {
+  border-color: variables.$COLOR_PRIMARY;
 }
 
-.h3 {
-  color: variables.$COLOR_PRIMARY;
-}
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+  padding-bottom: 250px;
 
-label > h3 {
-  color: variables.$COLOR_PRIMARY;
-}
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
 
-.btn-primary {
-  color: variables.$COLOR_PRIMARY;
-  background-color: variables.$COLOR_PRIMARY;
-}
+    & > .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 32px 0 32px 0;
+      text-align: center;
+    }
 
-.delete-btn {
-  color: variables.$COLOR_PRIMARY;
-  background-color: white;
-  //font-weight: bold;
-}
+    & > .step-progress {
 
-.deleteBtn {
-  color: variables.$COLOR_PRIMARY !important;
-  background-color: white;
-}
+      & > .step {
+        border-color: variables.$COLOR_PRIMARY;
+      }
 
-.customButton {
-  color: variables.$COLOR_PRIMARY !important;
-  border-color: variables.$COLOR_PRIMARY !important;
+    }
 
-  &:hover {
-    background-color: rgba(250, 77, 86, 0.08) !important;
-    border-color: variables.$COLOR_PRIMARY !important;
-  }
-}
+    & > .form1 {
+
+      & > .textfield-div {
+        display: flex;
+        flex-direction: column;
+        margin: 16px 0;
+
+        & > .default-textfield {
+          margin: 16px 28px;
+          padding: 4px 0;
+        }
+
+        & > .outlined-textfield {
+          margin: 16px;
+          padding: 4px 0;
+        }
+      }
+
+      & > .company-div {
+        display: block;
+        justify-content: space-between;
+        margin: 16px;
+
+        & > .info-container {
+          margin: 16px;
+
+          & > .info-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+
+            & > .info-title {
+              font-weight: 600;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+
+      & > .image-div {
+      }
+
+      & > .button-div {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        justify-content: end;
+
+        & > .next-button {
+          border-color: variables.$COLOR_PRIMARY;
+          color: variables.$COLOR_PRIMARY;
+        }
+      }
 
 
-div {
-  & > .btn1 {
-    & > .btn2 {
-      & > .register-btn {
-        background-color: variables.$COLOR_PRIMARY;
-        color: white;
+    }
+
+    & > .form2 {
+
+      & > .button-div {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        justify-content: space-between;
+
+        & > .prev-button {
+          border-color: gray;
+          color: gray;
+        }
+
+        & > .next-button {
+          border-color: variables.$COLOR_PRIMARY;
+          color: variables.$COLOR_PRIMARY;
+        }
       }
     }
+
+    & > .form3 {
+
+      & > .button-div {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        justify-content: space-between;
+
+        & > .prev-button {
+          border-color: gray;
+          color: gray;
+        }
+
+        & > .register-button {
+          background-color: variables.$COLOR_PRIMARY;
+        }
+      }
+
+      & > .solution-item {
+        padding: 16px;
+      }
+    }
+  }
+
+  & > .snackbar {
+    margin-top: 48px;
   }
 }

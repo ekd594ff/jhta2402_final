@@ -38,7 +38,8 @@ function Login() {
         if (errorMessage !== null) {
             setSnackbarState({
                 message: `${errorMessage}로 가입한 계정입니다. 다른 방법으로 로그인해주세요.`,
-                open: true});
+                open: true
+            });
         }
     }, []);
 
@@ -136,7 +137,10 @@ function Login() {
                     onClose={() => setSnackbarState({...snackbarState, open: false})}
                     severity="error"
                     variant="outlined"
-                    sx={{width: '100%'}}
+                    sx={{
+                        width: '100%',
+                        bgcolor: 'background.paper',
+                    }}
                 >
                     {snackbarState.message}
                 </Alert>

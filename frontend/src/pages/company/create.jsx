@@ -177,7 +177,7 @@ function CreateCompany() {
                                 inputLabel: {
                                     shrink: true,
                                 }
-                            }} />
+                            }}/>
                         <div className={style['padding']}/>
                         <TextField className={style['text-field-detail']}
                                    value={detailAddress}

@@ -1,74 +1,92 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import ImageGallerySlider from "./imageGallerySlider.jsx";
+import React from 'react';
+import {HTML5Backend} from "react-dnd-html5-backend";
+import style from "../../styles/portfolio-registration.module.scss";
+import Stack from "@mui/material/Stack";
+import {Box, Button, Grid2} from "@mui/material";
+import ImageItem from "./ImageItem.jsx";
+import {DndProvider} from "react-dnd";
 
-const MAX_IMAGES = 32; // 최대 이미지 갯수 설정
+const MAX_IMAGES = 32;
 
-const ImageUpload = () => {
-    const [otherImages, setOtherImages] = useState([]);
+function ImageUpload({images, setImages, otherImages, setOtherImages}) {
+
+    // Image -------------------------------------------
 
     const handleOtherImagesChange = (event) => {
         const files = Array.from(event.target.files);
         const remainingSlots = MAX_IMAGES - otherImages.length;
 
         // 새로운 이미지가 최대 갯수를 초과하지 않도록 제한
-        if (files.length > remainingSlots) {
-            alert(`최대 ${MAX_IMAGES}개의 이미지만 등록할 수 있습니다.`);
-            return;
-        }
+        // if (files.length > remainingSlots) {
+        //     alert(`최대 ${MAX_IMAGES}개의 이미지만 등록할 수 있습니다.`);
+        //     return;
+        // }
 
         const imageUrls = files.map(file => ({
             id: URL.createObjectURL(file),
             url: URL.createObjectURL(file),
             file: file
         }));
+        console.log("test");
+
         setOtherImages([...otherImages, ...imageUrls]);
+        console.log(otherImages);
+        setImages(files);
+
+
     };
 
     const moveImage = (dragIndex, hoverIndex) => {
+        const draggedOtherImages = [...otherImages];
+        const [draggedOtherImage] = draggedOtherImages.splice(dragIndex, 1);
+        draggedOtherImages.splice(hoverIndex, 0, draggedOtherImage);
+        setOtherImages(draggedOtherImages);
+
         const draggedImages = [...otherImages];
         const [draggedImage] = draggedImages.splice(dragIndex, 1);
         draggedImages.splice(hoverIndex, 0, draggedImage);
-        setOtherImages(draggedImages);
+        setImages(draggedImages);
     };
 
     const removeImage = (index) => {
-        const filteredImages = otherImages.filter((_, i) => i !== index);
-        setOtherImages(filteredImages);
+        setOtherImages(otherImages.filter((_, i) => i !== index));
+        setImages(images.filter((_, i) => i !== index));
     };
 
     return (
-        <DndProvider backend={HTML5Backend}>
-            <Box sx={{ padding: 2, textAlign: 'left' }}>
-                <Stack spacing={2}>
-                    <label>
-                        이미지 업로드(한 번에 다수 등록 가능, 최대 {MAX_IMAGES}개)
-                        <input
-                            type="file"
-                            id="formFileMultiple"
-                            multiple
-                            onChange={handleOtherImagesChange}
-                            disabled={otherImages.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
+        <DndProvider backend={HTML5Backend} className={style["dnd-provider"]}>
+            <Stack direction="row" sx={{margin: "16px", gap: "16px"}}>
+                {/*<p>{`현재 등록된 이미지: ${otherImages.length}/${MAX_IMAGES}`}</p>*/}
+                <Button style={{borderColor: '#FA4D56', color: '#FA4D56', margin: '8px'}}
+                        variant="outlined" component="label">
+                    <input
+                        type="file"
+                        id="formFileMultiple"
+                        multiple
+                        onChange={handleOtherImagesChange}
+                        disabled={otherImages.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
+                        hidden
+                    />이미지 등록
+                </Button>
+            </Stack>
+
+            <Box sx={{flexGrow: 1}}>
+                <Grid2 container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
+
+                    {otherImages.map((image, index) => (
+                        <ImageItem
+                            key={image.id}
+                            index={index}
+                            image={image}
+                            moveImage={moveImage}
+                            removeImage={removeImage} // 이미지 삭제 함수 전달
                         />
-                        <h6>{`현재 등록된 이미지: ${otherImages.length}/${MAX_IMAGES}`}</h6>
-                    </label>
-                </Stack>
+                    ))}
+                </Grid2>
             </Box>
 
-            <Box sx={{padding: 1}}>
-                <div>
-                    <ImageGallerySlider
-                        otherImages={otherImages}
-                        moveImage={moveImage}
-                        removeImage={removeImage}
-                    />
-                </div>
-            </Box>
         </DndProvider>
     );
-};
+}
 
 export default ImageUpload;

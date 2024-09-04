@@ -5,7 +5,7 @@ import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
 import style from "../../styles/portfolio-detail.module.scss";
-import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
+import PortfolioImgListItem from "../../components/portfolio/portfolio-img-list-item.jsx";
 
 
 function PortfolioDetail() {
