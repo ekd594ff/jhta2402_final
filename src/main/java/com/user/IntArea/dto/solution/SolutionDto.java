@@ -11,5 +11,5 @@ public class SolutionDto {
 
     private final String title;
     private final String description;
-    private final String price;
+    private final int price;
 }
