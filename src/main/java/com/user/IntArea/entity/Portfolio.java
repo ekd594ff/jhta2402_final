@@ -1,12 +1,15 @@
 package com.user.IntArea.entity;
 
+import com.user.IntArea.service.ImageService;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,5 +53,17 @@ public class Portfolio {
         this.company = company;
         this.title = title;
         this.description = description;
+    }
+
+
+    public List<String> getPortfolioImages() {
+        List<String> images = new ArrayList<>();
+
+        return images;
+    }
+
+    public List<Quotation> getWrittenQuotations() {
+        List<Quotation> quotations = new ArrayList<>();
+        return quotations;
     }
 }
