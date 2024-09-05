@@ -20,7 +20,7 @@ public class Quotation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quotationRequestId")
     private QuotationRequest quotationRequest;
 
@@ -58,12 +58,13 @@ public class Quotation {
     boolean isContractCompleted; // 기본값 false. 계약 완료 여부를 의미함. true가 될 경우 영수증이 됨.
 
     @Builder
-    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount) {
+    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, QuotationProgress progressStatus, boolean isDeleted, boolean isCustomerPaid, boolean isContractTerminated, boolean isContractCompleted) {
         this.quotationRequest = quotationRequest;
         this.totalTransactionAmount = totalTransactionAmount;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.clientName = quotationRequest.getMember().getUsername();
+        this.progressStatus = QuotationProgress.PENDING;
         this.isDeleted = false;
         this.isAvailable = true;
         this.isCustomerPaid = false;

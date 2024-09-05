@@ -50,8 +50,4 @@ public class QuotationRequest {
         this.title = title;
         this.description = description;
     }
-
-    public Quotation getWrittenQuotation() {
-        return null; // 작성 필요
-    }
 }
