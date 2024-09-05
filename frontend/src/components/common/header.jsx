@@ -2,13 +2,37 @@ import * as React from 'react';
 import {Button, TextField} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {Link, useNavigate} from "react-router-dom";
-import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import style from "../../styles/header.module.scss";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import IconButton from "@mui/material/IconButton";
 import SearchIcon from '@mui/icons-material/Search';
+
+function SearchBox(props) {
+    const {setter, expand} = props;
+    const [value, setValue] = useState("");
+    const navigator = useNavigate();
+    return (
+        <div className={style['search-box']}>
+            <div className={style['search-icon-wrapper']} onClick={() => {
+                setter(prev => !prev)
+            }}>
+                <SearchIcon/>
+            </div>
+            <input
+                className={`${style["styled-input-base"]} ${expand ? style['expand'] : ""}`}
+                placeholder="포트폴리오 검색"
+                value={value}
+                onChange={(event) => setValue(event.target.value)}
+                onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                        navigator(`/search/detailed?query=${value}`);
+                    }
+                }}
+            />
+        </div>
+    );
+}
 
 function Header() {
     const navigate = useNavigate();
@@ -18,6 +42,7 @@ function Header() {
     const [username, setUsername] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState("");
+    const [searchBoxExpand, setSearchBoxExpand] = useState(false);
 
     const handleClickAvatar = (event) => {
         event.stopPropagation();
@@ -55,24 +80,21 @@ function Header() {
     return (
         <header className={style["header"]}>
             <div className={style['container']}>
-                <Link to="/" className={style["logoSample"]}>
+                <Link to="/" className={`${style["logoSample"]} ${searchBoxExpand ? style['expand'] : ""}`}>
                     <img src="/logo.svg" alt="home"/>
                 </Link>
-                {/* 검색 기능 추가 */}
                 <div className={style["search"]}>
-                    <TextField
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="검색어 입력"
-                        variant="outlined"
-                        size="small"
-                    />
-                    <Button onClick={handleSearch} variant="contained">검색</Button>
+                    {/*<TextField*/}
+                    {/*    value={searchTerm}*/}
+                    {/*    onChange={(e) => setSearchTerm(e.target.value)}*/}
+                    {/*    placeholder="검색어 입력"*/}
+                    {/*    variant="outlined"*/}
+                    {/*    size="small"*/}
+                    {/*/>*/}
+                    {/*<Button onClick={handleSearch} variant="contained">검색</Button>*/}
                 </div>
-                <div className={style["buttons"]}>
-                    <IconButton aria-label="search" className={style['search']}>
-                        <SearchIcon/>
-                    </IconButton>
+                <div className={`${style["buttons"]} ${searchBoxExpand ? style['expand'] : ""}`}>
+                    <SearchBox setter={setSearchBoxExpand} expand={searchBoxExpand}/>
                     {isLoading ? <></> : isLoggedIn ? (
                         <>
                             <Avatar

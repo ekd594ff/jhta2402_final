@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { Typography, List, ListItem, ListItemText, CircularProgress, Button, Grid } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import {Typography, CircularProgress, Button, Grid} from '@mui/material';
+import {useLocation} from 'react-router-dom';
+
 import Header from '../components/common/header';
+import Footer from "../components/common/footer.jsx";
+import SearchListItem from "../components/searchlist/search-list-item.jsx";
+
+import style from "../styles/serachlist.module.scss";
+
 
 function SearchList() {
     const location = useLocation();
@@ -20,7 +26,9 @@ function SearchList() {
 
             try {
                 const response = await axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${page}&size=10`);
-                setResults(prevResults => [...prevResults, ...response.data.content]);
+                setResults(prevResults => {
+                    return [...prevResults, ...response.data.content]
+                });
                 setHasMore(response.data.content.length > 0); // 다음 페이지가 있는지 확인
             } catch (err) {
                 setError('검색 결과를 가져오는 데 실패했습니다.');
@@ -41,49 +49,32 @@ function SearchList() {
     };
 
     if (loading && page === 0) {
-        return <CircularProgress />;
+        return <CircularProgress/>;
     }
     if (error) {
         return <Typography color="error">{error}</Typography>;
     }
 
     return (
-        <div>
-            <Header />
-            <Typography variant="h6" style={{ marginTop: '80px' }}>검색 결과</Typography>
-            <Grid >
-                {results.length > 0 ? (
-                    results.map((item, index) => (
-                        <ListItem key={index} divider>
-                            <ListItemText
-                                primary={item.title}
-                                secondary={
-                                    <>
-                                        <span style={{ color: 'black' }}>{item.description}</span>
-                                        <br />
-                                        <span style={{ color: 'gray' }}>{item.companyName}</span>
-                                    </>
-                                }
-                            />
-                            <Grid container spacing={1}>
-                                {item.imageUrls && item.imageUrls.map((url, imgIndex) => (
-                                    <Grid item key={imgIndex} style={{ marginLeft: '8px' }}>
-                                        <img src={`https://picsum.photos/seed/${imgIndex}/600/400`} alt={`image-${imgIndex}`} style={{ width: '100px', height: 'auto', borderRadius: '4px' }} />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </ListItem>
-                    ))
-                ) : (
-                    <Typography>No results found</Typography>
-                )}
-            </Grid>
-            {hasMore && (
-                <Button variant="contained" color="primary" onClick={loadMoreResults} disabled={loading}>
-                    {loading ? 'Loading...' : '더보기'}
-                </Button>
-            )}
-        </div>
+        <>
+            <Header/>
+            <main className={style['searchList']}>
+                <div className={style['container']}>
+                    <div className={style['search-title']}><span>{`'${query}'`}</span>{`에 대한 검색결과`}</div>
+                    <ul className={style['list']}>
+                        {
+                            results.map((item, index) => <SearchListItem key={index} {...item}/>)
+                        }
+                    </ul>
+                    {hasMore && (
+                        <Button variant="contained" color="primary" onClick={loadMoreResults} disabled={loading}>
+                            {loading ? 'Loading...' : '더보기'}
+                        </Button>
+                    )}
+                </div>
+            </main>
+            <Footer/>
+        </>
     );
 }
 

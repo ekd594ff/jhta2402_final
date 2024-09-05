@@ -1,0 +1,136 @@
+@use "variables";
+
+.search-list-item {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1 1 calc((100% - 3 * 16px) / 4);
+  max-width: calc((100% - 3 * 16px) / 4);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+
+  @include variables.media-960 {
+    flex: 1 1 calc((100% - 3 * 16px) / 3);
+    max-width: calc((100% - 3 * 16px) / 3);
+  }
+
+  @include variables.media-720 {
+    flex: 1 1 calc((100% - 2 * 16px) / 2);
+    max-width: calc((100% - 2 * 16px) / 2);
+  }
+
+  @include variables.media-540 {
+    flex: 1 1 calc((100% - 2 * 16px) / 2);
+    max-width: calc((100% - 2 * 16px) / 2);
+  }
+
+  @include variables.media-320 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  & > .top {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    overflow: hidden;
+
+    & * {
+      user-select: none;
+    }
+
+    & > .swiper {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 5px;
+
+      & :global(.swiper-button-prev) {
+        background-color: #ffffff66;
+        width: 36px;
+        height: 36px;
+        border-radius: 18px;
+
+        &::after {
+          font-size: 18px;
+          color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+        }
+      }
+
+      & :global(.swiper-button-next) {
+        background-color: #ffffff66;
+        width: 36px;
+        height: 36px;
+        border-radius: 18px;
+
+        &::after {
+          font-size: 18px;
+          color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+        }
+      }
+
+      & :global(.swiper-pagination-bullet) {
+        color: variables.$COLOR_PRIMARY;
+      }
+
+      & :global(.swiper-pagination-bullet-active) {
+        background-color: variables.$COLOR_PRIMARY;
+        opacity: 1;
+      }
+
+      & * {
+        border-radius: 5px;
+      }
+
+      img {
+        width: 100%;
+      }
+    }
+
+
+    & > .thumbnail {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  & > .bottom {
+    width: 100%;
+    font-size: small;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    & > .name {
+      font-weight: bold;
+    }
+
+    & > .info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      & > .rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: bold;
+      }
+    }
+
+    & > .description {
+      color: gray;
+    }
+  }
+}
