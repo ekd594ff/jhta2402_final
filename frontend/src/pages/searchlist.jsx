@@ -50,7 +50,7 @@ function SearchList() {
     return (
         <div>
             <Header />
-            <Typography variant="h6" style={{ marginTop: '80px' }}>검색 결과</Typography>
+            <Typography variant="h6" style={{ marginTop: '80px', marginLeft: '30px' }}>" {query} "의 검색 결과</Typography>
             <Grid >
                 {results.length > 0 ? (
                     results.map((item, index) => (

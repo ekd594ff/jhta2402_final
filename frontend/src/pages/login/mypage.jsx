@@ -8,6 +8,7 @@ const Mypage = () => {
         username: '',
         email: '',
         password: '',
+        profileImage: '',
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState('');
@@ -23,6 +24,7 @@ const Mypage = () => {
                     email: response.data.email,
                     username: response.data.username,
                     password: '', // 비밀번호는 초기화
+                    profileImage: response.data.profileImage || '',
                 });
             } catch (error) {
                 console.error('사용자 정보를 가져오는 중 오류 발생:', error);

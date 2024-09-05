@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Button, TextField} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {Link, useNavigate} from "react-router-dom";
-import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import style from "../../styles/header.module.scss";
 import {useEffect} from "react";
@@ -14,6 +13,7 @@ function Header() {
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
     const [username, setUsername] = React.useState("");
+    const [userImage, setUserImage] = React.useState(""); // 사용자 이미지 상태 추가
     const [open, setOpen] = React.useState(false);
     const [searchTerm, setSearchTerm] = React.useState("");
 
@@ -25,9 +25,9 @@ function Header() {
 
     const handleLogout = async () => {
         try {
-            await axios.get('/api/member/logout'); // 로그아웃 API 호출
-            setIsLoggedIn(false); // 로그인 상태 업데이트
-            navigate("/"); // 인덱스 페이지로 리다이렉트
+            await axios.get('/api/member/logout');
+            setIsLoggedIn(false);
+            navigate("/");
         } catch (err) {
             console.error("Logout failed", err);
         }
@@ -39,6 +39,12 @@ function Header() {
         }
     }
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            handleSearch();
+        }
+    };
+
     const handleCompanyClick = async () => {
         try {
             const response = await axios.get('/api/member/seller/role');
@@ -47,7 +53,7 @@ function Header() {
             if (hasSellerRole === 200) {
                 navigate("/company/edit");
             }
-        } catch (error) { // 오류 객체를 인자로 받음
+        } catch (error) {
             alert("회사가 없습니다. 생성 페이지로 이동합니다.");
             navigate("/company/create");
         }
@@ -57,7 +63,10 @@ function Header() {
     useEffect(() => {
         axios.get(`/api/member/email`)
             .then((res) => {
+                console.log(res);
                 setIsLoggedIn(res.data.id !== null);
+                setUsername(res.data.username); // 사용자 이름 설정
+                setUserImage(res.data.images[res.data.images.length - 1].url); // 사용자 이미지 URL 설정
             }).finally(() => {
             setIsLoading(false);
         });
@@ -66,6 +75,10 @@ function Header() {
            setOpen(false);
         });
     }, []);
+
+    // useEffect(() => {
+    //     console.log(userImage);
+    // } , [userImage]);
 
     return (
         <header className={style["header"]}>
@@ -81,6 +94,7 @@ function Header() {
                         placeholder="검색어 입력"
                         variant="outlined"
                         size="small"
+                        onKeyDown={handleKeyDown}
                     />
                     <Button onClick={handleSearch} variant="contained">검색</Button>
                 </div>
@@ -89,13 +103,14 @@ function Header() {
                         <>
                             <Avatar
                                 alt={username}
-                                src=""
+                                src={userImage} // 사용자 이미지 URL 설정
                                 onClick={handleClickAvatar}
                                 className={style['avatar']}
                             />
+                            <span className={style['username']}>{username}</span>
                             <div className={`${style['menu']} ${open ? style['open'] : ""}`}>
                                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                                <MenuItem onClick={handleCompanyClick}>Company</MenuItem> {/* 수정된 부분 */}
+                                <MenuItem onClick={handleCompanyClick}>Company</MenuItem>
                                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </div>
                         </>

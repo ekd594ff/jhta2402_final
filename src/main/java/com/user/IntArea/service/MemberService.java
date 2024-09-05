@@ -22,8 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -117,15 +120,25 @@ public class MemberService {
         throw new RuntimeException("filterColumn이 잘못됨");
     }
 
-    public MemberResponseDto getMemberByEmail() {
+    public MemberWithImagesResponseDto getMemberByEmail() {
         MemberDto memberDto = SecurityUtil.getCurrentMember()
                 .orElseThrow(() -> new LoginInfoNotFoundException(new MemberResponseDto()));
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginInfoNotFoundException(new MemberResponseDto()));
 
+        List<ImageDto> images = imageRepository.findAllByRefId(member.getId())
+                .stream()
+                .map(image -> ImageDto.builder()
+                        .refId(image.getRefId())
+                        .url(image.getUrl())
+                        .filename(image.getFilename())
+                        .originalFilename(image.getOriginalFilename())
+                        .build())
+                .collect(Collectors.toList());
+
         // Member를 MemberResponseDto로 변환
-        return new MemberResponseDto(member);
+        return new MemberWithImagesResponseDto(member,images);
     }
 
     @Transactional
