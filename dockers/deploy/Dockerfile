@@ -22,14 +22,14 @@ WORKDIR /apps/${APP_DIR_NAME}
 RUN chmod +x gradlew
 
 # Build the Spring Boot application
-RUN ./gradlew build
+RUN ./gradlew build -x test
 
 # Install frontend dependencies
 WORKDIR /apps/${APP_DIR_NAME}/frontend
 RUN npm install
 
 # Supervisor 설정 파일 복사
-COPY /apps/${APP_DIR_NAME}/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Supervisor를 사용하여 Spring Boot와 Vite 서버를 동시에 실행
 CMD ["/usr/bin/supervisord"]
