@@ -1,11 +1,8 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
-import com.user.IntArea.dto.portfolio.PortfolioDraftDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
-import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -65,8 +62,8 @@ public class PortfolioController {
     // seller
 
     @PostMapping
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreateDto portfolioCreateDto) {
-        portfolioService.create(portfolioCreateDto);
+    public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+        portfolioService.create(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -111,7 +108,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/admin/list")
-    public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam int size) {
+    public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getAllPortfolioInfoDtosByAdmin(pageable);
     }

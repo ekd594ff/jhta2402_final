@@ -79,8 +79,42 @@ public class MemberService {
     }
 
     public Page<MemberResponseDto> getMemberList(Pageable pageable) {
-        return memberRepository.findAll(pageable)
-                .map(MemberResponseDto::new);
+        return memberRepository.findAll(pageable).map(MemberResponseDto::new);
+    }
+
+    public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "email" -> {
+                    return memberRepository.findAllByEmailContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "role" -> {
+                    return memberRepository.findAllByRole(Role.valueOf(filterValue.get()), pageable).map(MemberResponseDto::new);
+                }
+                case "username" -> {
+                    return memberRepository.findAllByUsernameContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "platform" -> {
+                    return memberRepository.findAllByPlatformContaining(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "createdAt" -> {
+                    return memberRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return memberRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "deleted" -> {
+                    if (filterValue.get().equals("true")) {
+                        return memberRepository.findAllByIsDeletedIs(true, pageable).map(MemberResponseDto::new);
+                    } else {
+                        return memberRepository.findAllByIsDeletedIs(false, pageable).map(MemberResponseDto::new);
+                    }
+                }
+            }
+        } else {
+            return memberRepository.findAll(pageable).map(MemberResponseDto::new);
+        }
+        throw new RuntimeException("filterColumn이 잘못됨");
     }
 
     public MemberResponseDto getMemberByEmail() {
@@ -90,7 +124,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginInfoNotFoundException(new MemberResponseDto()));
 
-        // Member를 MemberResponseDto로 변환하여 반환
+        // Member를 MemberResponseDto로 변환
         return new MemberResponseDto(member);
     }
 

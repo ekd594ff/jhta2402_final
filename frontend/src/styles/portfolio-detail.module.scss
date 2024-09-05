@@ -1,35 +1,144 @@
 @use 'variables';
 
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+
+  & > img {
+    width: calc(100% - 32px);
+    max-width: 600px;
+    user-select: none;
+  }
+}
+
 .portfolio-detail {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   padding-top: variables.$HEADER_HEIGHT;
 
+
   & > .container {
     width: variables.$CONTAINER_WIDTH;
-    padding: 16px 16px 64px 16px;
+    max-width: 100%;
+    padding: 32px 16px 64px 16px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+
+    & .solution-list-title, & .review-list-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .bottom {
+      & > .review-list-top {
+        display: flex;
+        justify-content: space-between;
+
+        & > .review-list-title {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+
+          & > span {
+            color: variables.$COLOR_PRIMARY;
+          }
+        }
+
+        & > .order {
+          display: flex;
+          gap: 16px;
+
+          & > button {
+            color: variables.$COLOR_PRIMARY;
+          }
+        }
+      }
+
+
+      & > .review-list {
+        padding: 16px 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        & > li {
+          list-style: none;
+        }
+      }
+    }
+
+    .middle {
+
+    }
 
     & > .top {
-      height: calc(#{variables.$CONTAINER_WIDTH} / 2);
       display: flex;
+
+      @include variables.media-720 {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      @include variables.media-540 {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      @include variables.media-320 {
+        flex-direction: column;
+        gap: 32px;
+      }
 
       & > .left {
         display: flex;
         box-sizing: border-box;
-        width: 55%;
+        width: 60%;
         gap: 4px;
+
+        @include variables.media-720 {
+          width: 100%;
+          gap: 0;
+        }
+
+        @include variables.media-540 {
+          width: 100%;
+          gap: 0;
+        }
+
+        @include variables.media-320 {
+          width: 100%;
+          gap: 0;
+        }
+
         & > .selected-img {
           flex-grow: 1;
 
           & > .selected-img-wrapper {
-            background-color: lightsalmon;
             width: 100%;
             padding-top: 100%;
             position: relative;
             border-radius: 5px;
             overflow: hidden;
+            background-color: #e6e6e6;
+            cursor: pointer;
+
+            @include variables.media-720 {
+              padding-top: 40%;
+            }
+
+            @include variables.media-540 {
+              padding-top: 40%;
+            }
+
+            @include variables.media-320 {
+              padding-top: 40%;
+            }
 
             & > img {
               position: absolute;
@@ -41,10 +150,45 @@
             }
           }
         }
+      }
 
-        & > .img-list {
-          overflow: scroll;
+      & > .right {
+        width: 40%;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        @include variables.media-720 {
+          width: 100%;
+          padding-left: 0;
+        }
+
+        @include variables.media-540 {
+          width: 100%;
+          padding-left: 0;
+        }
+
+        @include variables.media-320 {
+          width: 100%;
+          padding-left: 0;
+        }
+
+        & > .solution-list-submit {
+          background-color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+          color: #fff;
+        }
+
+        & > .portfolio-solution-list {
+          border: 0.5px solid variables.$color-400;
+          border-radius: 6px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          height: calc(#{variables.$PORTFOLIO_SOLUTION_LIST_ITEM_HEIGHT} * 3 + 32px);
           overflow-x: hidden;
+          overflow-y: scroll;
 
           &::-webkit-scrollbar {
             width: 5px;
@@ -53,22 +197,38 @@
           &::-webkit-scrollbar-thumb {
             background-color: #989898;
           }
+        }
 
-          & > .list {
-            flex-direction: column;
-            display: flex;
-            gap: 5px;
-            padding: 0 5px;
-            box-sizing: border-box;
-            margin: 0;
-            list-style: none;
+        & > .info {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          & > div {
+            width: 100%;
+          }
+
+          & .company-name {
+            color: variables.$color-600;
+            font-size: 16px;
+          }
+
+          & .title {
+            color: variables.$color-900;
+            font-weight: bold;
+            font-size: 22px;
+          }
+
+          & .description {
+            color: variables.$color-800;
+            font-size: 20px;
+            width: 100%;
+            display: block;
           }
         }
-      }
-
-      & > .right {
-        width: 45%;
       }
     }
   }
 }
+
