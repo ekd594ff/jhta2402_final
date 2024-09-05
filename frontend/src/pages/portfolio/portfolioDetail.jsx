@@ -4,7 +4,7 @@ import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
-import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
+import PortfolioImgListItem from "../../components/portfolio/portfolio-img-list-item.jsx";
 import style from "../../styles/portfolio-detail.module.scss";
 import {Backdrop} from "@mui/material";
 import List from "@mui/material/List";
@@ -12,6 +12,8 @@ import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
 import Divider from '@mui/material/Divider';
 import Button from "@mui/material/Button";
+import StarIcon from '@mui/icons-material/Star';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -191,8 +193,14 @@ function PortfolioDetail() {
                         </Swiper>
                     </div>
                     <div className={style['bottom']}>
-                        <div className={style['review-list-title']}>리뷰
-                            <span>{reviewInfo.totalElements || ""}</span>
+                        <div className={style['review-list-top']}>
+                            <div className={style['review-list-title']}>리뷰
+                                <span>{reviewInfo.totalElements || ""}</span>
+                            </div>
+                            <div className={style['order']}>
+                                <Button size="small" disableRipple startIcon={<StarIcon/>}>추천순</Button>
+                                <Button size="small" disableRipple startIcon={<AccessTimeIcon/>}>최신순</Button>
+                            </div>
                         </div>
                         <ul className={style['review-list']}>
                             {

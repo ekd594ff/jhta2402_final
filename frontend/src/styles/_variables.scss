@@ -26,3 +26,27 @@ $color-1000: #212529; // 1000: 검은색 (가장 어두움)
 // 텍스트 색상
 $text-primary: $color-900; // 기본 텍스트 색상
 $text-secondary: $color-800; // 보조 텍스트 색상
+
+@mixin media-960 {
+  @media (max-width: 960px) {
+    @content;
+  }
+}
+
+@mixin media-720 {
+  @media (max-width: 720px) {
+    @content;
+  }
+}
+
+@mixin media-540 {
+  @media (max-width: 540px) {
+    @content;
+  }
+}
+
+@mixin media-320 {
+  @media (max-width: 320px) {
+    @content;
+  }
+}
