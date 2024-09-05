@@ -3,7 +3,7 @@ FROM openjdk:17-jdk-bullseye
 RUN apt-get install -y curl && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get update && \ 
-    apt-get install -y nodejs npm && \
+    apt-get install -y nodejs && \
     apt-get clean
 
 # 작업 디렉토리 설정
@@ -20,9 +20,6 @@ RUN git clone -b ${GIT_BRANCH_NAME} ${GIT_URI} ${APP_DIR_NAME}
 WORKDIR /apps/${APP_DIR_NAME}
 # Requires commenting when sharing with developers
 RUN rm -rf .git 
-COPY ${APP_WORKAPACE} ../
 
 WORKDIR /apps/${APP_DIR_NAME}/frontend
 RUN npm install
-
-WORKDIR /apps/${APP_WORKAPACE}
