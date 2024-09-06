@@ -8,10 +8,11 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import style from "../../styles/search-list-item.module.scss";
-
+import {useNavigate} from "react-router-dom";
 
 function SearchListItem(props) {
-    const {title, description, companyName, imageUrls} = props;
+    const {title, description, companyName, imageUrls, portfolioId} = props;
+    const navigator = useNavigate();
     return <li className={style['search-list-item']}>
         <div className={style['top']}>
             {
@@ -37,7 +38,9 @@ function SearchListItem(props) {
                                  alt='portfolio thumbnail'/>
             }
         </div>
-        <div className={style['bottom']}>
+        <div className={style['bottom']} onClick={() => {
+            navigator(`/portfolio/${portfolioId}`);
+        }}>
             <div className={style['name']}>{companyName}</div>
             <div className={style['info']}>
                 <div className={style['rating']}>

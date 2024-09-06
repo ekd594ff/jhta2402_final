@@ -13,6 +13,7 @@ import style from "../styles/serachlist.module.scss";
 function SearchList() {
     const location = useLocation();
     const query = new URLSearchParams(location.search).get('query');
+    const [prevQuery, setPrevQuery] = useState("");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -25,11 +26,12 @@ function SearchList() {
             setError(null);
 
             try {
-                const response = await axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${page}&size=10`);
+                const response = await axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${page}&size=1`);
                 setResults(prevResults => {
-                    return [...prevResults, ...response.data.content]
+                    const newList = [...prevResults, ...response.data.content];
+                    setHasMore(newList.length < response.data.page.totalElements);
+                    return newList;
                 });
-                setHasMore(response.data.content.length > 0); // 다음 페이지가 있는지 확인
             } catch (err) {
                 setError('검색 결과를 가져오는 데 실패했습니다.');
             } finally {
@@ -38,9 +40,31 @@ function SearchList() {
         };
 
         if (query) {
-            fetchSearchResults();
+            if (query !== prevQuery) {
+                console.log("1");
+                setLoading(true);
+                setError(null);
+                axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${page}&size=1`)
+                    .then(result => {
+                        setResults(prevResults => {
+                            return [...result.data.content];
+                        });
+                        setHasMore(result.data.page.totalElements > result.data.content.length);
+                    })
+                    .catch(err => {
+                        setError('검색 결과를 가져오는 데 실패했습니다.');
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                        setPrevQuery(query);
+                    });
+            } else {
+                console.log("2");
+                fetchSearchResults();
+            }
         }
-    }, [query, page]);
+    }, [prevQuery, query, page]);
+
 
     const loadMoreResults = () => {
         if (hasMore) {

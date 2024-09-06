@@ -83,16 +83,6 @@ function Header() {
                 <Link to="/" className={`${style["logoSample"]} ${searchBoxExpand ? style['expand'] : ""}`}>
                     <img src="/logo.svg" alt="home"/>
                 </Link>
-                <div className={style["search"]}>
-                    {/*<TextField*/}
-                    {/*    value={searchTerm}*/}
-                    {/*    onChange={(e) => setSearchTerm(e.target.value)}*/}
-                    {/*    placeholder="검색어 입력"*/}
-                    {/*    variant="outlined"*/}
-                    {/*    size="small"*/}
-                    {/*/>*/}
-                    {/*<Button onClick={handleSearch} variant="contained">검색</Button>*/}
-                </div>
                 <div className={`${style["buttons"]} ${searchBoxExpand ? style['expand'] : ""}`}>
                     <SearchBox setter={setSearchBoxExpand} expand={searchBoxExpand}/>
                     {isLoading ? <></> : isLoggedIn ? (

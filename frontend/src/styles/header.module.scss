@@ -49,16 +49,16 @@
       height: 100%;
 
       & > .search-box {
-        height: 40px;
-        min-width: 40px;
-        border-radius: 20px;
-        background-color: lightgray;
+        height: variables.$HEADER_BUTTON_HEIGHT;
+        min-width: variables.$HEADER_BUTTON_HEIGHT;
+        border-radius: calc(#{variables.$HEADER_BUTTON_HEIGHT} / 2);
+        background-color: variables.$color-300;
         display: flex;
         align-items: center;
 
         & > .search-icon-wrapper {
-          width: 40px;
-          height: 40px;
+          width: variables.$HEADER_BUTTON_HEIGHT;
+          height: variables.$HEADER_BUTTON_HEIGHT;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -101,15 +101,19 @@
       & > .login-btn {
         color: variables.$COLOR_PRIMARY;
         border-color: variables.$COLOR_PRIMARY;
+        height: variables.$HEADER_BUTTON_HEIGHT;
       }
 
       & > .signup-btn {
         background-color: variables.$COLOR_PRIMARY;
         color: variables.$color-100;
+        height: variables.$HEADER_BUTTON_HEIGHT;
       }
 
       & > .avatar {
         cursor: pointer;
+        width: variables.$HEADER_BUTTON_HEIGHT;
+        height: variables.$HEADER_BUTTON_HEIGHT;
       }
 
       & > .menu {
