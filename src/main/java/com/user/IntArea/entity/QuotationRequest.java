@@ -1,5 +1,6 @@
 package com.user.IntArea.entity;
 
+import com.user.IntArea.entity.enums.Progress;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -38,21 +39,25 @@ public class QuotationRequest {
     @OneToMany(mappedBy = "id")
     private List<RequestSolution> requestSolutions;
 
+    @OneToMany(mappedBy = "id")
+    private List<Quotation> quotations;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isAvailable = true; // 견적 요청서의 효력을 의미함. isAvailable = false가 될 경우 연관된 견적서의 효력도 상실.
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Progress progress;
 
     @Builder
-    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, boolean isAvailable) {
+    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, Progress progress) {
         this.member = member;
         this.portfolio = portfolio;
         this.title = title;
         this.description = description;
-        this.isAvailable = isAvailable;
+        this.progress = progress != null ? progress : Progress.PENDING; // 기본값 설정
     }
 }

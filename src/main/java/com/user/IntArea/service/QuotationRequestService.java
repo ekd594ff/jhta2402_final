@@ -10,15 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +21,7 @@ public class QuotationRequestService {
     private final MemberRepository memberRepository;
     private final PortfolioRepository portfolioRepository;
     private final CompanyRepository companyRepository;
+    private final QuotationService quotationService;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
@@ -93,13 +86,6 @@ public class QuotationRequestService {
         return company;
     }
 
-    // 견적 요청서 작성자 권한
-
-    // (견적요청서를 작성한 사용자 또는 seller) 견적 요청서의 효과를 없앰
-    public void invalidateQuotationRequest(QuotationRequest quotationRequest) {
-        quotationRequest.setAvailable(false);
-        quotationRequestRepository.save(quotationRequest);
-    }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 작성한 모든 견적요청서 출력 => QuotationRequestService 로 이동
     public List<QuotationRequest> getAllQuotationRequestOfMember() {

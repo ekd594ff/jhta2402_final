@@ -14,4 +14,9 @@ public enum Progress {
     ADMIN_CANCELLED("ADMIN_CANCELLED");
 
     private final String progress;
+
+    @Override
+    public String toString() {
+        return this.progress;
+    }
 }

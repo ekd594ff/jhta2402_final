@@ -1,6 +1,7 @@
 package com.user.IntArea.repository;
 
 import com.user.IntArea.entity.Member;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.QuotationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,8 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
 
 
 
+    QuotationRequest findQuotationRequestByQuotations(List<Quotation> quotations);
+
     // seller
 
     @Query("SELECT DISTINCT qr FROM QuotationRequest qr " +
@@ -22,17 +25,9 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "WHERE c.id = :companyId")
     List<QuotationRequest> getAllQuotationRequestTowardCompany(UUID companyId);
 
-    @Query("SELECT DISTINCT qr FROM QuotationRequest qr " +
-            "JOIN qr.portfolio p " +
-            "JOIN p.company c " +
-            "WHERE c.id = :companyId and qr.isAvailable = true ")
-    List<QuotationRequest> getAllValidQuotationRequestTowardCompany(UUID companyId);
 
 
-    @Query("SELECT DISTINCT qr FROM QuotationRequest qr " +
-            "WHERE qr.id=:quotationRequestId and qr.isAvailable = true")
-    Optional<QuotationRequest> getValidQuotationRequest(UUID quotationRequestId);
-
+    Optional<QuotationRequest> findQuotationRequestById(UUID quotationRequestId);
 
     // admin
 

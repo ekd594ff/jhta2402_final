@@ -80,19 +80,19 @@ VALUES ('8871d6a2-f6b8-4dbd-b4f5-8b45dadf7abc', '136780e7-9ead-46fc-8526-32fa58f
         200000, NOW(), NOW());
 
 
-INSERT INTO QUOTATIONREQUEST (ID, MEMBERID, PORTFOLIOID, TITLE, DESCRIPTION, CREATEDAT, UPDATEDAT, ISAVAILABLE)
+INSERT INTO QUOTATIONREQUEST (ID, MEMBERID, PORTFOLIOID, TITLE, DESCRIPTION, CREATEDAT, UPDATEDAT, PROGRESS)
 VALUES ('cb1d87df-3b5b-42b2-8031-3da210699463', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title1', 'description1', NOW(), NOW(), true),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title1', 'description1', NOW(), NOW(), 'PENDING'),
         ('5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 'cf6e8329-59a2-458b-b1ee-693d70d128fd',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title2', 'description2', NOW(), NOW(), true),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title2', 'description2', NOW(), NOW(), 'PENDING'),
        ('d8e01027-b7a3-43c1-a750-901e52688058', '5677b0b6-7b63-42c8-936c-a6d07c4793eb',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title3', 'description3', NOW(), NOW(), true),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title3', 'description3', NOW(), NOW(), 'PENDING'),
        ('8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 'c1b6ca53-0437-4eeb-959e-ec3ec97139d3',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title4', 'description4', NOW(), NOW(), true),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title4', 'description4', NOW(), NOW(), 'PENDING'),
        ('2fbf0f42-1f34-49b7-a860-414fc1ac7468', '8ccf8a1a-3e8d-48a1-a508-d2b99ec4e631',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title5', 'description5', NOW(), NOW(), true),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title5', 'description5', NOW(), NOW(), 'PENDING'),
        ('971b9a7f-18f0-4ad6-b2f3-d03d1356a342', '8ccf8a1a-3e8d-48a1-a508-d2b99ec4e631',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title6', 'description6', NOW(), NOW(), true);
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title6', 'description6', NOW(), NOW(), 'PENDING');
 
 
 INSERT INTO REQUESTSOLUTION (ID, QUOTATIONREQUESTID, SOLUTIONID, CREATEDAT, UPDATEDAT)
@@ -116,18 +116,12 @@ VALUES ('cd5dc428-b771-4e12-935b-f2afb0058c63', 'cb1d87df-3b5b-42b2-8031-3da2106
         '8871d6a2-f6b8-4dbd-b4f5-8b45dadf7abc', NOW(), NOW());
 
 
-/*INSERT INTO QUOTATION (ID, QUOTATIONREQUESTID, TOTALTRANSACTIONAMOUNT, CREATEDAT, UPDATEDAT, QUOTATIONPROGRESS, ISDELETED, ISAVAILABLE, ISCUSTOMERPAID, ISCONTRACTTERMINATED, ISCONTRACTCOMPLETED)
-VALUES ('f26e4985-d7e6-46c9-8447-b730457a426f', 'cb1d87df-3b5b-42b2-8031-3da210699463', 200000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING', false, true, false, false, false),
-       ('e5e8d4ff-1944-4dd8-abfa-5af26aec3894', '5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 500000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING',false, true, false, false, false),
-       ('42dbbfae-ad63-42bc-822e-5a5b3ba17324', 'd8e01027-b7a3-43c1-a750-901e52688058', 1000000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING',false, true, false, false, false),
-       ('acd9b947-7db0-4c34-9f01-479a8fc76363', '8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 400000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING',false, true, false, false, false);
-*/
-INSERT INTO QUOTATION (ID, QUOTATIONREQUESTID, TOTALTRANSACTIONAMOUNT, CREATEDAT, UPDATEDAT, QUOTATIONPROGRESS, ISDELETED, ISAVAILABLE, ISCUSTOMERPAID, ISCONTRACTCANCELLED, ISREFUNDNECESSARY, ISCONTRACTTERMINATED, ISCONTRACTCOMPLETED)
+INSERT INTO QUOTATION (ID, QUOTATIONREQUESTID, TOTALTRANSACTIONAMOUNT, CREATEDAT, UPDATEDAT, PROGRESS)
 VALUES
-    ('f26e4985-d7e6-46c9-8447-b730457a426f', 'cb1d87df-3b5b-42b2-8031-3da210699463', 200000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING', false, true, false, false,false, false, false),
-    ('e5e8d4ff-1944-4dd8-abfa-5af26aec3894', '5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 500000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING', false, true, false, false,false, false, false),
-    ('42dbbfae-ad63-42bc-822e-5a5b3ba17324', 'd8e01027-b7a3-43c1-a750-901e52688058', 1000000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING', false, true, false, false,false, false, false),
-    ('acd9b947-7db0-4c34-9f01-479a8fc76363', '8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 400000, NOW(), NOW(), 'SELLER_CREATED_AND_PENDING', false, true, false, false,false, false, false);
+    ('f26e4985-d7e6-46c9-8447-b730457a426f', 'cb1d87df-3b5b-42b2-8031-3da210699463', 200000, NOW(), NOW(), 'PENDING'),
+    ('e5e8d4ff-1944-4dd8-abfa-5af26aec3894', '5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 500000, NOW(), NOW(), 'PENDING'),
+    ('42dbbfae-ad63-42bc-822e-5a5b3ba17324', 'd8e01027-b7a3-43c1-a750-901e52688058', 1000000, NOW(), NOW(), 'PENDING'),
+    ('acd9b947-7db0-4c34-9f01-479a8fc76363', '8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 400000, NOW(), NOW(), 'PENDING');
 
 
 INSERT INTO REVIEW (ID, QUOTATIONID, MEMBERID, TITLE, DESCRIPTION, RATE, CREATEDAT, UPDATEDAT)
