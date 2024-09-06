@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +40,10 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     Page<Member> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
 
     Page<Member> findAllByIsDeletedIs(boolean isDeleted, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Member m SET m.isDeleted = true WHERE m.id IN :ids")
+    void softDeleteByIds(Iterable<UUID> ids);
 
     @Modifying
     @Query("update Member m set m.isDeleted = true WHERE m.id = %:id")

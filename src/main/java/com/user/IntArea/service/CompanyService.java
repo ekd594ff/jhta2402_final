@@ -182,4 +182,10 @@ public class CompanyService {
         }
         throw new RuntimeException("getCompanyListByFilter");
     }
+
+    @Transactional
+    public void softDeleteCompanys(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        companyRepository.softDeleteByIds(ids);
+    }
 }

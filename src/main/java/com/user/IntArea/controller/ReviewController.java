@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,6 +53,9 @@ public class ReviewController {
         log.info("filterColumn={}",filterColumn);
         log.info("filterValue={}",filterValue);
 
+        if (sortField.equals("username")) {
+            sortField = "member.username";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
@@ -59,5 +64,12 @@ public class ReviewController {
         }
         Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllSearchReview(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
+    }
+
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> deleteReviews(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        reviewService.deleteReviews(idList);
+        return ResponseEntity.noContent().build();
     }
 }

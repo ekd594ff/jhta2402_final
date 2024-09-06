@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,5 +58,11 @@ public class ReviewService {
             return reviewRepository.findAll(pageable).map(ReviewPortfolioDetailDto::new);
         }
         throw new RuntimeException("getSearchPortfolio");
+    }
+
+    @Transactional
+    public void deleteReviews(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        reviewRepository.deleteAllById(ids);
     }
 }

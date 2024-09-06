@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -104,6 +105,13 @@ public class CompanyController {
         Page<CompanyResponseDto> companyResponseDtoPage =
                 companyService.getCompanyListByFilter(pageable, Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue));
         return ResponseEntity.ok().body(companyResponseDtoPage);
+    }
+
+    @DeleteMapping("/admin/soft/{ids}")
+    public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        companyService.softDeleteCompanys(idList);
+        return ResponseEntity.noContent().build();
     }
 
 }

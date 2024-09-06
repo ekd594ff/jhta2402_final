@@ -26,9 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/member")
@@ -126,14 +125,14 @@ public class MemberController {
 
     @GetMapping("/admin/list/filter/contains")
     public ResponseEntity<Page<MemberResponseDto>> getSearchMember(@RequestParam int page, @RequestParam(name = "pageSize") int size,
-                                                                   @RequestParam(defaultValue = "createdAt",required = false) String sortField,
-                                                                   @RequestParam(defaultValue = "desc",required = false) String sort,
+                                                                   @RequestParam(defaultValue = "createdAt", required = false) String sortField,
+                                                                   @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                    @RequestParam(required = false) String filterColumn,
                                                                    @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}",sortField);
-        log.info("sort={}",sort);
-        log.info("filterColumn={}",filterColumn);
-        log.info("filterValue={}",filterValue);
+        log.info("sortField={}", sortField);
+        log.info("sort={}", sort);
+        log.info("filterColumn={}", filterColumn);
+        log.info("filterValue={}", filterValue);
         System.out.println(filterColumn);
         System.out.println(filterValue);
 
@@ -150,5 +149,12 @@ public class MemberController {
     @GetMapping("/seller/role")
     public ResponseEntity<?> getSellerRole() {
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/admin/soft/{ids}")
+    public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        memberService.softDeleteMembers(idList);
+        return ResponseEntity.noContent().build();
     }
 }

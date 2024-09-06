@@ -5,6 +5,8 @@ import com.user.IntArea.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -30,4 +32,8 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
     Page<Company> findAllByDescriptionContains(String description, Pageable pageable);
 
     Page<Company> findAllByIsAppliedIs(boolean isApplied, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Company c SET c.isDeleted = true WHERE c.id IN :ids")
+    void softDeleteByIds(Iterable<UUID> ids);
 }

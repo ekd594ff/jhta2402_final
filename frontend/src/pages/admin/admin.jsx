@@ -17,6 +17,7 @@ import {
     GridToolbarExport,
     getGridStringOperators
 } from "@mui/x-data-grid";
+import {Button} from "@mui/material";
 
 
 function NestedList() {
@@ -82,6 +83,8 @@ function DataTable() {
     const [filterModel, setFilterModel] = useState({field: "", value:"" });
     const [paginationModel, setPaginationModel] = useState({page: 0, pageSize: 5});
     const [sortModel, setSortModel] = useState({field: "", sort: ""})
+    const [selectedRows, setSelectedRows] = useState([]);
+
     const fetchData = async (pathname, paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
@@ -193,7 +196,25 @@ function DataTable() {
         // console.log("paginationModel", model);
         setPaginationModel(model);
     };
+    const handleRowSelection = (newSelection) => {
+        console.log(newSelection);
+        // console.log(newSelection.rowIds);
+        setSelectedRows(newSelection.join(","));
+    };
+    const handleApiRequest = async () => {
+        try {
+            const ids = selectedRows;
+            const response = await axios.delete(`/api/${pathname}/admin/soft/${ids}`,
+                );
 
+            console.log('selectedRows', selectedRows);
+            console.log('API Response:', response.data);
+        } catch (error) {
+            console.error('Error sending API request:', error);
+        } finally {
+            console.log('selectedRows', selectedRows);
+        }
+    };
     return (
         <Paper sx={{height: 400, width: '100%'}}>
             <DataGrid
@@ -211,8 +232,12 @@ function DataTable() {
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}
                 onPaginationModelChange={handlePaginationModelChange}
+                onRowSelectionModelChange={handleRowSelection}
                 paginationModel={paginationModel}
             />
+            <Button onClick={handleApiRequest} variant="contained" color="danger">
+                soft delete
+            </Button>
         </Paper>
     );
 }

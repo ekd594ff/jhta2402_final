@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -154,14 +155,23 @@ public class PortfolioController {
         log.info("sort={}",sort);
         log.info("filterColumn={}",filterColumn);
         log.info("filterValue={}",filterValue);
-
+        if (sortField.equals("companyName")) {
+            sortField = "company.companyName";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
+        log.info("pageable={}",pageable);
         Page<PortfolioInfoDto> portfolioInfoDtoPage = portfolioService.getSearchPortfolio(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
         return ResponseEntity.ok().body(portfolioInfoDtoPage);
+    }
+    @DeleteMapping("/admin/soft/{ids}")
+    public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        portfolioService.softDeletePortfolios(idList);
+        return ResponseEntity.noContent().build();
     }
 }

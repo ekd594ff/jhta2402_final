@@ -282,4 +282,10 @@ public class PortfolioService {
         }
         throw new RuntimeException("getSearchPortfolio");
     }
+
+    @Transactional
+    public void softDeletePortfolios(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        portfolioRepository.softDeleteByIds(ids);
+    }
 }
