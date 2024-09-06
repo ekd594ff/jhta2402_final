@@ -1,5 +1,6 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.member.MemberDto;
@@ -11,7 +12,6 @@ import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import com.user.IntArea.repository.PortfolioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -77,7 +77,7 @@ public class PortfolioService {
 
     // (일반 권한) 특정한 하나의 포트폴리오 InfoDto 불러오기
     public PortfolioInfoDto getOpenPortfolioInfoById(UUID id) throws NoSuchElementException {
-        try{
+        try {
             Portfolio portfolio = portfolioRepository.getOpenPortfolioInfoById(id);
             PortfolioInfoDto portfolioInfoDto = PortfolioInfoDto.builder()
                     .title(portfolio.getTitle())
@@ -88,7 +88,7 @@ public class PortfolioService {
                     .isDeleted(portfolio.isDeleted())
                     .build();
             return portfolioInfoDto;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new NoSuchElementException("");
         }
     }
@@ -103,14 +103,42 @@ public class PortfolioService {
     // seller 권한
 
     // (seller 권한) 포트폴리오 생성
-    public Portfolio create(PortfolioCreateDto portfolioCreateDto) {
+    @Transactional
+    public Portfolio create(@RequestParam PortfolioRequestDto portfolioRequestDto) {
+
         Company company = getCompanyOfMember();
+
         Portfolio portfolio = Portfolio.builder()
-                .title(portfolioCreateDto.getTitle())
-                .description(portfolioCreateDto.getDescription())
+                .title(portfolioRequestDto.getTitle())
+                .description(portfolioRequestDto.getDescription())
                 .company(company)
                 .build();
-        return portfolioRepository.save(portfolio);
+
+        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
+
+        //  이미지 저장
+        if (portfolioRequestDto.getImages() != null) {
+            for (int i = 0; i < portfolioRequestDto.getImages().size(); i++) {
+
+                MultipartFile image = portfolioRequestDto.getImages().get(i);
+
+                ImageDto imageDto = imageUtil.uploadS3(
+                                image,
+                                savedPortfolio.getId(),
+                                i)
+                        .orElseThrow(() -> new NoSuchElementException("이미지 저장에 문제가 발생했습니다."));
+
+                imageRepository.save(imageDto.toImage());
+            }
+        }
+
+        // 솔루션 저장
+        List<Solution> solutions = portfolioRequestDto.getSolutions().stream()
+                .map(solutionDto -> solutionDto.toSolution(portfolio))
+                .toList();
+        solutionRepository.saveAll(solutions);
+
+        return savedPortfolio;
     }
 
     // (seller 권한) 포트폴리오 수정
