@@ -5,21 +5,25 @@ import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
 import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
-import style from "../../styles/portfolio-detail.module.scss";
-import {Backdrop} from "@mui/material";
+
+import {Backdrop, Modal, Tooltip, Typography} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
+
+import {Swiper, SwiperSlide} from 'swiper/react';
+import IconButton from "@mui/material/IconButton";
+
 import Divider from '@mui/material/Divider';
 import Button from "@mui/material/Button";
 import StarIcon from '@mui/icons-material/Star';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-
-
-import {Swiper, SwiperSlide} from 'swiper/react';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import ShareIcon from '@mui/icons-material/Share';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
+import style from "../../styles/portfolio-detail.module.scss";
 
 
 const solutionAJAXPromise = (portfolioId) => axios.get(`/api/solution/portfolio/${portfolioId}`);
@@ -36,6 +40,8 @@ function PortfolioDetail() {
     const [modalOpen, setModalOpen] = useState(false);
     const [solutionList, setSolutionList] = useState([]);
     const [modalImg, setModalImg] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [reportModalOpen, setReportModalOpen] = useState(false);
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: "",
@@ -64,7 +70,6 @@ function PortfolioDetail() {
     useEffect(() => {
         const portFolioAJAXPromise = axios.get(`/api/portfolio/${id}`)
             .then((res) => {
-                console.log("\n\n--------------------portfolio--------------------\n", res.data);
                 setPortfolioInfo({
                     ...portfolioInfo,
                     ...res.data,
@@ -84,7 +89,9 @@ function PortfolioDetail() {
                 setReviewInfo({...reviewInfo, page: number, totalElements, totalPages, review: content});
                 const {data} = solutionResult;
                 setSolutionList(data);
-            });
+            }).finally(() => {
+            setIsLoading(false);
+        });
     }, [id]); // 의존성 배열 수정
 
     useEffect(() => {
@@ -94,18 +101,13 @@ function PortfolioDetail() {
     }, [portfolioImgList]);
 
     useEffect(() => {
-        if (modalOpen) {
+        if (modalOpen || reportModalOpen) {
             document.body.classList.add("modal");
         } else {
             document.body.classList.remove("modal");
         }
-    }, [modalOpen]);
+    }, [modalOpen, reportModalOpen]);
 
-    useEffect(() => {
-        console.log(reviewInfo);
-    }, [
-        reviewInfo
-    ])
 
     return (
         <>
@@ -131,9 +133,23 @@ function PortfolioDetail() {
                         </div>
                         <div className={style['right']}>
                             <div className={style['info']}>
-                                <div>
+                                <div className={style['top']}>
                                     <span
                                         className={style['company-name']}>{`업체명_${portfolioInfo.company.companyName}`}</span>
+                                    <span className={style['btn-group']}>
+                                        <Tooltip title="신고하기">
+                                            <IconButton size="small" disableRipple onClick={() => {
+                                                setReportModalOpen(true);
+                                            }}>
+                                                <NotificationsIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="공유하기">
+                                            <IconButton size="small" disableRipple>
+                                                <ShareIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </span>
                                 </div>
                                 <div>
                                     <span className={style['title']}>{`포트폴리오제목_${portfolioInfo.title}`}</span>
@@ -144,20 +160,34 @@ function PortfolioDetail() {
                                 </div>
                             </div>
                             <div className={style['solution-list-title']}>인테리어 솔루션</div>
-                            <List className={style['portfolio-solution-list']}>
-                                {solutionList.map((item, index) => {
-                                    const render = [(
-                                        <PortfolioSolutionListItem key={`${item.id}_${index}`} value={item}/>)];
-                                    if (index !== solutionList.length - 1) {
-                                        render.push(<Divider variant="middle" key={`${item.id}_${index}_${index}`}/>);
-                                    }
-                                    return render;
-                                })}
-                            </List>
-                            <Button className={style['solution-list-submit']} size="large" disableRipple>신청하기</Button>
+                            {
+                                !isLoading ?
+                                    solutionList.length ? <>
+                                            <List className={style['portfolio-solution-list']}>
+                                                {solutionList.map((item, index) => {
+                                                    const render = [(
+                                                        <PortfolioSolutionListItem key={`${item.id}_${index}`}
+                                                                                   value={item}/>)];
+                                                    if (index !== solutionList.length - 1) {
+                                                        render.push(<Divider variant="middle"
+                                                                             key={`${item.id}_${index}_${index}`}/>);
+                                                    }
+                                                    return render;
+                                                })}
+                                            </List>
+                                            <Button className={style['solution-list-submit']} size="large"
+                                                    disableRipple>신청하기</Button>
+                                        </> :
+                                        <div className={style['empty']}>
+                                            <span>등록된 솔루션이 없습니다</span>
+                                        </div> : <></>
+                            }
                         </div>
                     </div>
                     <div className={style['middle']}>
+                        <div className={style['portfolio-list-title']}>포트폴리오
+                            <span className={style['portfolio-count']}>{portfolioImgList.length}</span>
+                        </div>
                         <Swiper
                             slidesPerView={4}
                             spaceBetween={32}
@@ -182,7 +212,7 @@ function PortfolioDetail() {
                                     spaceBetween: 2
                                 }
                             }}
-                            className="mySwiper"
+                            className={style['portfolio-swiper']}
                         >
                             {portfolioImgList.map((value) => (
                                 <SwiperSlide key={value}>
@@ -204,7 +234,7 @@ function PortfolioDetail() {
                         </div>
                         <ul className={style['review-list']}>
                             {
-                                reviewInfo.review.map((item, index) => {
+                                !isLoading ? reviewInfo.review.length ? reviewInfo.review.map((item, index) => {
                                     const render = [<PortfolioReviewListItem
                                         {...item}
                                         key={`${index}_${index}`}/>];
@@ -213,7 +243,9 @@ function PortfolioDetail() {
                                                              key={`${item.id}_${index}_${index}_dvd}`}/>);
                                     }
                                     return render;
-                                })
+                                }) : <div className={style['empty']}>
+                                    <span>등록된 리뷰가 없습니다</span>
+                                </div> : <></>
                             }
                         </ul>
                     </div>
@@ -229,6 +261,21 @@ function PortfolioDetail() {
             >
                 <img alt="modal image"
                      src={modalImg}/>
+            </Backdrop>
+            <Backdrop
+                className={style['report-modal']}
+                open={reportModalOpen}
+                onClick={() => {
+                    setReportModalOpen(false);
+                }}
+            >
+                <div className={style['content']}>
+                    <div className={style['top']}>
+                        신고하기
+                    </div>
+                    <div className={style['middle']}></div>
+                    <div className={style['bottom']}></div>
+                </div>
             </Backdrop>
         </>
     );

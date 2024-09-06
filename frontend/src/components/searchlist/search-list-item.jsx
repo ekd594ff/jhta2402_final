@@ -1,14 +1,14 @@
 import Rating from '@mui/material/Rating';
-
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Pagination, Navigation} from 'swiper/modules';
+import {useNavigate} from "react-router-dom";
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import style from "../../styles/search-list-item.module.scss";
-import {useNavigate} from "react-router-dom";
+
 
 function SearchListItem(props) {
     const {title, description, companyName, imageUrls, portfolioId} = props;
@@ -38,16 +38,16 @@ function SearchListItem(props) {
                                  alt='portfolio thumbnail'/>
             }
         </div>
-        <div className={style['bottom']} onClick={() => {
-            navigator(`/portfolio/${portfolioId}`);
-        }}>
+        <div className={style['bottom']}>
             <div className={style['name']}>{companyName}</div>
-            <div className={style['info']}>
+            <div className={style['info']} onClick={() => {
+                navigator(`/portfolio/${portfolioId}`);
+            }}>
                 <div className={style['rating']}>
                     <Rating readOnly defaultValue={1} max={1} size="small"/>
                     4.8
                 </div>
-                {title}
+                <div className={style['portfolio-title']}>{title}</div>
             </div>
             <div className={style['description']}>{description}</div>
         </div>

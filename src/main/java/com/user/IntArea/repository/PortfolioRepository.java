@@ -48,7 +48,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     @Query(value = "SELECT * FROM portfolio ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
     List<Portfolio> getRandomPortfolioInfoDtos(@Param("count") int count);
 
-    @Query(value = "SELECT p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url), p.id " +
+    @Query(value = "SELECT DISTINCT p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url), p.id, p.createdAt " +
             "FROM Portfolio p " +
             "INNER JOIN Company c ON c.id = p.companyId " +
             "LEFT JOIN Image i ON i.refId = p.id " +

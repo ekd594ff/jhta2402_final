@@ -6,6 +6,17 @@
   min-height: 100vh;
   padding-top: variables.$HEADER_HEIGHT;
 
+  & .empty {
+    width: 100%;
+    padding-top: 128px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & > span {
+      color: variables.$color-600;
+    }
+  }
+
   & > .container {
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
@@ -15,6 +26,12 @@
     flex-direction: column;
     gap: 32px;
     height: auto;
+
+    & .more {
+      user-select: none;
+      cursor: pointer;
+      box-shadow: rgba(0, 0, 0, 0.25) 0 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0 0 0 1px inset;
+    }
 
     & > .search-title {
       font-size: 16px;
