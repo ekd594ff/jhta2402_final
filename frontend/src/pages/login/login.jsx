@@ -139,7 +139,10 @@ function Login() {
                     onClose={() => setSnackbarState({...snackbarState, open: false})}
                     severity="error"
                     variant="outlined"
-                    sx={{width: '100%'}}
+                    sx={{
+                        width: '100%',
+                        bgcolor: 'background.paper',
+                    }}
                 >
                     {snackbarState.message}
                 </Alert>

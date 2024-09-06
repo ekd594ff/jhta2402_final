@@ -2,20 +2,24 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
-import com.user.IntArea.dto.company.CompanyResponseDto;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
-import com.user.IntArea.dto.portfolio.*;
-import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
-import com.user.IntArea.entity.*;
-import com.user.IntArea.repository.CompanyRepository;
-import com.user.IntArea.repository.ImageRepository;
-import com.user.IntArea.repository.MemberRepository;
-import com.user.IntArea.repository.PortfolioRepository;
+import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
+import com.user.IntArea.dto.portfolio.PortfolioRequestDto;
+import com.user.IntArea.dto.portfolio.PortfolioSearchDto;
+import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
+import com.user.IntArea.entity.Company;
+import com.user.IntArea.entity.Member;
+import com.user.IntArea.entity.Portfolio;
+import com.user.IntArea.entity.Solution;
+import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
 import java.util.*;
@@ -28,7 +32,9 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final ImageUtil imageUtil;
     private final ImageRepository imageRepository;
+    private final SolutionRepository solutionRepository;
 
     // 포트폴리오에 접근하는 멤버가 그 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
     private void isCompanyManager(Portfolio portfolio) {

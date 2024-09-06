@@ -1,12 +1,8 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
-import com.user.IntArea.dto.portfolio.PortfolioDraftDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
-import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
-import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,8 +65,8 @@ public class PortfolioController {
     // seller
 
     @PostMapping
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreateDto portfolioCreateDto) {
-        portfolioService.create(portfolioCreateDto);
+    public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+        portfolioService.create(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
 
