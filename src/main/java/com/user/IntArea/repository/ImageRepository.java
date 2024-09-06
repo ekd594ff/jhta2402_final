@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     Optional<Image> findByRefId(UUID refId);
-    List<Image> findAllByRefId(UUID refId);
+    void deleteByRefId(UUID refId);
 }

@@ -1,6 +1,6 @@
 package com.user.IntArea.entity;
 
-import com.user.IntArea.entity.enums.QuotationProgress;
+import com.user.IntArea.entity.enums.Progress;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,7 +41,7 @@ public class Quotation {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private QuotationProgress quotationProgress; // 현재 진행상태
+    private Progress quotationProgress; // 현재 진행상태
 
     @Column(nullable = false)
     boolean isDeleted; // 기본값 false. 회사관리자 또는 ADMIN에 의한 삭제를 의미함. isDeleted = true가 될 경우 시스템 관리자만 열람 가능.
@@ -66,11 +66,11 @@ public class Quotation {
 
 
     @Builder
-    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, QuotationProgress quotationProgress, boolean isDeleted, boolean isAvailable, boolean isContractCancelled, boolean isRefundNecessary, boolean isCustomerPaid, boolean isContractTerminated, boolean isContractCompleted) {
+    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, Progress quotationProgress, boolean isDeleted, boolean isAvailable, boolean isContractCancelled, boolean isRefundNecessary, boolean isCustomerPaid, boolean isContractTerminated, boolean isContractCompleted) {
         this.quotationRequest = quotationRequest;
         this.totalTransactionAmount = totalTransactionAmount;
         this.clientName = quotationRequest.getMember().getUsername() != null ? quotationRequest.getMember().getUsername() : quotationRequest.getMember().getEmail();
-        this.quotationProgress = quotationProgress != null ? quotationProgress : QuotationProgress.SELLER_CREATED_AND_PENDING; // 기본값 설정
+        this.quotationProgress = quotationProgress != null ? quotationProgress : Progress.PENDING; // 기본값 설정
         this.isDeleted = isDeleted;
         this.isAvailable = isAvailable;
         this.isCustomerPaid = isCustomerPaid;
