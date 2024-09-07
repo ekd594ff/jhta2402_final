@@ -38,6 +38,7 @@
 
       & > .avatar {
         cursor: pointer;
+        margin-right: 10px;
       }
 
       & > .menu {
@@ -68,4 +69,12 @@
       }
     }
   }
+}
+
+.username {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
 }
