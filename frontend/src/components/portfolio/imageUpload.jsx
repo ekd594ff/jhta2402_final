@@ -6,7 +6,7 @@ import {DndProvider} from "react-dnd";
 
 const MAX_IMAGES = 32;
 
-function ImageUpload({images, setImages, otherImages, setOtherImages}) {
+function ImageUpload({otherImages, setOtherImages}) {
 
     // Image -------------------------------------------
 
@@ -25,9 +25,7 @@ function ImageUpload({images, setImages, otherImages, setOtherImages}) {
             url: URL.createObjectURL(file),
             file: file
         }));
-
         setOtherImages([...otherImages, ...imageUrls]);
-        setImages(files);
     };
 
     const moveImage = (dragIndex, hoverIndex) => {
@@ -35,16 +33,10 @@ function ImageUpload({images, setImages, otherImages, setOtherImages}) {
         const [draggedOtherImage] = draggedOtherImages.splice(dragIndex, 1);
         draggedOtherImages.splice(hoverIndex, 0, draggedOtherImage);
         setOtherImages(draggedOtherImages);
-
-        const draggedImages = [...otherImages];
-        const [draggedImage] = draggedImages.splice(dragIndex, 1);
-        draggedImages.splice(hoverIndex, 0, draggedImage);
-        setImages(draggedImages);
     };
 
     const removeImage = (index) => {
         setOtherImages(otherImages.filter((_, i) => i !== index));
-        setImages(images.filter((_, i) => i !== index));
     };
 
     return (
