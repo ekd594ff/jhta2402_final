@@ -3,10 +3,7 @@ package com.user.IntArea.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.user.IntArea.dto.image.ImageDto;
-import com.user.IntArea.dto.member.MemberRequestDto;
-import com.user.IntArea.dto.member.MemberResponseDto;
-import com.user.IntArea.dto.member.UpdateMemberDto;
-import com.user.IntArea.dto.member.UpdateProfileDto;
+import com.user.IntArea.dto.member.*;
 import com.user.IntArea.service.MemberService;
 import com.user.IntArea.common.jwt.TokenProvider;
 import jakarta.validation.Valid;
@@ -82,9 +79,9 @@ public class MemberController {
 
     // SecurityUtil의 이메일 정보를 통해 유저 정보를 조회하는 메서드
     @GetMapping("/email")
-    public ResponseEntity<MemberResponseDto> getMemberByEmail() {
-        MemberResponseDto memberResponseDto = memberService.getMemberByEmail();
-        return ResponseEntity.ok().body(memberResponseDto);
+    public ResponseEntity<MemberWithImagesResponseDto> getMemberByEmail() {
+        MemberWithImagesResponseDto memberWithImagesResponseDto = memberService.getMemberByEmail();
+        return ResponseEntity.ok().body(memberWithImagesResponseDto);
     }
 
     @PatchMapping()
