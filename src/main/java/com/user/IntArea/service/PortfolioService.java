@@ -210,8 +210,12 @@ public class PortfolioService {
         }
 
         // 솔루션 수정
-
-
+        // todo: soft delete
+//        solutionRepository.softDeleteAllByPortfolioId(portfolio.getId());
+        List<Solution> solutions = portfolioRequestDto.getSolutions().stream()
+                .map(solutionDto -> solutionDto.toSolution(portfolio))
+                .toList();
+        solutionRepository.saveAll(solutions);
     }
 
     // (seller 권한) 회사 관리자가 관리하는 회사의 모든 포트폴리오 InfoDto 불러오기

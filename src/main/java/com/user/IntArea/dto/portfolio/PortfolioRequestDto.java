@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -24,12 +25,7 @@ public class PortfolioRequestDto {
     public PortfolioRequestDto(String title, String description, List<MultipartFile> images, String solutionStrings) throws JsonProcessingException {
         this.title = title;
         this.description = description;
-
-        if (images == null) {
-            this.images = new ArrayList<>();
-        } else {
-            this.images = images;
-        }
+        this.images = Objects.requireNonNullElseGet(images, ArrayList::new);
 
         if (solutionStrings == null) {
             this.solutions = new ArrayList<>();

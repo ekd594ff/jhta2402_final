@@ -6,13 +6,13 @@ import {DndProvider} from "react-dnd";
 
 const MAX_IMAGES = 32;
 
-function ImageUpload({otherImages, setOtherImages}) {
+function ImageUpload({images, setImages}) {
 
     // Image -------------------------------------------
 
-    const handleOtherImagesChange = (event) => {
+    const handleImagesChange = (event) => {
         const files = Array.from(event.target.files);
-        const remainingSlots = MAX_IMAGES - otherImages.length;
+        const remainingSlots = MAX_IMAGES - images.length;
 
         // 새로운 이미지가 최대 갯수를 초과하지 않도록 제한
         // if (files.length > remainingSlots) {
@@ -25,18 +25,18 @@ function ImageUpload({otherImages, setOtherImages}) {
             url: URL.createObjectURL(file),
             file: file
         }));
-        setOtherImages([...otherImages, ...imageUrls]);
+        setImages([...images, ...imageUrls]);
     };
 
     const moveImage = (dragIndex, hoverIndex) => {
-        const draggedOtherImages = [...otherImages];
-        const [draggedOtherImage] = draggedOtherImages.splice(dragIndex, 1);
-        draggedOtherImages.splice(hoverIndex, 0, draggedOtherImage);
-        setOtherImages(draggedOtherImages);
+        const draggedImages = [...images];
+        const [draggedImage] = draggedImages.splice(dragIndex, 1);
+        draggedImages.splice(hoverIndex, 0, draggedImage);
+        setImages(draggedImages);
     };
 
     const removeImage = (index) => {
-        setOtherImages(otherImages.filter((_, i) => i !== index));
+        setImages(images.filter((_, i) => i !== index));
     };
 
     return (
@@ -51,8 +51,8 @@ function ImageUpload({otherImages, setOtherImages}) {
                     type="file"
                     id="formFileMultiple"
                     multiple
-                    onChange={handleOtherImagesChange}
-                    disabled={otherImages.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
+                    onChange={handleImagesChange}
+                    disabled={images.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
                     hidden
                 />이미지 등록
             </Button>
@@ -67,7 +67,7 @@ function ImageUpload({otherImages, setOtherImages}) {
                             justifyContent: 'flex-start', // 왼쪽 정렬
                         }}
                     >
-                        {otherImages.map((image, index) => (
+                        {images.map((image, index) => (
                             <ImageItem
                                 key={image.id}
                                 index={index}

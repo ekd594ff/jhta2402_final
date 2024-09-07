@@ -45,8 +45,7 @@ function Registration() {
 
     const [solutions, setSolutions] = useState([]);
 
-    const [otherImages, setOtherImages] = useState([]);
-
+    const [images, setImages] = useState([]);
 
     const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
 
@@ -69,7 +68,15 @@ function Registration() {
                         url: image.url,
                         file: new File([""], image.id)
                     }));
-                    setOtherImages([...imageUrls]);
+                    setImages([...imageUrls]);
+
+                    const responseSolutions = res.data.solution.map(solution => ({
+                        id: solution.id,
+                        title: solution.title,
+                        description: solution.description,
+                        price: solution.price,
+                    }));
+                    setSolutions([...responseSolutions]);
 
                 })
                 .catch(() => {
@@ -107,7 +114,7 @@ function Registration() {
         if (isEdit) formData.append("id", id);
         formData.append("title", portfolioInfo.title);
         formData.append("description", portfolioInfo.description);
-        otherImages.map(image => formData.append("images", image.file));
+        images.map(image => formData.append("images", image.file));
         formData.append("solutionStrings", JSON.stringify(solutions));
 
 
@@ -308,8 +315,8 @@ function Registration() {
                         </div>}
 
                     {activeStep === 1 && <div className={style["form2"]}>
-                        <ImageUpload otherImages={otherImages}
-                                     setOtherImages={setOtherImages}/>
+                        <ImageUpload images={images}
+                                     setImages={setImages}/>
 
                         <div className={style["button-div"]}>
                             <Button className={style["prev-button"]} variant="outlined"
