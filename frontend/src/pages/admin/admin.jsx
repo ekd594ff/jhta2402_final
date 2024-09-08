@@ -50,6 +50,9 @@ function NestedList() {
             <ListItemButton>
                 <Link to={"review"}><ListItemText primary="Review"/></Link>
             </ListItemButton>
+            <ListItemButton>
+                <Link to={"report"}><ListItemText primary="Report"/></Link>
+            </ListItemButton>
         </List>
     );
 }
@@ -73,6 +76,7 @@ const filterOperators = getGridStringOperators()
             ...operator
         };
     });
+
 
 function DataTable() {
     const [data, setData] = useState([]);
@@ -101,9 +105,32 @@ function DataTable() {
                     width: 200, // 기본 너비 설정
                     filterOperators
                 }));
+
+                cols.push({
+                    field: 'delete',
+                    headerName: '삭제',
+                    width: 150,
+                    renderCell: (params) => (
+                        <Button
+                            variant="contained"
+                            color="default"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                handleDeleteClick(params.row.id)
+                            }} // ID를 전달
+                        >
+                            클릭
+                        </Button>
+                    ),
+                });
+
                 setColumns(cols);
             }
-            setData(response.data.content); // 실제 데이터 구조에 맞게 수정
+            setData(response.data.content);
+            // setData(response.data.content.map(item => ({
+            //     ...item,
+            //     action: '버튼 클릭',
+            // }))); // 실제 데이터 구조에 맞게 수정
             setTotalCount(response.data.page.totalElements); // 전체 데이터 수
         } catch (error) {
             console.error('데이터를 가져오는 데 오류가 발생했습니다:', error);
@@ -111,6 +138,16 @@ function DataTable() {
             // console.log(data);
         }
     };
+
+    const handleDeleteClick = async (id) => {
+        try {
+            const response = await axios.delete(`/api/${pathname}/admin/hard/${id}`,
+            );
+        } catch (error) {
+            console.error('Error sending API request:', error);
+        }
+    };
+
     const fetchFilterdData = async (filterModel,sortModel,pathname,paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
@@ -144,6 +181,24 @@ function DataTable() {
                     width: 200, // 기본 너비 설정
                     filterOperators
                 }));
+
+                cols.push({
+                    field: 'action',
+                    headerName: 'action',
+                    width: 150,
+                    renderCell: (params) => (
+                        <Button
+                            variant="contained"
+                            color="default"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                handleDeleteClick(params.row.id)
+                            }} // ID를 전달
+                        >
+                            클릭
+                        </Button>
+                    ),
+                });
                 setColumns(cols);
             }
             setData(response.data.content); // 실제 데이터 구조에 맞게 수정
@@ -197,10 +252,9 @@ function DataTable() {
         setPaginationModel(model);
     };
     const handleRowSelection = (newSelection) => {
-        console.log(newSelection);
-        // console.log(newSelection.rowIds);
         setSelectedRows(newSelection.join(","));
     };
+
     const handleApiRequest = async () => {
         try {
             const ids = selectedRows;
@@ -233,10 +287,14 @@ function DataTable() {
                 onSortModelChange={handleSortModelChange}
                 onPaginationModelChange={handlePaginationModelChange}
                 onRowSelectionModelChange={handleRowSelection}
+                // onCellClick={handleButtonClick}
                 paginationModel={paginationModel}
             />
-            <Button onClick={handleApiRequest} variant="contained" color="danger">
+            <Button onClick={handleApiRequest} variant="contained" color="default">
                 soft delete
+            </Button>
+            <Button onClick={handleDeleteClick} variant="contained" color="default">
+                hard delete
             </Button>
         </Paper>
     );
@@ -272,6 +330,7 @@ function Admin() {
                     <Route path={"portfolio"} element={<DataTable/>}/>
                     <Route path={"review"} element={<DataTable/>} />
                     <Route path={"member"} element={<DataTable/>}/>
+                    <Route path={"report"} element={<DataTable/>}/>
                     <Route path={"/"} element={<DataTable/>}/>
                 </Routes>
             </div>

@@ -49,5 +49,6 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     @Query("update Member m set m.isDeleted = true WHERE m.id = %:id")
     void softDeleteById(UUID id);
 
-
+    @Override
+    void deleteAllById(Iterable<? extends UUID> uuids);
 }

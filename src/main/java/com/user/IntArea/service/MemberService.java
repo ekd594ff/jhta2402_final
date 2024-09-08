@@ -10,8 +10,7 @@ import com.user.IntArea.dto.member.*;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
-import com.user.IntArea.repository.ImageRepository;
-import com.user.IntArea.repository.MemberRepository;
+import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,6 +34,7 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final QuotationRequestRepository quotationRequestRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageUtil imageUtil;
     private final ImageRepository imageRepository;
@@ -183,5 +183,12 @@ public class MemberService {
     public void softDeleteMembers(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         memberRepository.softDeleteByIds(ids);
+    }
+
+    @Transactional
+    public void hardDeleteMembers(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        memberRepository.deleteAllById(ids);
+//        quotationRequestRepository.deleteAllById(ids);
     }
 }

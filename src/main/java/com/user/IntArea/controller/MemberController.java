@@ -154,4 +154,17 @@ public class MemberController {
         memberService.softDeleteMembers(idList);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> deleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        memberService.hardDeleteMembers(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+//    @PutMapping("/admin/update")
+//    public ResponseEntity<?> updateMember(@RequestParam UpdateMemberDto updateMemberDto) {
+//        memberService.update(updateMemberDto);
+//        return ResponseEntity.ok().build();
+//    }
 }

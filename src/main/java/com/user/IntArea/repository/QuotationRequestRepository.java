@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface QuotationRequestRepository extends JpaRepository<QuotationRequest, UUID> {
     List<QuotationRequest> findAllByMember(Member member);
+
 }
