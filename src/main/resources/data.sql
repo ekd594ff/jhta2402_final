@@ -1,10 +1,7 @@
--- admin@example.com  1234  ROLE_ADMIN
--- user@example.com  1234  ROLE_USER
--- seller@example.com  1234  ROLE_SELLER (seller2, seller3)
 INSERT INTO MEMBER (ID, USERNAME, EMAIL, PASSWORD, ROLE, PLATFORM, ISDELETED, CREATEDAT, UPDATEDAT)
 VALUES ('c0bbf8bb-a6f2-4445-aaa3-2892e551ff4c', 'admin', 'admin@example.com',
         '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_ADMIN', 'SERVER', FALSE, NOW(), NOW()),
-       ('f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'username', 'user@example.com',
+       ('f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'username1', 'user1@example.com',
         '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
        ('cf6e8329-59a2-458b-b1ee-693d70d128fd', 'username2', 'user2@example.com',
         '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW()),
@@ -37,25 +34,24 @@ VALUES ('c0bbf8bb-a6f2-4445-aaa3-2892e551ff4c', 'admin', 'admin@example.com',
        ('e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', 'seller3', 'seller3@example.com',
         '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
        ('35e54eec-1eae-46b8-aacc-b005be7c56f3', 'seller4', 'seller4@example.com',
-        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW()),
-       ('d4dfb2e2-0e66-41df-bf32-0509ff4089f4', 'typhoon0678', 'typhoon0678@gmail.com',
-        '$2a$10$mqdWk3omxb5qF.C//c2MouPLJQYPmNtf5iFM/E.YGzLtrX7VP.R.e', 'ROLE_USER', 'SERVER', FALSE, NOW(), NOW());
+        '$2a$10$QnLBx1AZRoKGi6NTaCFTxOc1AnuRiKJo.2iQZyLNHW5jBJ5yRiwQq', 'ROLE_SELLER', 'SERVER', FALSE, NOW(), NOW());
 
 
 
-INSERT INTO COMPANY (ID, MEMBERID, COMPANYNAME, DESCRIPTION, PHONE, ADDRESS, ISAPPLIED, ISDELETED, CREATEDAT, UPDATEDAT)
-VALUES ('d7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'a8a8cbf7-ae99-4b45-81ee-7d99b72aa317', 'company1', NULL,
-        '010-2345-6789', 'address1', TRUE, FALSE, NOW(), NOW()),
-       ('168017c2-79ca-4c87-9eb1-1f97204150a2', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'company2', NULL,
-        '010-1234-5678', 'address2', FALSE, FALSE, NOW(), NOW()),
-       ('48782f22-0d19-4548-a605-10327389ba6b', 'cf6e8329-59a2-458b-b1ee-693d70d128fd', 'company3', NULL,
-        '010-1234-5678', 'address3', FALSE, FALSE, NOW(), NOW()),
-       ('a1c4d6b4-5e2c-4b7e-9c4d-9f5d0f5e2c11', '6f3f2761-0fa0-43f3-bd22-e658e2a5d7df', 'company4', 'description4',
-        '010-3456-7890', 'address4', TRUE, FALSE, NOW(), NOW()),
-       ('b2f4d3e6-8b8c-4a1e-9c2c-5f6a7e1c4b12', 'e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', 'company5', 'description5',
-        '010-4567-8901', 'address5', TRUE, FALSE, NOW(), NOW()),
+INSERT INTO COMPANY (ID, MEMBERID, COMPANYNAME, DESCRIPTION, PHONE, ADDRESS, DETAILADDRESS, ISAPPLIED, ISDELETED,
+                     CREATEDAT, UPDATEDAT)
+VALUES ('d7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'a8a8cbf7-ae99-4b45-81ee-7d99b72aa317', '에코 디자인', NULL,
+        '010-2345-6789', '서울 마포구 독막로38길 32 (대흥동, 마포나루타운)', '3층 에코 디자인', TRUE, FALSE, NOW(), NOW()),
+       ('168017c2-79ca-4c87-9eb1-1f97204150a2', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', '아트리움', NULL,
+        '010-1234-5678', '서울 영등포구 영신로43길 8-14', '', TRUE, FALSE, NOW(), NOW()),
+       ('48782f22-0d19-4548-a605-10327389ba6b', 'cf6e8329-59a2-458b-b1ee-693d70d128fd', 'Urban Chic Designs', NULL,
+        '010-1234-5678', '서울 성북구 종암로13길 16-10', '1층 우반틱디자인스', TRUE, FALSE, NOW(), NOW()),
+       ('a1c4d6b4-5e2c-4b7e-9c4d-9f5d0f5e2c11', '6f3f2761-0fa0-43f3-bd22-e658e2a5d7df', 'SY 인테리어', 'description4',
+        '010-3456-7890', '서울 동대문구 약령중앙로 67-1', '지층 102호', TRUE, FALSE, NOW(), NOW()),
+       ('b2f4d3e6-8b8c-4a1e-9c2c-5f6a7e1c4b12', 'e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', '', 'description5',
+        '010-4567-8901', 'address5', 'detailAddress', TRUE, FALSE, NOW(), NOW()),
        ('c3e5d4f7-1a9c-4d2e-8b4e-7c8d3f5b2a14', '35e54eec-1eae-46b8-aacc-b005be7c56f3', 'company6', 'description6',
-        '010-5678-9012', 'address6', TRUE, FALSE, NOW(), NOW());
+        '010-5678-9012', 'address6', 'detailAddress', TRUE, FALSE, NOW(), NOW());
 
 
 INSERT INTO PORTFOLIO (ID, COMPANYID, TITLE, DESCRIPTION, ISDELETED, CREATEDAT, UPDATEDAT)
@@ -71,28 +67,28 @@ VALUES ('136780e7-9ead-46fc-8526-32fa58fe5846', 'd7e3b2f1-4a5e-4d0d-bc18-8c79c63
         FALSE, NOW(), NOW());
 
 
-INSERT INTO SOLUTION (ID, PORTFOLIOID, TITLE, DESCRIPTION, PRICE, CREATEDAT, UPDATEDAT)
+INSERT INTO SOLUTION (ID, PORTFOLIOID, TITLE, DESCRIPTION, PRICE, ISDELETED, CREATEDAT, UPDATEDAT)
 VALUES ('8871d6a2-f6b8-4dbd-b4f5-8b45dadf7abc', '136780e7-9ead-46fc-8526-32fa58fe5846', 'title1', 'description1', 75000,
-        NOW(), NOW()),
+        false, NOW(), NOW()),
        ('fce78e5f-94a1-48da-a727-1346734bffbf', '136780e7-9ead-46fc-8526-32fa58fe5846', 'title2', 'description2',
-        125000, NOW(), NOW()),
+        125000, false, NOW(), NOW()),
        ('9faf6fb5-7f8c-4ea9-919a-69eb7a4cbef1', '136780e7-9ead-46fc-8526-32fa58fe5846', 'title3', 'description3',
-        200000, NOW(), NOW());
+        200000, false, NOW(), NOW());
 
 
-INSERT INTO QUOTATIONREQUEST (ID, MEMBERID, PORTFOLIOID, TITLE, DESCRIPTION, CREATEDAT, UPDATEDAT)
+INSERT INTO QUOTATIONREQUEST (ID, MEMBERID, PORTFOLIOID, TITLE, DESCRIPTION, PROGRESS, CREATEDAT, UPDATEDAT)
 VALUES ('cb1d87df-3b5b-42b2-8031-3da210699463', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title1', 'description1', NOW(), NOW()),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title1', 'description1', 'PENDING', NOW(), NOW()),
        ('5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 'cf6e8329-59a2-458b-b1ee-693d70d128fd',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title2', 'description2', NOW(), NOW()),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title2', 'description2', 'APPROVED', NOW(), NOW()),
        ('d8e01027-b7a3-43c1-a750-901e52688058', '5677b0b6-7b63-42c8-936c-a6d07c4793eb',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title3', 'description3', NOW(), NOW()),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title3', 'description3', 'APPROVED', NOW(), NOW()),
        ('8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 'c1b6ca53-0437-4eeb-959e-ec3ec97139d3',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title4', 'description4', NOW(), NOW()),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title4', 'description4', 'PENDING', NOW(), NOW()),
        ('2fbf0f42-1f34-49b7-a860-414fc1ac7468', '8ccf8a1a-3e8d-48a1-a508-d2b99ec4e631',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title5', 'description5', NOW(), NOW()),
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title5', 'description5', 'PENDING', NOW(), NOW()),
        ('971b9a7f-18f0-4ad6-b2f3-d03d1356a342', '8ccf8a1a-3e8d-48a1-a508-d2b99ec4e631',
-        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title6', NULL, NOW(), NOW());
+        '136780e7-9ead-46fc-8526-32fa58fe5846', 'title6', NULL, 'PENDING', NOW(), NOW());
 
 
 INSERT INTO REQUESTSOLUTION (ID, QUOTATIONREQUESTID, SOLUTIONID, CREATEDAT, UPDATEDAT)
@@ -116,11 +112,15 @@ VALUES ('cd5dc428-b771-4e12-935b-f2afb0058c63', 'cb1d87df-3b5b-42b2-8031-3da2106
         '8871d6a2-f6b8-4dbd-b4f5-8b45dadf7abc', NOW(), NOW());
 
 
-INSERT INTO QUOTATION (ID, QUOTATIONREQUESTID, TOTALTRANSACTIONAMOUNT, CREATEDAT, UPDATEDAT)
-VALUES ('f26e4985-d7e6-46c9-8447-b730457a426f', 'cb1d87df-3b5b-42b2-8031-3da210699463', 200000, NOW(), NOW()),
-       ('e5e8d4ff-1944-4dd8-abfa-5af26aec3894', '5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 500000, NOW(), NOW()),
-       ('42dbbfae-ad63-42bc-822e-5a5b3ba17324', 'd8e01027-b7a3-43c1-a750-901e52688058', 1000000, NOW(), NOW()),
-       ('acd9b947-7db0-4c34-9f01-479a8fc76363', '8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 400000, NOW(), NOW());
+INSERT INTO QUOTATION (ID, QUOTATIONREQUESTID, TOTALTRANSACTIONAMOUNT, PROGRESS, CREATEDAT, UPDATEDAT)
+VALUES ('f26e4985-d7e6-46c9-8447-b730457a426f', 'cb1d87df-3b5b-42b2-8031-3da210699463', 200000, 'PENDING', NOW(),
+        NOW()),
+       ('e5e8d4ff-1944-4dd8-abfa-5af26aec3894', '5d80e9af-1dd6-4cea-97ae-6b1b84f8cd5e', 500000, 'PENDING', NOW(),
+        NOW()),
+       ('42dbbfae-ad63-42bc-822e-5a5b3ba17324', 'd8e01027-b7a3-43c1-a750-901e52688058', 1000000, 'PENDING', NOW(),
+        NOW()),
+       ('acd9b947-7db0-4c34-9f01-479a8fc76363', '8fa4b087-41a3-49aa-bb21-5a4018a73eaf', 400000, 'PENDING', NOW(),
+        NOW());
 
 
 INSERT INTO REVIEW (ID, QUOTATIONID, MEMBERID, TITLE, DESCRIPTION, RATE, CREATEDAT, UPDATEDAT)
@@ -181,10 +181,10 @@ VALUES ('48782f22-0d19-4548-a605-10327389ba6b', 'c0bbf8bb-a6f2-4445-aaa3-2892e55
         'review2', NOW(), NOW());
 
 
-INSERT INTO REPORT (ID, REFID, MEMBERID, SORT, TITLE, DESCRIPTION, PROGRESS, CREATEDAT, UPDATEDAT)
+INSERT INTO REPORT (ID, REFID, MEMBERID, SORT, TITLE, DESCRIPTION, COMMENT, PROGRESS, CREATEDAT, UPDATEDAT)
 VALUES ('6a1c0cde-e0a7-49ad-ac89-f60f66e6ecbf', 'f7ee9484-9c7e-4868-8d5c-0e344727e220',
         'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', 'PORTFOLIO', 'title1',
-        'description1', 'PENDING', NOW(), NOW()),
+        'description1', 'comment1', 'PENDING', NOW(), NOW()),
        ('76074c8b-5e71-4707-819a-77330d9d6f6f', '46985b47-85cc-450e-a4e4-ca6b16e950fb',
         'a8a8cbf7-ae99-4b45-81ee-7d99b72aa317', 'REVIEW', 'title2',
-        'description2', 'IN_PROGRESS', NOW(), NOW());
+        'description2', 'comment1', 'IN_PROGRESS', NOW(), NOW());
