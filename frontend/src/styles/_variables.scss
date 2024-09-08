@@ -1,0 +1,52 @@
+$HEADER_HEIGHT : 54px;
+
+$CONTAINER_WIDTH : 1000px;
+
+$LOGIN_FORM_MARGIN_TOP : 150px;
+$SIGNUP_FORM_MARGIN_TOP : 150px;
+
+$COLOR_PRIMARY : #FA4D56;
+
+$LOGIN_FORM_WIDTH : 300px;
+
+$PORTFOLIO_IMG_LIST_ITEM_SIZE : 230px;
+$PORTFOLIO_SOLUTION_LIST_ITEM_HEIGHT: 70px;
+
+$color-100: #ffffff; // 100: 흰색 (가장 밝음)
+$color-200: #f8f9fa; // 200: 매우 밝은 회색
+$color-300: #e9ecef; // 300: 밝은 회색
+$color-400: #dee2e6; // 400: 연한 회색
+$color-500: #ced4da; // 500: 중간 연한 회색
+$color-600: #adb5bd; // 600: 중간 회색
+$color-700: #6c757d; // 700: 중간 어두운 회색
+$color-800: #495057; // 800: 어두운 회색
+$color-900: #343a40; // 900: 더 어두운 회색
+$color-1000: #212529; // 1000: 검은색 (가장 어두움)
+
+// 텍스트 색상
+$text-primary: $color-900; // 기본 텍스트 색상
+$text-secondary: $color-800; // 보조 텍스트 색상
+
+@mixin media-960 {
+  @media (max-width: 960px) {
+    @content;
+  }
+}
+
+@mixin media-720 {
+  @media (max-width: 720px) {
+    @content;
+  }
+}
+
+@mixin media-540 {
+  @media (max-width: 540px) {
+    @content;
+  }
+}
+
+@mixin media-320 {
+  @media (max-width: 320px) {
+    @content;
+  }
+}
