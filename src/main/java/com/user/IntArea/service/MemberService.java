@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -85,6 +86,7 @@ public class MemberService {
         return memberRepository.findAll(pageable).map(MemberResponseDto::new);
     }
 
+    @Transactional
     public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
         if (filterValue.isPresent() && filterColumn.isPresent()) {
             switch (filterColumn.get()) {
@@ -175,5 +177,11 @@ public class MemberService {
             imageRepository.save(imageDto.toImage());
         });
         return imageDtoOptional;
+    }
+
+    @Transactional
+    public void softDeleteMembers(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        memberRepository.softDeleteByIds(ids);
     }
 }

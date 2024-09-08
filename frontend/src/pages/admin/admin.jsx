@@ -17,6 +17,7 @@ import {
     GridToolbarExport,
     getGridStringOperators
 } from "@mui/x-data-grid";
+import {Button} from "@mui/material";
 
 
 function NestedList() {
@@ -82,6 +83,8 @@ function DataTable() {
     const [filterModel, setFilterModel] = useState({field: "", value:"" });
     const [paginationModel, setPaginationModel] = useState({page: 0, pageSize: 5});
     const [sortModel, setSortModel] = useState({field: "", sort: ""})
+    const [selectedRows, setSelectedRows] = useState([]);
+
     const fetchData = async (pathname, paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
@@ -156,10 +159,14 @@ function DataTable() {
         // console.log("filterModel.value.length=", filterModel.value.length);
         // console.log("sortModel.field.length=", sortModel.field.length);
         let sortField;
+        let filterValue;
         if (sortModel) {
             sortField = sortModel.field;
         }
-        if (filterModel.value || sortField) { // filterModel, sortModel 값 확인 후 분기
+        if (filterModel) {
+            filterValue = filterModel.value;
+        }
+        if (filterValue || sortField) { // filterModel, sortModel 값 확인 후 분기
             fetchFilterdData(filterModel, sortModel, pathname, paginationModel); // 매개변수 수정
         } else {
             fetchData(pathname, paginationModel);
@@ -171,6 +178,11 @@ function DataTable() {
         setPaginationModel({page: 0, pageSize: 5})
     }, [pathname, sortModel, filterModel]);
 
+    useEffect(() => {
+        setSortModel({field: "", sort:"" });
+        setFilterModel({field: "", value: ""});
+        setPaginationModel({page: 0, pageSize: 5});
+    }, [pathname]);
     const handleFilterModelChange = (model) => {
         console.log('filterModel', model);
         setFilterModel(model.items[0])
@@ -184,7 +196,25 @@ function DataTable() {
         // console.log("paginationModel", model);
         setPaginationModel(model);
     };
+    const handleRowSelection = (newSelection) => {
+        console.log(newSelection);
+        // console.log(newSelection.rowIds);
+        setSelectedRows(newSelection.join(","));
+    };
+    const handleApiRequest = async () => {
+        try {
+            const ids = selectedRows;
+            const response = await axios.delete(`/api/${pathname}/admin/soft/${ids}`,
+                );
 
+            console.log('selectedRows', selectedRows);
+            console.log('API Response:', response.data);
+        } catch (error) {
+            console.error('Error sending API request:', error);
+        } finally {
+            console.log('selectedRows', selectedRows);
+        }
+    };
     return (
         <Paper sx={{height: 400, width: '100%'}}>
             <DataGrid
@@ -198,13 +228,16 @@ function DataTable() {
                 filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
                 paginationMode="server"
                 sortingMode="server"
-                // filterModel={filterModel}
                 rowCount={totalCount}
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}
                 onPaginationModelChange={handlePaginationModelChange}
+                onRowSelectionModelChange={handleRowSelection}
                 paginationModel={paginationModel}
             />
+            <Button onClick={handleApiRequest} variant="contained" color="danger">
+                soft delete
+            </Button>
         </Paper>
     );
 }

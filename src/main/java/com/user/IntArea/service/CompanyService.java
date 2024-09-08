@@ -8,6 +8,7 @@ import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
 import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
+import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Image;
 import com.user.IntArea.entity.Member;
@@ -148,5 +149,43 @@ public class CompanyService {
 
     public Page<CompanyResponseDto> getAllCompany(Pageable pageable) {
         return companyRepository.findAll(pageable).map(this::converToDto);
+    }
+
+    public Page<CompanyResponseDto> getCompanyListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "companyName" -> {
+                    return companyRepository.findAllByCompanyNameContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
+                }
+                case "description" -> {
+                    return companyRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
+                }
+                case "phone" -> {
+                    return companyRepository.findAllByPhoneContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
+                }
+                case "address" -> {
+                    return companyRepository.findAllByAddressContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return companyRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
+                }
+                case "isApplied" -> {
+                    if (filterValue.get().equals("true")) {
+                        return companyRepository.findAllByIsAppliedIs(true, pageable).map(CompanyResponseDto::new);
+                    } else {
+                        return companyRepository.findAllByIsAppliedIs(false, pageable).map(CompanyResponseDto::new);
+                    }
+                }
+            }
+        } else {
+            return companyRepository.findAll(pageable).map(CompanyResponseDto::new);
+        }
+        throw new RuntimeException("getCompanyListByFilter");
+    }
+
+    @Transactional
+    public void softDeleteCompanys(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        companyRepository.softDeleteByIds(ids);
     }
 }

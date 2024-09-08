@@ -41,9 +41,9 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     Page<Member> findAllByIsDeletedIs(boolean isDeleted, Pageable pageable);
 
-
-//    @Query("SELECT m FROM Member m WHERE 1=1 and m.email LIKE %:filterValue%")
-//    Page<Member> findByEmailContaining(String filterColumn, String filterValue);
+    @Modifying
+    @Query("UPDATE Member m SET m.isDeleted = true WHERE m.id IN :ids")
+    void softDeleteByIds(Iterable<UUID> ids);
 
     @Modifying
     @Query("update Member m set m.isDeleted = true WHERE m.id = %:id")
