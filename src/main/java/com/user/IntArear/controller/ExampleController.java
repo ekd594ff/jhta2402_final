@@ -12,4 +12,6 @@ public class ExampleController {
     public String test() {
         return "test";
     }
+
+    @Patch
 }

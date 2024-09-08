@@ -3,7 +3,7 @@ import axios from "axios";
 function Index() {
 
     const test = () => {
-        axios.post("http://localhost:8080/api/example/test",
+        axios.post("http://localhost:8081/api/example/test",
             {},
             {withCredentials: true})
             .then((response) => {
