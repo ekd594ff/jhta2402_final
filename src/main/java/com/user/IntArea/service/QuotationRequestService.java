@@ -21,7 +21,6 @@ public class QuotationRequestService {
     private final MemberRepository memberRepository;
     private final PortfolioRepository portfolioRepository;
     private final CompanyRepository companyRepository;
-    private final QuotationService quotationService;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {

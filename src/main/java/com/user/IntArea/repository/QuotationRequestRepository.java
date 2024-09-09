@@ -5,6 +5,7 @@ import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.QuotationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId")
-    List<QuotationRequest> getAllQuotationRequestTowardCompany(UUID companyId);
+    List<QuotationRequest> getAllQuotationRequestTowardCompany(@Param("companyId") UUID companyId);
 
 
 
@@ -35,6 +36,6 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId")
-    List<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(UUID companyId);
+    List<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId")UUID companyId);
 
 }

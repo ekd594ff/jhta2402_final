@@ -18,11 +18,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class QuotationService {
 
-
-    private final ImageController imageController;
-
-    private final QuotationRequestService quotationRequestService;
-
     private final QuotationRepository quotationRepository;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -211,15 +206,15 @@ public class QuotationService {
     // (seller) 회사가 작성한 모든 견적서 출력
     public List<Quotation> getAllQuotationOfCompany() {
         Company company = getCompanyOfMember();
-        return quotationRepository.findAllByCompany(company);
+        return quotationRepository.findAllByCompany(company.getId());
     }
 
 
     // admin
 
-    // (admin) (견적서의 유효성 및 삭제 여부 관계없이) 특정 회사가 작성한 모든 견적서 출력
+    // (admin) 특정 회사가 작성한 모든 견적서 출력
     public List<Quotation> getAllQuotationOfCompanyByAdmin(Company company) {
-        return quotationRepository.findAllByCompany(company);
+        return quotationRepository.findAllByCompany(company.getId());
     }
 
 }
