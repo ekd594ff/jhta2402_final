@@ -5,8 +5,8 @@ import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
 import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
-
-import {Backdrop, FormControlLabel, Modal, Radio, RadioGroup, TextField, Tooltip, Typography} from "@mui/material";
+import style from "../../styles/portfolio-detail.module.scss";
+import {Backdrop} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
@@ -23,7 +23,6 @@ import ShareIcon from '@mui/icons-material/Share';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
-import style from "../../styles/portfolio-detail.module.scss";
 
 
 const solutionAJAXPromise = (portfolioId) => axios.get(`/api/solution/portfolio/${portfolioId}`);
@@ -72,6 +71,7 @@ function PortfolioDetail() {
     useEffect(() => {
         const portFolioAJAXPromise = axios.get(`/api/portfolio/${id}`)
             .then((res) => {
+                console.log("\n\n--------------------portfolio--------------------\n", res.data);
                 setPortfolioInfo({
                     ...portfolioInfo,
                     ...res.data,

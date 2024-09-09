@@ -1,11 +1,8 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
-import com.user.IntArea.dto.portfolio.PortfolioDraftDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
-import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -57,22 +54,27 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoById(portfolioId);
     }
 
+    // 본인의 portfolio가 아닌 경우 Exception을 던짐
+    @GetMapping("/my/{id}")
+    public PortfolioEditDetailDto getMyPortfolioInfoDto(@PathVariable(name = "id") UUID portfolioId) {
+        return portfolioService.getMyPortfolioInfoById(portfolioId);
+    }
+
     @GetMapping("/list/random")
     public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
     }
 
     // seller
-
     @PostMapping
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreateDto portfolioCreateDto) {
-        portfolioService.create(portfolioCreateDto);
+    public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+        portfolioService.create(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdateDto portfolioUpdateDto) {
-        portfolioService.updatePortfolio(portfolioUpdateDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updatePortfolio(PortfolioRequestDto portfolioRequestDto) {
+        portfolioService.updatePortfolio(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
 

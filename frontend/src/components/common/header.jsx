@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Button, TextField} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {Link, useNavigate} from "react-router-dom";
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import style from "../../styles/header.module.scss";
 import {useEffect, useState} from "react";
@@ -73,7 +74,7 @@ function Header() {
         });
 
         document.addEventListener("click", function (event) {
-            setOpen(false);
+           setOpen(false);
         });
     }, []);
 

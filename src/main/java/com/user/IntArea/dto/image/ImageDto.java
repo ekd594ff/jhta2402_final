@@ -1,8 +1,10 @@
 package com.user.IntArea.dto.image;
 
 import com.user.IntArea.entity.Image;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
