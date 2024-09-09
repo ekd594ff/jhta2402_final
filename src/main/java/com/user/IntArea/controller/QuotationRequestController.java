@@ -40,35 +40,11 @@ public class QuotationRequestController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQuotationRequest(@PathVariable UUID id) {
-        quotationRequestService.deleteQuotationRequest(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<QuotationRequestDto>> getAllQuotationRequests() {
-        List<QuotationRequestDto> responseDtos = quotationRequestService.getAllQuotationRequests();
-        return ResponseEntity.ok(responseDtos);
-    }
-    @GetMapping("/{id}")
-    public ResponseEntity<QuotationRequestDto> getQuotationRequest(@PathVariable UUID id) {
-        QuotationRequestDto responseDto = quotationRequestService.getQuotationRequest(id);
-        return ResponseEntity.ok(responseDto);
-    }
-
     @GetMapping("/list/{memberId}")
     public ResponseEntity<Page<QuotationRequestDto>> getQuotationRequestByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<QuotationRequestDto> responseDto = quotationRequestService.getQuotationRequestsByMemberId(memberId, pageable);
         return ResponseEntity.ok().body(responseDto);
-    }
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<QuotationRequestDto> updateQuotationRequest(@PathVariable UUID id, @RequestBody QuotationRequestDto requestDto) {
-        QuotationRequestDto responseDto = quotationRequestService.updateQuotationRequest(id, requestDto);
-        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")

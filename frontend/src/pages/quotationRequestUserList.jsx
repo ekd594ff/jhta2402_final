@@ -1,18 +1,38 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  CircularProgress,
+  Button,
+  Grid,
+} from "@mui/material";
 
 const QuotationRequestUserList = ({ memberId }) => {
   const [quotationRequests, setQuotationRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     const fetchQuotationRequests = async () => {
+      if (!memberId) return;
+
+      setLoading(true);
+      setError(null);
+
       try {
         const response = await axios.get(
-          `/api/quotationRequest/list/${memberId}?page=1&pageSize=10` // 기본 페이지와 페이지 크기 설정
+          `/api/quotationRequest/list/${memberId}?page=${page}&pageSize=10` // 기본 페이지와 페이지 크기 설정
         );
-        setQuotationRequests(response.data.content); // 페이지의 내용 가져오기
+        setQuotationRequests((prevRequests) => [
+          ...prevRequests,
+          ...response.data.content,
+        ]);
+        setHasMore(response.data.content.length > 0);
       } catch (err) {
         setError(err);
       } finally {
@@ -21,33 +41,53 @@ const QuotationRequestUserList = ({ memberId }) => {
     };
 
     fetchQuotationRequests();
-  }, [memberId]);
+  }, [memberId, page]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  const loadMoreResults = () => {
+    if (hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  if (loading && page === 0) {
+    return <CircularProgress />;
+  }
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
   }
 
   return (
     <div>
-      <h2>견적 요청 목록</h2>
-      <ul>
+      <Typography variant="h6" style={{ margin: "20px 0" }}>
+        견적 요청 목록
+      </Typography>
+      <List>
         {quotationRequests.map((request) => (
-          <li key={request.portfolioId}>
-            <h3>{request.title}</h3>
-            <p>{request.description}</p>
-            <h4>솔루션 목록</h4>
-            <ul>
-              {request.solutions.map((solution) => (
-                <li key={solution.id}>
-                  <h5>{solution.title}</h5>
-                  <p>{solution.description}</p>
-                  <p>가격: {solution.price} 원</p>
-                </li>
-              ))}
-            </ul>
-          </li>
+          <ListItem key={request.portfolioId} divider>
+            <ListItemText
+              primary={request.title}
+              secondary={
+                <>
+                  <span>{request.description}</span>
+                  <br />
+                  <Typography variant="subtitle2">솔루션 목록</Typography>
+                  <List>
+                    {request.solutions.map((solution) => (
+                      <ListItem key={solution.id}>
+                        <ListItemText
+                          primary={solution.title}
+                          secondary={`가격: ${solution.price} 원`}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </>
+              }
+            />
+          </ListItem>
         ))}
-      </ul>
+      </List>
+      {hasMore && <Button>{loading ? "Loading..." : "더보기"}</Button>}
     </div>
   );
 };
