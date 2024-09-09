@@ -37,6 +37,9 @@ public class Company {
     private String address;
 
     @Column(nullable = false)
+    private String detailAddress;
+
+    @Column(nullable = false)
     private Boolean isApplied;
 
     @OneToMany(mappedBy = "id")
@@ -52,12 +55,13 @@ public class Company {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Company(Member member, String companyName, String description, String phone, String address, boolean isApplied) {
+    public Company(Member member, String companyName, String description, String phone, String address, String detailAddress, boolean isApplied) {
         this.member = member;
         this.companyName = companyName;
         this.description = description;
         this.phone = phone;
         this.address = address;
+        this.detailAddress = detailAddress;
         this.isApplied = isApplied;
     }
 }

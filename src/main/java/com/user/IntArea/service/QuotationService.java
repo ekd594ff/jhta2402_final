@@ -1,12 +1,11 @@
 package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
-import com.user.IntArea.controller.ImageController;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.quotation.QuotationCreateDto;
 import com.user.IntArea.dto.quotation.QuotationUpdateDto;
 import com.user.IntArea.entity.*;
-import com.user.IntArea.entity.enums.Progress;
+import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +64,7 @@ public class QuotationService {
         if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
-        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), Progress.PENDING)
+        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
         return quotation;
     }
@@ -75,10 +74,10 @@ public class QuotationService {
         if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
-        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), Progress.PENDING)
+        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
 
-        quotation.setProgress(Progress.USER_CANCELLED);
+        quotation.setProgress(QuotationProgress.USER_CANCELLED);
         return quotationRepository.save(quotation);
     }
 
@@ -88,10 +87,10 @@ public class QuotationService {
         if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
-        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), Progress.PENDING)
+        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
 
-        quotation.setProgress(Progress.APPROVED);
+        quotation.setProgress(QuotationProgress.APPROVED);
         return quotationRepository.save(quotation);
     }
 
@@ -122,10 +121,10 @@ public class QuotationService {
 
     // (seller) 선택한 견적서 취소처리
     public void cancelQuotationBySeller(Quotation quotation) {
-        if (!quotation.getProgress().equals(Progress.PENDING)) {
+        if (!quotation.getProgress().equals(QuotationProgress.PENDING)) {
             throw new NoSuchElementException("취소 불가");
         }
-        quotation.setProgress(Progress.SELLER_CANCELLED);
+        quotation.setProgress(QuotationProgress.SELLER_CANCELLED);
         quotationRepository.save(quotation);
     }
 
@@ -142,7 +141,7 @@ public class QuotationService {
         }
 
         // 기존의 대기중인 견적서가 있을 경우 취소 처리
-        Optional<Quotation> formerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationUpdateDto.getQuotationRequestId(), Progress.PENDING);
+        Optional<Quotation> formerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
         formerQuotation.ifPresent(this::cancelQuotationBySeller);
 
         // 수정된 새 견적서 생성
@@ -166,40 +165,40 @@ public class QuotationService {
         // 거래 거철 처리가 가능한 조건: quotationRequest 가 유효해야 하고, 이미 작성한 quotation이 있을 경우 그것의 상태는 사용자 결제 단계 이전이어야 함.
 
         // 고객이 견적 요청을 취소한 경우
-        if(quotationRequest.getProgress().equals(Progress.USER_CANCELLED)) {
+        if(quotationRequest.getProgress().equals(QuotationProgress.USER_CANCELLED)) {
             throw new NoSuchElementException("고객의 견적 신청이 취소되었습니다.");
         }
 
         // 관리자가 견적 요청을 취소한 경우
-        if(quotationRequest.getProgress().equals(Progress.ADMIN_CANCELLED)) {
+        if(quotationRequest.getProgress().equals(QuotationProgress.ADMIN_CANCELLED)) {
             throw new NoSuchElementException("고객의 견적 신청이 유효하지 않습니다.");
         }
 
         // 견적요청서에 대해서 이미 작성한 대기중인 견적서가 있는지 확인
-        Optional<Quotation> optionalFormerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), Progress.PENDING);
+        Optional<Quotation> optionalFormerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING);
 
         // 이미 생성한 견적서가 있을 경우 -> 조건을 고려해서 폐기
         if(optionalFormerQuotation.isPresent()) {
             Quotation formerQuotation = optionalFormerQuotation.get();
 
             // 판매지가 이미 견적 취소 처리를 한 경우
-            if(formerQuotation.getProgress().equals(Progress.SELLER_CANCELLED)) {
+            if(formerQuotation.getProgress().equals(QuotationProgress.SELLER_CANCELLED)) {
                 throw new NoSuchElementException("이미 취소한 견적입니다.");
             }
 
             // 최초 견적서 생성 후 고객의 응답 대기중일 경우에만 거래 취소 가능
-            if(formerQuotation.getProgress().equals(Progress.PENDING)
+            if(formerQuotation.getProgress().equals(QuotationProgress.PENDING)
             ) {
-                formerQuotation.setProgress(Progress.SELLER_CANCELLED);
+                formerQuotation.setProgress(QuotationProgress.SELLER_CANCELLED);
                 quotationRepository.save(formerQuotation);
                 // 견적서에 대한 견적 요청서의 progress 동기화
-                quotationRequest.setProgress(Progress.SELLER_CANCELLED);
+                quotationRequest.setProgress(QuotationProgress.SELLER_CANCELLED);
             }
             return;
         }
 
         // 애초에 생성한 견적서가 없을 경우 -> 견적 요청서 취소 처리하여 저장
-        quotationRequest.setProgress(Progress.SELLER_CANCELLED);
+        quotationRequest.setProgress(QuotationProgress.SELLER_CANCELLED);
         quotationRequestRepository.save(quotationRequest);
     }
 

@@ -1,9 +1,8 @@
 package com.user.IntArea.entity;
 
-import com.user.IntArea.entity.enums.Progress;
+import com.user.IntArea.entity.enums.QuotationProgress;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -36,11 +35,15 @@ public class QuotationRequest {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "id")
-    private List<RequestSolution> requestSolutions;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private QuotationProgress progress;
 
     @OneToMany(mappedBy = "id")
     private List<Quotation> quotations;
+
+    @OneToMany(mappedBy = "id")
+    private List<RequestSolution> requestSolutions;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -48,16 +51,12 @@ public class QuotationRequest {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column
-    private Progress progress;
-
     @Builder
-    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, Progress progress) {
+    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, QuotationProgress progress, List<RequestSolution> requestSolutions) {
         this.member = member;
         this.portfolio = portfolio;
         this.title = title;
         this.description = description;
-        this.progress = progress != null ? progress : Progress.PENDING; // 기본값 설정
+        this.progress = progress != null ? progress : QuotationProgress.PENDING; // 기본값 설정
     }
 }

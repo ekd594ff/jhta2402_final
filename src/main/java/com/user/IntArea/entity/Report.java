@@ -37,6 +37,9 @@ public class Report {
     @Column(nullable = false)
     private String description;
 
+    @Column
+    private String comment;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ReportProgress progress;

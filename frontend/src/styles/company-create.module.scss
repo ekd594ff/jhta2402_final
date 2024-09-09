@@ -5,7 +5,6 @@
   justify-content: center;
   min-height: 100vh;
   padding-top: variables.$HEADER_HEIGHT;
-  padding-bottom: 250px;
 
   & > .container {
     width: 100%;
@@ -22,10 +21,10 @@
     }
 
     & > .page-title {
-      width: 100%;
-      padding: 16px 0;
+      font-size: 20px;
+      font-weight: bold;
+      margin: 32px 0 32px 0;
       text-align: center;
-      align-content: center;
     }
 
     & > .page-subtitle {

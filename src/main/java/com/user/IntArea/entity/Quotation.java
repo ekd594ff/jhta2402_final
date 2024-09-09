@@ -1,6 +1,6 @@
 package com.user.IntArea.entity;
 
-import com.user.IntArea.entity.enums.Progress;
+import com.user.IntArea.entity.enums.QuotationProgress;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,6 +27,10 @@ public class Quotation {
     @Column
     private Long totalTransactionAmount;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private QuotationProgress progress; // 현재 진행상태
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -34,22 +38,13 @@ public class Quotation {
     private LocalDateTime updatedAt;
 
     @Column
-    private String clientName; // 견적을 요청한 고객의 이름. 기본값은 quotationRequest에서 작성자의 이름을 따오고 없을 경우 이메일주소를 따옴
-
-    @Column
     private String description; // 견적에 대한 간단한 설명
-
-    @Enumerated(EnumType.STRING)
-    @Column
-    private Progress progress; // 현재 진행상태
 
 
     @Builder
-    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, Progress progress) {
+    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, QuotationProgress progress) {
         this.quotationRequest = quotationRequest;
         this.totalTransactionAmount = totalTransactionAmount;
-        this.clientName = quotationRequest.getMember().getUsername() != null ? quotationRequest.getMember().getUsername() : quotationRequest.getMember().getEmail();
-        this.progress = progress != null ? progress : Progress.PENDING; // 기본값 설정
-
+        this.progress = progress != null ? progress : QuotationProgress.PENDING; // 기본값 설정
     }
 }

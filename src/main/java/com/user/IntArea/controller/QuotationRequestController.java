@@ -24,4 +24,27 @@ public class QuotationRequestController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<QuotationRequestDto> getQuotationRequest(@PathVariable UUID id) {
+        QuotationRequestDto responseDto = quotationRequestService.getQuotationRequest(id);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<QuotationRequestDto> updateQuotationRequest(@PathVariable UUID id, @RequestBody QuotationRequestDto requestDto) {
+        QuotationRequestDto responseDto = quotationRequestService.updateQuotationRequest(id, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteQuotationRequest(@PathVariable UUID id) {
+        quotationRequestService.deleteQuotationRequest(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<QuotationRequestDto>> getAllQuotationRequests() {
+        List<QuotationRequestDto> responseDtos = quotationRequestService.getAllQuotationRequests();
+        return ResponseEntity.ok(responseDtos);
+    }
 }
