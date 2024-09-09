@@ -70,7 +70,9 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
 
     Page<Portfolio> findAllByDescriptionContains(String Description, Pageable pageable);
 
-    @Query("select p from Portfolio p where 1=1 and CAST(p.company AS string) like %?1%")
+    @Query("select p from Portfolio p " +
+            "join fetch p.company c " +
+            "where 1=1 and c.companyName like %:companyName% ")
     Page<Portfolio> findAllByCompanyNameContains(String companyName, Pageable pageable);
 
     Page<Portfolio> findAllByCreatedAtContains(String createdAt, Pageable pageable);

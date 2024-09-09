@@ -16,7 +16,8 @@ public class CompanyResponseDto {
     private String description;
     private String phone;
     private String address;
-    private Boolean isApplied;
+    private String detailAddress;
+    private boolean isApplied;
     private LocalDateTime createdAt;
 
     public CompanyResponseDto(Company company) {
@@ -25,6 +26,7 @@ public class CompanyResponseDto {
         this.description = company.getDescription();
         this.phone = company.getPhone();
         this.address = company.getAddress();
+        this.detailAddress = company.getDetailAddress();
         this.isApplied = company.getIsApplied();
         this.createdAt = company.getCreatedAt();
     }

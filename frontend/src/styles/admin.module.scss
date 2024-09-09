@@ -1,0 +1,23 @@
+.modal-style {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff; // 흰색 배경
+  border-radius: 8px; // 모서리 둥글게
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
+  padding: 20px; // 패딩
+  width: 400px; // 너비 조정
+  max-width: 90%; // 화면 크기에 맞춰 조정
+  outline: none; // 기본 테두리 제거
+
+  h6 {
+    margin-bottom: 16px; // 제목과 내용 간격
+    font-weight: 600; // 제목 두껍게
+  }
+
+  button {
+    margin-top: 20px; // 버튼 간격
+    width: 100%; // 버튼 전체 너비
+  }
+}

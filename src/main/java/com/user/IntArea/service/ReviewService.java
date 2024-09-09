@@ -4,6 +4,7 @@ import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
 import com.user.IntArea.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -32,9 +34,6 @@ public class ReviewService {
     public Page<ReviewPortfolioDetailDto> getAllSearchReview(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
         if (filterValue.isPresent() && filterColumn.isPresent()) {
             switch (filterColumn.get()) {
-                case "user" -> {
-                    return reviewRepository.findAllByUsernameContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto::new);
-                }
                 case "title" -> {
                     return reviewRepository.findAllByTitleContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto ::new);
                 }
@@ -51,7 +50,7 @@ public class ReviewService {
                     return reviewRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto::new);
                 }
                 case "username" -> {
-                    return reviewRepository.findAllByUsernameContains(filterColumn.get(), pageable).map(ReviewPortfolioDetailDto::new);
+                    return reviewRepository.findAllByUsernameContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto::new);
                 }
             }
         } else {

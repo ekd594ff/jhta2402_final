@@ -18,6 +18,8 @@ import {
     getGridStringOperators
 } from "@mui/x-data-grid";
 import {Button} from "@mui/material";
+import { Modal, Box, Typography } from '@mui/material';
+import style01 from '../../styles/admin.module.scss';
 
 
 function NestedList() {
@@ -53,6 +55,12 @@ function NestedList() {
             <ListItemButton>
                 <Link to={"report"}><ListItemText primary="Report"/></Link>
             </ListItemButton>
+            <ListItemButton>
+                <Link to={"quotation"}><ListItemText primary="Quotation"/></Link>
+            </ListItemButton>
+            <ListItemButton>
+                <Link to={"quotationRequest"}><ListItemText primary="QuotationRequest"/></Link>
+            </ListItemButton>
         </List>
     );
 }
@@ -76,6 +84,16 @@ const filterOperators = getGridStringOperators()
             ...operator
         };
     });
+const handleUpdateClick = async (id) => {
+    console.log('id', id);
+    // try {
+    //     const response = await axios.delete(`/api/${pathname}/admin/soft/${id}`,
+    //     );
+    // } catch (error) {
+    //     console.error('Error sending API request:', error);
+    // }
+};
+
 
 
 function DataTable() {
@@ -88,7 +106,28 @@ function DataTable() {
     const [paginationModel, setPaginationModel] = useState({page: 0, pageSize: 5});
     const [sortModel, setSortModel] = useState({field: "", sort: ""})
     const [selectedRows, setSelectedRows] = useState([]);
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
+    const buttonColumns = {
+        field: 'delete',
+        headerName: '삭제',
+        width: 150,
+        renderCell: (params) => (
+            <Button
+                variant="contained"
+                color="default"
+                onClick={(event) => {
+                    event.stopPropagation();
+                    handleUpdateClick(params.row.id)
+                    handleOpen();
+                }} // ID를 전달
+            >
+                삭제
+            </Button>
+        ),
+    };
     const fetchData = async (pathname, paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
@@ -106,23 +145,7 @@ function DataTable() {
                     filterOperators
                 }));
 
-                cols.push({
-                    field: 'delete',
-                    headerName: '삭제',
-                    width: 150,
-                    renderCell: (params) => (
-                        <Button
-                            variant="contained"
-                            color="default"
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                handleDeleteClick(params.row.id)
-                            }} // ID를 전달
-                        >
-                            삭제
-                        </Button>
-                    ),
-                });
+                cols.push(buttonColumns);
 
                 setColumns(cols);
             }
@@ -139,14 +162,7 @@ function DataTable() {
         }
     };
 
-    const handleDeleteClick = async (id) => {
-        try {
-            const response = await axios.delete(`/api/${pathname}/admin/hard/${id}`,
-            );
-        } catch (error) {
-            console.error('Error sending API request:', error);
-        }
-    };
+
 
     const fetchFilterdData = async (filterModel,sortModel,pathname,paginationModel) => {
         try {
@@ -182,23 +198,7 @@ function DataTable() {
                     filterOperators
                 }));
 
-                cols.push({
-                    field: 'action',
-                    headerName: 'action',
-                    width: 150,
-                    renderCell: (params) => (
-                        <Button
-                            variant="contained"
-                            color="default"
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                handleDeleteClick(params.row.id)
-                            }} // ID를 전달
-                        >
-                            클릭
-                        </Button>
-                    ),
-                });
+                cols.push(buttonColumns);
                 setColumns(cols);
             }
             setData(response.data.content); // 실제 데이터 구조에 맞게 수정
@@ -290,11 +290,26 @@ function DataTable() {
                 // onCellClick={handleButtonClick}
                 paginationModel={paginationModel}
             />
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box className={style01["modal-style"]}>
+                    <Typography id="modal-title" variant="h6" component="h2">
+                        모달 제목
+                    </Typography>
+                    <Typography id="modal-description" sx={{ mt: 2 }}>
+                        모달 내용이 여기에 표시됩니다.
+                    </Typography>
+                    <Button variant="outlined" onClick={handleClose}>
+                        닫기
+                    </Button>
+                </Box>
+            </Modal>
             <Button onClick={handleApiRequest} variant="contained" color="default">
                 soft delete
-            </Button>
-            <Button onClick={handleDeleteClick} variant="contained" color="default">
-                hard delete
             </Button>
         </Paper>
     );
@@ -331,6 +346,8 @@ function Admin() {
                     <Route path={"review"} element={<DataTable/>} />
                     <Route path={"member"} element={<DataTable/>}/>
                     <Route path={"report"} element={<DataTable/>}/>
+                    <Route path={"quotation"} element={<DataTable/>}/>
+                    <Route path={"quotationRequest"} element={<DataTable/>}/>
                     <Route path={"/"} element={<DataTable/>}/>
                 </Routes>
             </div>

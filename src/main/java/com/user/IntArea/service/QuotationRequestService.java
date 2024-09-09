@@ -1,5 +1,7 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.dto.quotation.QuotationResponseDto;
+import com.user.IntArea.dto.quotationRequest.QuotationAdminRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.entity.*;
@@ -8,13 +10,12 @@ import com.user.IntArea.repository.PortfolioRepository;
 import com.user.IntArea.repository.QuotationRequestRepository;
 import com.user.IntArea.repository.SolutionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -152,4 +153,43 @@ public class QuotationRequestService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public Page<QuotationAdminRequestDto> findAllQutationRequestDto(Pageable pageable) {
+        return quotationRequestRepository.findAll(pageable).map(QuotationAdminRequestDto::new);
+    }
+
+    public Page<QuotationAdminRequestDto> findAllByFilter(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "id" -> {
+                    return quotationRequestRepository.findAllByIdContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "username" -> {
+                    return quotationRequestRepository.findAllByUsernameContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "portfolioId" -> {
+                    return quotationRequestRepository.findAllByPortfolioIdContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "title" -> {
+                    return quotationRequestRepository.findAllByTitleContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "description" -> {
+                    return quotationRequestRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "progress" -> {
+                    return quotationRequestRepository.findAllByProgressContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "createdAt" -> {
+                    return quotationRequestRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+                case "updatedAt" -> {
+                    return quotationRequestRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(QuotationAdminRequestDto::new);
+                }
+            }
+        } else {
+            return quotationRequestRepository.findAll(pageable).map(QuotationAdminRequestDto::new);
+        }
+        throw new RuntimeException("findAllByFilter : QuotationService");
+    }
+
 }

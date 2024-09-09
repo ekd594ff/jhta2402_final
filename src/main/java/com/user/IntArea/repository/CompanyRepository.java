@@ -25,6 +25,8 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     Page<Company> findAllByAddressContains(String address, Pageable pageable);
 
+    Page<Company> findAllByDetailAddressContains(String address, Pageable pageable);
+
     Page<Company> findAllByPhoneContains(String phone, Pageable pageable);
 
     Page<Company> findAllByCompanyNameContains(String companyName, Pageable pageable);

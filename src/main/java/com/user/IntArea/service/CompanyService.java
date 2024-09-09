@@ -141,6 +141,7 @@ public class CompanyService {
                 company.getDescription(),
                 company.getPhone(),
                 company.getAddress(),
+                company.getDetailAddress(),
                 company.getIsApplied(),
                 company.getCreatedAt());
     }
@@ -163,6 +164,9 @@ public class CompanyService {
                 }
                 case "address" -> {
                     return companyRepository.findAllByAddressContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
+                }
+                case "detailAddress" -> {
+                    return companyRepository.findAllByDetailAddressContains(filterValue.get(), pageable).map(CompanyResponseDto::new);
                 }
                 case "updatedAt" -> {
                     return companyRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(CompanyResponseDto::new);

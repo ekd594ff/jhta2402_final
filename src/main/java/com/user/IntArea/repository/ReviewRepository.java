@@ -17,9 +17,12 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
             "WHERE qr.portfolio.id = :portfolioId ")
     Page<Review> findReviewsByPortfolioId(UUID portfolioId, Pageable pageable);
 
+    @Query("select r from Review r join fetch r.member m")
     Page<Review> findAll(Pageable pageable);
 
-    @Query("select r from Review r where 1=1 and CAST(r.member AS string) like %?1%")
+    @Query("select r from Review r " +
+            "join fetch r.member m " +
+            "where 1=1 and m.username like %:username% ")
     Page<Review> findAllByUsernameContains(String username, Pageable pageable);
 
     Page<Review> findAllByTitleContains(String title, Pageable pageable);

@@ -4,17 +4,22 @@ import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
 import com.user.IntArea.dto.quotation.QuotationCreateDto;
+import com.user.IntArea.dto.quotation.QuotationResponseDto;
+import com.user.IntArea.dto.report.ReportResponseDto;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.repository.CompanyRepository;
 import com.user.IntArea.repository.MemberRepository;
 import com.user.IntArea.repository.QuotationRepository;
 import com.user.IntArea.repository.QuotationRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -92,6 +97,35 @@ public class QuotationService {
                 .quotationRequest(quotationCreateDto.getQuotationRequestId())
                 .build();
         return quotationRepository.save(quotation);
+    }
+
+    public Page<QuotationResponseDto> findAllQutationResponseDto(Pageable pageable) {
+        return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
+    }
+
+    public Page<QuotationResponseDto> findAllByFilter(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "id" -> {
+                    return quotationRepository.findAllByIdContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "totalTransactionAmount" -> {
+                    return quotationRepository.findAllByTotalTransactionAmountContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "progress" -> {
+                    return quotationRepository.findAllByProgressContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "createdAt" -> {
+                    return quotationRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return quotationRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+            }
+        } else {
+            return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
+        }
+        throw new RuntimeException("findAllByFilter : QuotationService");
     }
 
 
