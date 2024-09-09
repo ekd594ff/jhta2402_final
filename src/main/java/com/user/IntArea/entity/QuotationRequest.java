@@ -1,5 +1,6 @@
 package com.user.IntArea.entity;
 
+import com.user.IntArea.entity.enums.QuotationProgress;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,7 +35,14 @@ public class QuotationRequest {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "quotationRequest")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private QuotationProgress progress;
+
+    @OneToMany(mappedBy = "id")
+    private List<Quotation> quotations;
+
+    @OneToMany(mappedBy = "id")
     private List<RequestSolution> requestSolutions;
 
     @CreatedDate
@@ -49,6 +57,7 @@ public class QuotationRequest {
         this.portfolio = portfolio;
         this.title = title;
         this.description = description;
+        this.progress = progress;
     }
 
     public Quotation getWrittenQuotation() {

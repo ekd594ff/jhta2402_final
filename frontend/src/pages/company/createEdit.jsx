@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import style from "../../styles/company-create.module.scss";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {useDaumPostcodePopup} from "react-daum-postcode";
-import {checkLogin, checkRoleTest, checkSeller} from "../../utils/loginUtil.jsx";
+import {checkMember, checkSeller} from "../../utils/loginUtil.jsx";
 
 function CreateEditCompany() {
 
@@ -27,22 +27,27 @@ function CreateEditCompany() {
 
     const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
 
-    if (isEdit) {
+    useEffect(() => {
 
-        Promise.all([checkSeller(), getCompanyInfo()])
-            .then(([_, res]) => {
-                setCompanyInfo({
-                    ...companyInfo,
-                    companyName: res.data.companyName,
-                    description: res.data.description || "",
-                    phone: res.data.phone,
-                    address: res.data.address,
-                    imageUrl: res.data.url
-                });
-            });
-    } else {
-        checkRoleTest();
-    }
+        if (isEdit) {
+
+            Promise.all([getCompanyInfo(), checkSeller()])
+                .then(([res, _]) => {
+                    setCompanyInfo({
+                        ...companyInfo,
+                        companyName: res.data.companyName,
+                        description: res.data.description || "",
+                        phone: res.data.phone,
+                        address: res.data.address,
+                        imageUrl: res.data.url
+                    });
+                })
+                .catch(() => navigate(-1));
+        } else {
+            checkMember()
+                .catch(() => navigate("/login"));
+        }
+    }, []);
 
 
     const checkInput = () => {
@@ -63,9 +68,13 @@ function CreateEditCompany() {
 
     const createEditCompany = () => {
 
+        const confirmMessage = (isEdit) ? "변경사항을 등록하시겠습니까?" : "등록하시겠습니까?";
+
         const apiUrl = (isEdit) ? "/api/company/edit" : "/api/company";
 
         if (checkInput()) return;
+
+        if (!confirm(confirmMessage)) return;
 
         const formData = new FormData();
         formData.append("companyName", companyInfo.companyName);
@@ -233,20 +242,23 @@ function CreateEditCompany() {
                             onClick={findAddress}>주소 찾기</Button>
                 </div>
                 <div className={style['image-div']}>
-                    <img src={image} className={style['image-blob']}/>
+                    {(!isEdit || isEdit && image != null || isEdit && companyInfo.imageUrl == null)
+                        ? <img src={image} className={style['image-blob']}/>
+                        : <img src={companyInfo.imageUrl} className={style['image-blob']}/>}
                     <Button className={style['button']}
                             variant="outlined" component="label">
                         <input id="image" name="image" type="file" onChange={(e) => {
                             setCompanyInfo({...companyInfo, image: e.target.files[0]});
                             previewImage(e.target.files[0]);
                         }}
-                               hidden/>회사 이미지 등록
+                               hidden/>
+                        {isEdit ? "회사 이미지 수정" : "회사 이미지 등록"}
                     </Button>
                 </div>
 
                 <div className={style['button-div']}>
                     <Button variant="contained" color="success" onClick={createEditCompany}>
-                        {isEdit ? "회사 등록" : "정보 수정"}
+                        {isEdit ? "정보 수정" : "회사 등록"}
                     </Button>
                 </div>
             </div>

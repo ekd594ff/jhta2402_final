@@ -1,5 +1,6 @@
 package com.user.IntArea.entity;
 
+import com.user.IntArea.entity.enums.QuotationProgress;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,12 +20,16 @@ public class Quotation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quotationRequestId")
     private QuotationRequest quotationRequest;
 
     @Column
     private Long totalTransactionAmount;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private QuotationProgress progress;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -33,8 +38,9 @@ public class Quotation {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount) {
+    public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, QuotationProgress progress) {
         this.quotationRequest = quotationRequest;
         this.totalTransactionAmount = totalTransactionAmount;
+        this.progress = progress;
     }
 }

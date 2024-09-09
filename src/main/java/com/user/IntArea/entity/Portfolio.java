@@ -40,6 +40,9 @@ public class Portfolio {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isDeleted = false;
 
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isActivated = true;
+
     @CreatedDate
     private LocalDateTime createdAt;
 

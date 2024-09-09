@@ -35,6 +35,9 @@ public class Solution {
     @Column(nullable = false)
     private Integer price;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
+
     @OneToMany(mappedBy = "id")
     private List<RequestSolution> requestSolutions;
 
