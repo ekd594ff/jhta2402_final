@@ -6,7 +6,7 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import PortfolioImgListItem from "./portfolio-img-list-item.jsx";
 
-import {Backdrop, Modal, Tooltip, Typography} from "@mui/material";
+import {Backdrop, FormControlLabel, Modal, Radio, RadioGroup, TextField, Tooltip, Typography} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
@@ -42,6 +42,8 @@ function PortfolioDetail() {
     const [modalImg, setModalImg] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [reportModalOpen, setReportModalOpen] = useState(false);
+    const [reportData, setReportData] = useState({title: "", description: ""});
+    const [customReportTitle, setCustomReportTitle] = useState("");
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: "",
@@ -108,6 +110,9 @@ function PortfolioDetail() {
         }
     }, [modalOpen, reportModalOpen]);
 
+    useEffect(() => {
+        console.log(reportData);
+    }, [reportData]);
 
     return (
         <>
@@ -266,14 +271,35 @@ function PortfolioDetail() {
                 className={style['report-modal']}
                 open={reportModalOpen}
                 onClick={() => {
-                    setReportModalOpen(false);
+                    setReportModalOpen(true);
                 }}
             >
                 <div className={style['content']}>
                     <div className={style['top']}>
                         신고하기
                     </div>
-                    <div className={style['middle']}></div>
+                    <div className={style['middle']}>
+                        <RadioGroup
+                            onChange={(event) => {
+                                const title = event.target.value;
+                                if (title === "기타(직접작성)") {
+                                    setReportData(prev => ({...prev, title: customReportTitle}));
+                                } else {
+                                    setReportData(prev => ({...prev, title}));
+                                }
+                            }}
+                            className={style['report-list']}
+                        >
+                            <FormControlLabel value="부적절한 내용" control={<Radio/>} label="부적절한 내용"/>
+                            <FormControlLabel value="사진과 다른 서비스" control={<Radio/>} label="사진과 다른 서비스"/>
+                            <FormControlLabel value="불친절한 서비스" control={<Radio/>} label="불친절한 서비스"/>
+                            <FormControlLabel value="저작권 불법 도용" control={<Radio/>} label="저작권 불법 도용"/>
+                            <FormControlLabel value="기타(직접작성)" control={<Radio/>} label="기타(직접작성)"/>
+                            <TextField variant="outlined" disabled={reportData.title !== "기타(직접작성)"}
+                                       value={customReportTitle}
+                                       onChange={(event) => setCustomReportTitle(event.target.value)}/>
+                        </RadioGroup>
+                    </div>
                     <div className={style['bottom']}></div>
                 </div>
             </Backdrop>
