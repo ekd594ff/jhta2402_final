@@ -36,10 +36,10 @@ public class QuotationRequest {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "quotationRequest")
+    @OneToMany(mappedBy = "id")
     private List<RequestSolution> requestSolutions;
 
-    @OneToMany(mappedBy = "quotationRequest")
+    @OneToMany(mappedBy = "id")
     private List<Quotation> quotations;
 
     @CreatedDate
