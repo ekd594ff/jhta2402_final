@@ -184,8 +184,14 @@ public class CompanyService {
     }
 
     @Transactional
-    public void softDeleteCompanys(List<String> idList) {
+    public void softDeleteCompanies(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         companyRepository.softDeleteByIds(ids);
+    }
+
+    @Transactional
+    public void hardDeleteCompanies(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        companyRepository.deleteAllById(ids);
     }
 }

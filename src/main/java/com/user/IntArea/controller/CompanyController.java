@@ -89,9 +89,9 @@ public class CompanyController {
                                                                     @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                     @RequestParam(required = false) String filterColumn,
                                                                     @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}",sortField);
-        log.info("sort={}",sort);
-        log.info("filterColumn={}",filterColumn);
+        log.info("sortField={}", sortField);
+        log.info("sort={}", sort);
+        log.info("filterColumn={}", filterColumn);
         log.info("filterValue={}", filterValue);
 
 
@@ -110,8 +110,14 @@ public class CompanyController {
     @DeleteMapping("/admin/soft/{ids}")
     public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
-        companyService.softDeleteCompanys(idList);
+        companyService.softDeleteCompanies(idList);
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> hardDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        companyService.hardDeleteCompanies(idList);
+        return ResponseEntity.noContent().build();
+    }
 }

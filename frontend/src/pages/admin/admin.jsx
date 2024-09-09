@@ -119,7 +119,7 @@ function DataTable() {
                                 handleDeleteClick(params.row.id)
                             }} // ID를 전달
                         >
-                            클릭
+                            삭제
                         </Button>
                     ),
                 });

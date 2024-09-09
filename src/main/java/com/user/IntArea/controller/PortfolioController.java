@@ -174,4 +174,10 @@ public class PortfolioController {
         portfolioService.softDeletePortfolios(idList);
         return ResponseEntity.noContent().build();
     }
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> hardDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        portfolioService.hardDeletePortfolios(idList);
+        return ResponseEntity.noContent().build();
+    }
 }

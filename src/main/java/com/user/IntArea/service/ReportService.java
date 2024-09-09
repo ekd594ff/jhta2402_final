@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ReportService {
@@ -15,5 +18,10 @@ public class ReportService {
 
     public Page<ReportResponseDto> findAllReportDto(Pageable pageable) {
         return reportRepository.findAllReportDto(pageable).map(ReportResponseDto::new);
+    }
+
+    public void hardDeleteReports(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        reportRepository.deleteAllById(ids);
     }
 }

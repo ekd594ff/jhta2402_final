@@ -288,4 +288,10 @@ public class PortfolioService {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         portfolioRepository.softDeleteByIds(ids);
     }
+
+    @Transactional
+    public void hardDeletePortfolios(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        portfolioRepository.deleteAllById(ids);
+    }
 }

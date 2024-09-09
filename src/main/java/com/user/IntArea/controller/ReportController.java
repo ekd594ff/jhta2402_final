@@ -9,10 +9,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/report")
@@ -27,4 +27,13 @@ public class ReportController {
         Page<ReportResponseDto> reportResponseDtos = reportService.findAllReportDto(pageable);
         return ResponseEntity.ok().body(reportResponseDtos);
     }
+
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> hardDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        reportService.hardDeleteReports(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

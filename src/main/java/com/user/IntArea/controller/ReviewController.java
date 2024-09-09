@@ -69,7 +69,7 @@ public class ReviewController {
     @DeleteMapping("/admin/hard/{ids}")
     public ResponseEntity<?> deleteReviews(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
-        reviewService.deleteReviews(idList);
+        reviewService.hardDeleteReviews(idList);
         return ResponseEntity.noContent().build();
     }
 }
