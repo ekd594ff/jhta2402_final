@@ -23,7 +23,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -75,12 +74,11 @@ public class CompanyService {
         company.setAddress(companyRequestDto.getAddress());
         companyRepository.save(company);
 
-        // 기존 이미지가 있으면 삭제
-        imageRepository.findByRefId(company.getId())
-                .ifPresent(imageRepository::delete);
-
-        // 이미지가 있으면 저장
+        // 이미지가 있으면 기존 이미지 삭제 & 저장
         if (!companyRequestDto.getImage().isEmpty()) {
+            imageRepository.findByRefId(company.getId())
+                    .ifPresent(imageRepository::delete);
+
             ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
                     .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 

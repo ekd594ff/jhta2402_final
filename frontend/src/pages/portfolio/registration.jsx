@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {
     Button,
     TextField,
@@ -24,6 +24,10 @@ function Registration() {
 
     const navigate = useNavigate();
 
+    const location = useLocation();
+    const isEdit = location.pathname.startsWith("/portfolio/edit");
+    const {id} = (isEdit) ? useParams() : "";
+
     // useState 받은 데이터 적용하기
     const [companyInfo, setCompanyInfo] = useState({
         address: "",
@@ -39,18 +43,48 @@ function Registration() {
         description: "",
     });
 
-    const [images, setImages] = useState([]);
-
     const [solutions, setSolutions] = useState([]);
 
-    const [otherImages, setOtherImages] = useState([]);
-
+    const [images, setImages] = useState([]);
 
     const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
 
     Promise.all([checkSeller(), getCompanyInfo()])
         .then(([_, res]) => setCompanyInfo(res.data));
 
+
+    if (isEdit) {
+
+        useEffect(() => {
+            axios.get(`/api/portfolio/my/${id}`)
+                .then((res) => {
+                    setPortfolioInfo({
+                        title: res.data.title,
+                        description: res.data.description,
+                    });
+
+                    const imageUrls = res.data.images.map(image => ({
+                        id: image.id,
+                        url: image.url,
+                        file: new File([""], image.id)
+                    }));
+                    setImages([...imageUrls]);
+
+                    const responseSolutions = res.data.solution.map(solution => ({
+                        id: solution.id,
+                        title: solution.title,
+                        description: solution.description,
+                        price: solution.price,
+                    }));
+                    setSolutions([...responseSolutions]);
+
+                })
+                .catch(() => {
+                    alert("에러가 발생했습니다.");
+                    // navigate(-1);
+                })
+        }, []);
+    }
 
     // 로컬에서 임시 저장한 내용을 불러오기
     // useEffect(() => {
@@ -61,7 +95,7 @@ function Registration() {
     // }, []);
 
 
-    // 포트폴리오 등록
+    // 포트폴리오 등록, 수정
     const submitPortfolio = () => {
         const isEmpty = solutions.some(solution => {
             if (solution.title === "" || solution.description === "" || solution.price === "") {
@@ -73,24 +107,37 @@ function Registration() {
             setSnackbarState({open: true, message: "솔루션 빈칸을 채워주세요."})
             return;
         }
-        if (!confirm("포트폴리오를 등록하시겠습니까?")) return;
+        if (!confirm(`포트폴리오를 ${(isEdit ? "수정" : "등록")}하시겠습니까?`)) return;
 
         const formData = new FormData();
 
+        if (isEdit) formData.append("id", id);
         formData.append("title", portfolioInfo.title);
         formData.append("description", portfolioInfo.description);
-        images.map(image => formData.append("images", image));
+        images.map(image => formData.append("images", image.file));
         formData.append("solutionStrings", JSON.stringify(solutions));
 
 
-        axios.post("/api/portfolio",
-            formData,
-            {withCredentials: true})
-            .then((res) => {
-                alert("포트폴리오가 등록되었습니다.");
-                navigate("/");
-            })
-            .catch(err => alert("오류가 발생했습니다. 다시 시도해주세요."));
+        if (!isEdit) {
+            axios.post("/api/portfolio",
+                formData,
+                {withCredentials: true})
+                .then((res) => {
+                    alert(`포트폴리오가 등록되었습니다.`);
+                    navigate("/");
+                })
+                .catch(err => alert(err + "오류가 발생했습니다. 다시 시도해주세요."));
+        } else {
+            axios.patch(`/api/portfolio/${id}`,
+                formData,
+                {withCredentials: true})
+                .then((res) => {
+                    alert(`포트폴리오가 수정되었습니다.`);
+                    navigate("/");
+                })
+                .catch(err => alert(err + "오류가 발생했습니다. 다시 시도해주세요."));
+        }
+
     }
 
     // 작성중인 내용 서버에 임시저장(미사용)
@@ -197,7 +244,9 @@ function Registration() {
             <main className={style["main"]}>
 
                 <div className={style["container"]}>
-                    <h2 className={style["title"]}>새 포트폴리오 등록</h2>
+                    <h2 className={style["title"]}>
+                        {(isEdit) ? "포트폴리오 수정" : "새 포트폴리오 등록"}
+                    </h2>
 
                     <Stepper activeStep={activeStep} alternativeLabel
                              connector={<QontoConnector/>}>
@@ -266,8 +315,8 @@ function Registration() {
                         </div>}
 
                     {activeStep === 1 && <div className={style["form2"]}>
-                        <ImageUpload images={images} setImages={setImages} otherImages={otherImages}
-                                     setOtherImages={setOtherImages}/>
+                        <ImageUpload images={images}
+                                     setImages={setImages}/>
 
                         <div className={style["button-div"]}>
                             <Button className={style["prev-button"]} variant="outlined"
@@ -290,7 +339,9 @@ function Registration() {
                                 이전
                             </Button>
                             <Button className={style["register-button"]} variant="contained"
-                                    onClick={submitPortfolio}>등록</Button>
+                                    onClick={submitPortfolio}>
+                                {(isEdit) ? "수정" : "등록"}
+                            </Button>
                         </div>
                     </div>
                     }

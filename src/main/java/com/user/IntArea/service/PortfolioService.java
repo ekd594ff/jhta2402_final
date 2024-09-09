@@ -4,21 +4,14 @@ import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
-import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
-import com.user.IntArea.dto.portfolio.PortfolioRequestDto;
-import com.user.IntArea.dto.portfolio.PortfolioSearchDto;
-import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
-import com.user.IntArea.entity.Company;
-import com.user.IntArea.entity.Member;
-import com.user.IntArea.entity.Portfolio;
-import com.user.IntArea.entity.Solution;
+import com.user.IntArea.dto.portfolio.*;
+import com.user.IntArea.entity.*;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
@@ -78,7 +71,7 @@ public class PortfolioService {
     // (일반 권한) 검색된 포트폴리오 검색 메서드
     public Page<PortfolioSearchDto> getPortfolios(String searchWord, Pageable pageable) {
         return portfolioRepository.searchPortfolios(searchWord, pageable)
-                .map(result ->  new PortfolioSearchDto((String) result[0], (String) result[1], (String) result[2], (String[]) result[3]));
+                .map(result -> new PortfolioSearchDto((String) result[0], (String) result[1], (String) result[2], (String[]) result[3]));
     }
 
     // (일반 권한) 특정한 하나의 포트폴리오 InfoDto 불러오기
@@ -110,7 +103,7 @@ public class PortfolioService {
 
     // (seller 권한) 포트폴리오 생성
     @Transactional
-    public Portfolio create(@RequestParam PortfolioRequestDto portfolioRequestDto) {
+    public Portfolio create(PortfolioRequestDto portfolioRequestDto) {
 
         Company company = getCompanyOfMember();
 
@@ -147,14 +140,83 @@ public class PortfolioService {
         return savedPortfolio;
     }
 
+    // (seller 권한) 포트폴리오 id로 검색, 본인 것이 아닌 경우 Exception
+    public PortfolioEditDetailDto getMyPortfolioInfoById(UUID id) {
+
+        Portfolio portfolio = portfolioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 id의 포트폴리오가 없습니다."));
+
+        isCompanyManager(portfolio);
+
+        List<Image> images = imageRepository.findAllByRefId(portfolio.getId());
+
+        List<Solution> solutions = solutionRepository.findAllByPortfolioId(portfolio.getId());
+
+        return PortfolioEditDetailDto.builder()
+                .portfolio(portfolio)
+                .images(images)
+                .solution(solutions)
+                .build();
+    }
+
     // (seller 권한) 포트폴리오 수정
-    public Portfolio updatePortfolio(PortfolioUpdateDto portfolioUpdateDto) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioUpdateDto.getId())
+    @Transactional
+    public void updatePortfolio(PortfolioRequestDto portfolioRequestDto) {
+
+        // 포트폴리오 수정 권한 확인
+        Portfolio portfolio = portfolioRepository.findById(portfolioRequestDto.getId())
                 .orElseThrow(() -> new NoSuchElementException(""));
         isCompanyManager(portfolio);
-        portfolio.setTitle(portfolioUpdateDto.getTitle());
-        portfolio.setDescription(portfolioUpdateDto.getDescription());
-        return portfolioRepository.save(portfolio);
+
+        // 포트폴리오 수정
+        portfolio.setTitle(portfolioRequestDto.getTitle());
+        portfolio.setDescription(portfolioRequestDto.getDescription());
+        portfolioRepository.save(portfolio);
+
+        // 삭제된 이미지 제거
+        List<MultipartFile> images = portfolioRequestDto.getImages();
+        List<UUID> imageIdList = images.stream()
+                .filter(image -> {
+                    try {
+                        UUID.fromString(Objects.requireNonNull(image.getOriginalFilename()));
+                        return true; // 변환 가능
+                    } catch (IllegalArgumentException e) {
+                        return false; // 변환 불가능
+                    }
+                })
+                .map(image -> UUID.fromString(image.getOriginalFilename())) // 변환
+                .toList(); // 리스트로 수집
+        imageRepository.deleteAllNotInId(imageIdList);
+
+        // 이미지 저장 및 수정
+        for (int i = 0; i < images.size(); i++) {
+
+            MultipartFile image = images.get(i);
+            if (image.isEmpty()) {
+                // 기존 이미지 테이블 id로 S3 이름 변경, 이미지 테이블 업데이트
+                Image dbImage = imageRepository.findById(UUID.fromString(Objects.requireNonNull(image.getOriginalFilename())))
+                        .orElseThrow(() -> new NoSuchElementException("해당 이미지가 없습니다."));
+                ImageDto imageDto = imageUtil.renameS3(dbImage.getUrl(), portfolio.getId(), i)
+                        .orElseThrow(() -> new NoSuchElementException("S3 오류"));
+
+                dbImage.setUrl(imageDto.getUrl());
+                dbImage.setFilename(imageDto.getFilename());
+                imageRepository.save(dbImage);
+
+            } else {
+                ImageDto imageDto = imageUtil.uploadS3(image, portfolio.getId(), i)
+                        .orElseThrow(() -> new NoSuchElementException("S3 오류"));
+                imageRepository.save(imageDto.toImage());
+            }
+        }
+
+        // 솔루션 수정
+        // todo: soft delete
+//        solutionRepository.softDeleteAllByPortfolioId(portfolio.getId());
+        List<Solution> solutions = portfolioRequestDto.getSolutions().stream()
+                .map(solutionDto -> solutionDto.toSolution(portfolio))
+                .toList();
+        solutionRepository.saveAll(solutions);
     }
 
     // (seller 권한) 회사 관리자가 관리하는 회사의 모든 포트폴리오 InfoDto 불러오기

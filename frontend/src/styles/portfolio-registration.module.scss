@@ -1,16 +1,10 @@
 @use "variables";
 
-
-.stepConnectorClasses.active {
-  border-color: variables.$COLOR_PRIMARY;
-}
-
 .main {
   display: flex;
   justify-content: center;
   min-height: 100vh;
   padding-top: variables.$HEADER_HEIGHT;
-  padding-bottom: 250px;
 
   & > .container {
     width: 100%;
