@@ -12,8 +12,4 @@ public interface SolutionRepository extends JpaRepository<Solution, UUID> {
 
     @Query("SELECT s FROM Solution s WHERE s.portfolio.id = :portfolioId")
     List<Solution> findAllByPortfolioId(UUID portfolioId);
-
-    @Transactional
-//    @Query("UPDATE FROM Solution s SET isAvaliable = false WHERE s.portfolio.id = :portfolioId")
-    void softDeleteAllByPortfolioId(UUID portfolioId);
 }
