@@ -37,9 +37,6 @@ public class Quotation {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Column
-    private String description; // 견적에 대한 간단한 설명
-
 
     @Builder
     public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, QuotationProgress progress) {
