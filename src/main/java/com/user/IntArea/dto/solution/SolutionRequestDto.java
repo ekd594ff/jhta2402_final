@@ -4,9 +4,12 @@ import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.entity.Solution;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class SolutionRequestDto {
 
+    private UUID id;
     private String title;
     private String description;
     private String price;

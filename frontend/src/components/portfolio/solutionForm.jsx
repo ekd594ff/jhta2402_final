@@ -15,7 +15,7 @@ function SolutionForm({solutions, setSolutions}) {
 
     const addSolution = () => {
 
-        setSolutions([...solutions, {title: '', description: '', price: ''}]);
+        setSolutions([...solutions, {id: '', title: '', description: '', price: ''}]);
     };
 
     const moveSolution = (dragIndex, hoverIndex) => {
