@@ -45,14 +45,29 @@
         padding: 16px;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
+
 
         & :global(.Mui-checked) {
           color: variables.$COLOR_PRIMARY;
         }
 
+        & .report-description {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          padding: 6px 0;
+        }
+
         & * {
+          font-size: 15px;
           user-select: none;
+        }
+
+        & > .report-submit {
+          background-color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+          color: #fff;
         }
       }
     }
