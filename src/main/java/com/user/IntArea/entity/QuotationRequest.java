@@ -39,10 +39,10 @@ public class QuotationRequest {
     @Enumerated(EnumType.STRING)
     private QuotationProgress progress;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "quotationRequest")
     private List<Quotation> quotations;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "quotationRequest")
     private List<RequestSolution> requestSolutions;
 
     @CreatedDate

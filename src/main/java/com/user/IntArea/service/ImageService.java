@@ -2,6 +2,8 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.dto.image.ImageDto;
+import com.user.IntArea.entity.Image;
+import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,17 @@ public class ImageService {
         for (int i=0; i<images.size(); i++) {
             saveSingleImage(images.get(i), refId, i);
         }
+    }
+
+    // 특정한 객체와 연관된 이미지 리스트 불러오기
+    public <T> List<Image> getImagesFrom(T entity) {
+        UUID refId;
+        if (entity instanceof QuotationRequest) {
+            refId = ((QuotationRequest) entity).getId();
+        } else {
+            throw new NoSuchElementException("이미지가 참조하는 클래스가 아닙니다.");
+        }
+        return imageRepository.findAllByRefId(refId);
     }
 
     public void deleteImageByImageId(UUID id) {
