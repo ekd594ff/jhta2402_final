@@ -55,7 +55,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId")
-    Page<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId")UUID companyId, Pageable pageable);
+    Page<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId") UUID companyId, Pageable pageable);
 
 
-
+}
