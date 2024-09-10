@@ -11,7 +11,6 @@ import com.user.IntArea.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -71,6 +70,34 @@ public class QuotationService {
         return imageUrls;
     }
 
+    private void checkIfProgressIsPending(QuotationProgress progresss) {
+        switch (progresss) {
+            case USER_CANCELLED:
+                throw new NoSuchElementException("고객의 견적 신청이 취소되었습니다.");
+            case SELLER_CANCELLED:
+                throw new NoSuchElementException("판매자가 이미 고객의 견적 요청을 거절하였습니다.");
+            case ADMIN_CANCELLED:
+                throw new NoSuchElementException("관리자 조치: 고객의 견적 신청이 유효하지 않습니다.");
+            case APPROVED:
+                throw new NoSuchElementException("고객이 견적을 승인하여 취소가 불가합니다.");
+            case PENDING:
+                break;
+            default:
+                throw new NoSuchElementException("알 수 없는 오류. 견적서의 진행상태에 문제가 있습니다.");
+        }
+    }
+
+    // Quotation을 QuotationInfoDto로 변환하는 메서드
+    private QuotationInfoDto convertToQuotationInfoDto(Quotation quotation) {
+        // 견적서와 관련된 이미지 로드
+        List<String> imageUrls = imageService.getImagesFrom(quotation).stream()
+                .map(Image::getUrl)
+                .collect(Collectors.toList());
+
+        // QuotationInfoDto로 매핑
+        return new QuotationInfoDto(quotation, imageUrls);
+    }
+
     // 견적 요청서 작성자 권한
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 여러 판매자들로부터 받은 모든 견적서 출력
@@ -79,6 +106,21 @@ public class QuotationService {
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
         Page<Quotation> quotationsForMember = quotationRepository.GetAllQuotationsTowardMember(member.getId(), pageable);
+        Page<QuotationInfoDto> result = quotationsForMember.map(quotation -> {
+            List<String> imageUrls = imageService.getImagesFrom(quotation).stream()
+                    .map(Image::getUrl)
+                    .collect(Collectors.toList());
+            return new QuotationInfoDto(quotation, imageUrls);
+        });
+        return result;
+    }
+
+    // (견적요청서를 작성한 사용자 권한) 사용자가 여러 판매자들로부터 받은 모든 견적서 출력 (progress에 따라 소팅)
+    public Page<QuotationInfoDto> getQuotationInfoDtoListTowardMemberSortedByProgress(QuotationProgress progress, Pageable pageable) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
+        Page<Quotation> quotationsForMember = quotationRepository.GetAllQuotationsTowardMemberSortedByProgress(member.getId(), progress, pageable);
         Page<QuotationInfoDto> result = quotationsForMember.map(quotation -> {
             List<String> imageUrls = imageService.getImagesFrom(quotation).stream()
                     .map(Image::getUrl)
@@ -150,10 +192,9 @@ public class QuotationService {
 
     // (seller) 신규 견적서 생성 - 받은 견적 요청서와 연관된 견적서를 작성
     public void creatQuotationBySeller(QuotationCreateDto quotationCreateDto) {
-
         Company company = getCompanyOfMember();
 
-        // 견적 요청 검증 로직 (견적요청이 PENDING인 경우 확인)
+        // 견적 요청서 검증 로직 (견적요청이 PENDING인 경우 확인)
         QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByIdAndProgressByCompany(company.getId(), quotationCreateDto.getQuotationRequestId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적 요청이 없습니다."));
 
@@ -176,76 +217,46 @@ public class QuotationService {
     // (seller) 선택한 견적서 취소처리
     public void cancelQuotationBySeller(Quotation quotation) {
         if (!quotation.getProgress().equals(QuotationProgress.PENDING)) {
-            throw new NoSuchElementException("견적서가 대기중 상태가 아니라 취소 불가");
+            throw new NoSuchElementException("견적서가 대기중 상태가 아니라 취소 불가합니다.");
         }
         quotation.setProgress(QuotationProgress.SELLER_CANCELLED);
         quotationRepository.save(quotation);
     }
 
-    // (seller) 견적서 수정(견적서 생성 및 기존 견적서의 유효성 제거) - 견적서를 새로 생성하고 견적요청서와 연관관계를 맺음. 기존의 견적서는 isAvailable = false 처리
-    public void updateQuotation(QuotationUpdateDto quotationUpdateDto) {
+    // (seller) 견적서 수정(견적서 생성 및 기존 견적서의 유효성 제거) - 견적요청서와 연관관계를 맺은 견적서를 새로 생성,기존의 견적서는 취소처리
+    public void updateQuotationBySeller(QuotationUpdateDto quotationUpdateDto) {
 
         // 견적 요청 검증 로직(대기중인 견적요청만 가능)
         QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestById(quotationUpdateDto.getQuotationRequestId())
                 .orElseThrow(() -> new NoSuchElementException("견적 요청이 없습니다."));
 
-        // 거래 거철 처리가 가능한 조건: quotationRequest 가 유효해야 하고, 이미 작성한 quotation이 있을 경우 그것의 상태는 사용자 결제 단계 이전이어야 함.
+        // 거래 거철 처리가 가능한 조건: quotationRequest 가 대기중
+        checkIfProgressIsPending(quotationRequest.getProgress());
 
-        // 고객이 견적 요청을 취소한 경우
-        if(quotationRequest.getProgress().equals(QuotationProgress.USER_CANCELLED)) {
-            throw new NoSuchElementException("고객의 견적 신청이 취소되었습니다.");
-        }
-
-        // 관리자가 견적 요청을 취소한 경우
-        if(quotationRequest.getProgress().equals(QuotationProgress.ADMIN_CANCELLED)) {
-            throw new NoSuchElementException("고객의 견적 신청이 유효하지 않습니다.");
-        }
-
-        // 고객이 견적 요청을 취소한 경우
-        if(quotationRequest.getProgress().equals(QuotationProgress.APPROVED)) {
-            throw new NoSuchElementException("고객이 이미 견적을 승인하여 수정이 불가합니다.");
-        }
-
-        // 이미지파일 유무 검증 로직
-        if(quotationUpdateDto.getImageFiles().isEmpty()) {
-            throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
-        }
-
-        // 기존의 대기중인 견적서가 있을 경우 취소 처리
+        // 기존의 대기중인 견적서가 있을 경우 취소 처리 및 저장
         Optional<Quotation> formerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
-        formerQuotation.ifPresent(this::cancelQuotationBySeller);
+        if (formerQuotation.isPresent()) {
+            cancelQuotationBySeller(formerQuotation.get());
+            quotationRepository.save(formerQuotation.get());
+        }
 
-        // 수정된 새 견적서 생성
+        // 수정된 새 견적서 생성 및 저장
         Quotation newQuotation = Quotation.builder()
                 .totalTransactionAmount(quotationUpdateDto.getTotalTransactionAmount())
                 .quotationRequest(quotationRequest)
                 .build();
-
-        // DB에 저장
-        Quotation saveQuotation = quotationRepository.save(formerQuotation.get());
         quotationRepository.save(newQuotation);
 
-        // 이미지 파일 업로드 및 이미지 객체 저장
-        imageService.saveMultiImages(quotationUpdateDto.getImageFiles(), saveQuotation.getId());
+        // 새 견적서의 이미지 파일 업로드 및 이미지 객체 저장
+        imageService.saveMultiImages(quotationUpdateDto.getImageFiles(), newQuotation.getId());
     }
 
     @Transactional
     // (seller) 고객 결제 전 거래 취소 처리 (견적 요청서에 대해 '거래 불가' 내용이 담긴 견적서 생성. 발송 후 해당 요청서에 대해서 판매자의 견적서 작성 권한 박탈)
-    public void makeCancelQuotationBySeller(QuotationRequest quotationRequest) {
+    public void cancelQuotationBySeller(QuotationRequest quotationRequest) {
 
-        // 거래 거철 처리가 가능한 조건: quotationRequest 가 대기중
-        switch (quotationRequest.getProgress()) {
-            case USER_CANCELLED:
-                throw new NoSuchElementException("고객의 견적 신청이 취소되었습니다.");
-            case SELLER_CANCELLED:
-                throw new NoSuchElementException("판매자가 이미 고객의 견적 요청을 거절하였습니다.");
-            case ADMIN_CANCELLED:
-                throw new NoSuchElementException("관리자 조치: 고객의 견적 신청이 유효하지 않습니다.");
-            case APPROVED:
-                throw new NoSuchElementException("고객이 견적을 승인하여 취소가 불가합니다.");
-            default:
-                break;
-        }
+        // 거래 거절 처리가 가능한 조건: quotationRequest 가 대기중
+        checkIfProgressIsPending(quotationRequest.getProgress());
 
         // 견적요청서에 대해서 이미 작성한 대기중인 견적서가 있는지 확인
         Optional<Quotation> optionalFormerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING);
@@ -261,10 +272,35 @@ public class QuotationService {
         quotationRequestRepository.save(quotationRequest);
     }
 
+
     // (seller) 회사가 작성한 모든 견적서 출력
-    public List<Quotation> getAllQuotationOfCompany() {
+    public Page<QuotationInfoDto> getAllQuotationOfCompany(Pageable pageable) {
         Company company = getCompanyOfMember();
-        return quotationRepository.findAllByCompany(company.getId());
+        Page<Quotation> quotations = quotationRepository.findAllByCompany(company.getId(), pageable);
+
+        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
+        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
+        return result;
+    }
+
+    // (seller) 회사가 작성한 특정 진행상태의 모든 견적서 출력 (progress로 소팅)
+    public Page<QuotationInfoDto> getAllQuotationOfCompanySortedByProgress(QuotationProgress progress, Pageable pageable) {
+        Company company = getCompanyOfMember();
+        Page<Quotation> quotations = quotationRepository.findAllByCompanySortedByProgress(progress, company.getId(), pageable);
+
+        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
+        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
+        return result;
+    }
+
+    // (seller) 회사가 작성한 Quotation 중 검색어를 이용하여 찾기
+    public Page<QuotationInfoDto> findQuotationInfoDtosBySearchword(String searchWord, Pageable pageable) {
+        Company company = getCompanyOfMember();
+        Page<Quotation> quotations = quotationRepository.findAllByCompanyWithSearchWord(searchWord, company.getId(), pageable);
+
+        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
+        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
+        return result;
     }
 
 
@@ -274,17 +310,27 @@ public class QuotationService {
     public Page<QuotationInfoDto> getAllQuotationOfCompanyByAdmin(Company company, Pageable pageable) {
         Page<Quotation> quotations = quotationRepository.findAllByCompany(company.getId(), pageable);
 
-        // Quotation을 QuotationInfoDto로 매핑
-        Page<QuotationInfoDto> result = quotations.map(quotation -> {
-            List<String> imageUrls = getImageUrlsForQuotation(quotation);
-            return new QuotationInfoDto(quotation, imageUrls);
-        });
-
+        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
+        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
         return result;
     }
 
+    // (admin) 회사가 작성한 특정 진행상태의 모든 견적서 출력 (progress로 소팅)
+    public Page<QuotationInfoDto> getAllQuotationOfCompanySortedByProgressByAdmin(UUID companyId, QuotationProgress progress, Pageable pageable) {
+        Page<Quotation> quotations = quotationRepository.findAllByCompanySortedByProgress(progress, companyId, pageable);
 
+        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
+        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
+        return result;
+    }
 
+    // (admin) 모든 견적서 출력 (progress로 소팅)
+    public Page<QuotationInfoDto> getAllQuotationInfoDtos (QuotationProgress progress, Pageable pageable) {
+        Page<Quotation> quotations = quotationRepository.findAllByProgress(progress, pageable);
 
+        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
+        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
+        return result;
+    }
 
 }

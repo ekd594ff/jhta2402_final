@@ -26,6 +26,7 @@ public class QuotationRequestService {
     private final MemberRepository memberRepository;
     private final PortfolioRepository portfolioRepository;
     private final CompanyRepository companyRepository;
+    private final QuotationRepository quotationRepository;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
@@ -127,6 +128,7 @@ public class QuotationRequestService {
         return requestDto;
     }
 
+
     @Transactional
     public void deleteQuotationRequest(UUID id) {
         QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
@@ -164,6 +166,11 @@ public class QuotationRequestService {
         return company;
     }
 
+    private QuotationRequestInfoDto convertToQuotationRequestTotalInfoDto(QuotationRequest quotationRequest) {
+        // 각 QuotationRequest에 대한 Quotation 및 RequestSolution 데이터를 가져와서 DTO로 변환
+        return QuotationRequestInfoDto.fromEntity(quotationRequest);
+    }
+
     // (견적요청서를 작성한 사용자 권한) 사용자가 작성한 모든 견적요청서 출력
     public Page<QuotationRequestInfoDto> getAllQuotationRequestOfMember(Pageable pageable) {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
@@ -173,6 +180,16 @@ public class QuotationRequestService {
         return quotationRequests.map(QuotationRequestInfoDto::new);
     }
 
+    // (견적요청서를 작성한 사용자 권한) [딸려있는 solution, quotation 정보 포함] 사용자가 작성한 모든 견적요청서 출력
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestTotalInfoOfMember(Pageable pageable) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일에 매칭되는 사용자 정보가 없습니다."));
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.findAllByMember(member, pageable);
+        // QuotationRequestTotalInfoDto로 매핑
+        return quotationRequests.map(this::convertToQuotationRequestTotalInfoDto);
+    }
+
     // (견적요청서를 작성한 사용자 권한) 사용자가 작성한 견적요청서 중 특정한 진행상태(progress)만 선택 출력 출력 (progress 소팅)
     public Page<QuotationRequestInfoDto> getAllQuotationRequestOfMember(QuotationProgress progress, Pageable pageable) {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
@@ -180,6 +197,16 @@ public class QuotationRequestService {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일에 매칭되는 사용자 정보가 없습니다."));
         Page<QuotationRequest> quotationRequests = quotationRequestRepository.findAllByMemberAndProgress(member, progress, pageable);
         return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+    // (견적요청서를 작성한 사용자 권한) [딸려있는 solution, quotation 정보 포함] 사용자가 작성한 견적요청서 중 특정한 진행상태(progress)만 선택 출력 출력 (progress 소팅)
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestTotalInfoDtoOfMember(QuotationProgress progress, Pageable pageable) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일에 매칭되는 사용자 정보가 없습니다."));
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.findAllByMemberAndProgress(member, progress, pageable);
+        // QuotationRequestTotalInfoDto로 매핑
+        return quotationRequests.map(this::convertToQuotationRequestTotalInfoDto);
     }
 
     public QuotationRequest findById(UUID id) {
