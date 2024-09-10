@@ -44,10 +44,11 @@ function Header() {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchBoxExpand, setSearchBoxExpand] = useState(false);
 
-    const handleClickAvatar = (event) => {
-        event.stopPropagation();
-        setOpen(prev => !prev);
-    }
+  const handleClickAvatar = (event) => {
+    event.stopPropagation();
+    setOpen((prev) => !prev);
+  };
+
     const handleLogout = async () => {
         try {
             await axios.get('/api/member/logout'); // 로그아웃 API 호출
@@ -56,21 +57,52 @@ function Header() {
         } catch (err) {
             console.error("Logout failed", err);
         }
-    }
+  };
 
-    const handleSearch = () => {
-        if (searchTerm) {
-            navigate(`/search/detailed?query=${searchTerm}`);
+  const handleSearch = () => {
+    if (searchTerm) {
+      navigate(`/search/detailed?query=${searchTerm}`);
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handleCompanyClick = async () => {
+    try {
+      const response = await axios.get("/api/member/seller/role");
+      const hasSellerRole = response.status;
+
+      if (hasSellerRole === 200) {
+        navigate("/company/edit");
+      }
+    } catch (error) {
+      alert("회사가 없습니다. 생성 페이지로 이동합니다.");
+      navigate("/company/create");
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get(`/api/member/email`)
+      .then((res) => {
+        console.log(res);
+        setIsLoggedIn(res.data.id !== null);
+        setUsername(res.data.username); // 사용자 이름 설정
+
+        // 이미지 배열이 존재하고 길이가 0이 아닐 때만 URL 설정
+        if (res.data.images && res.data.images.length > 0) {
+          setUserImage(res.data.images[res.data.images.length - 1].url); // 사용자 이미지 URL 설정
+        } else {
+          setUserImage(""); // 기본 이미지 또는 빈 문자열 생성
         }
-    }
-
-    useEffect(() => {
-        axios.get(`/api/member/email`)
-            .then((res) => {
-                setIsLoggedIn(res.data.id !== null);
-            }).finally(() => {
-            setIsLoading(false);
-        });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
         document.addEventListener("click", function (event) {
            setOpen(false);
