@@ -4,6 +4,7 @@ import com.user.IntArea.entity.Quotation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
@@ -26,4 +27,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
     @Query("select q from Quotation q where cast(q.updatedAt as string ) LIKE %:updatedAt% ")
     Page<Quotation> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
 
+    @Modifying
+    @Query("UPDATE Quotation q SET q.progress = :ADMIN_CANCELLED  WHERE q.id IN :ids")
+    void updateQuotationById(Iterable<UUID> ids);
 }

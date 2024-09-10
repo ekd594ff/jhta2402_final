@@ -1,0 +1,16 @@
+.list-item {
+  background-color: #ffeb3b; /* 노란색 배경 */
+  border-radius: 8px; /* 둥근 모서리 */
+  margin: 8px 0; /* 아이템 간격 */
+  transition: background-color 0.3s, transform 0.2s; /* 전환 효과 */
+  color: #333; /* 텍스트 색상 */
+}
+
+.list-item:hover {
+  background-color: #ffa500; /* 호버 시 주황색 배경 */
+  transform: scale(1.02); /* 호버 시 약간 커지는 효과 */
+}
+
+.list-item .MuiListItemText-root {
+  font-weight: bold; /* 텍스트 두껍게 */
+}

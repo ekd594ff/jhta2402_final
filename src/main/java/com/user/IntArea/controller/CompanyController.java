@@ -107,7 +107,7 @@ public class CompanyController {
         return ResponseEntity.ok().body(companyResponseDtoPage);
     }
 
-    @DeleteMapping("/admin/soft/{ids}")
+    @DeleteMapping("/admin/{ids}")
     public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         companyService.softDeleteCompanies(idList);

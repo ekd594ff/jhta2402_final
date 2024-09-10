@@ -173,7 +173,7 @@ public class PortfolioController {
         Page<PortfolioInfoDto> portfolioInfoDtoPage = portfolioService.getSearchPortfolio(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
         return ResponseEntity.ok().body(portfolioInfoDtoPage);
     }
-    @DeleteMapping("/admin/soft/{ids}")
+    @DeleteMapping("/admin/{ids}")
     public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         portfolioService.softDeletePortfolios(idList);

@@ -20,7 +20,7 @@ import {
 import {Button} from "@mui/material";
 import { Modal, Box, Typography } from '@mui/material';
 import style01 from '../../styles/admin.module.scss';
-
+import '../../styles/admin-list.scss'; // CSS 파일 임포트
 
 function NestedList() {
     const [open, setOpen] = React.useState(true);
@@ -30,37 +30,55 @@ function NestedList() {
     };
 
     return (
+        // <List
+        //     sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+        //     component="nav"
+        //     aria-labelledby="nested-list-subheader"
+        //     subheader={
+        //         <ListSubheader component="div" id="nested-list-subheader">
+        //             Nested List Items
+        //         </ListSubheader>
+        //     }
+        // >
+        //     <ListItemButton>
+        //         <Link to={"member"}><ListItemText primary="Member"/></Link>
+        //     </ListItemButton>
+        //     <ListItemButton>
+        //         <Link to={"company"}><ListItemText primary="Company"/></Link>
+        //     </ListItemButton>
+        //     <ListItemButton>
+        //         <Link to={"portfolio"}><ListItemText primary="Portfolio"/></Link>
+        //     </ListItemButton>
+        //     <ListItemButton>
+        //         <Link to={"review"}><ListItemText primary="Review"/></Link>
+        //     </ListItemButton>
+        //     <ListItemButton>
+        //         <Link to={"report"}><ListItemText primary="Report"/></Link>
+        //     </ListItemButton>
+        //     <ListItemButton>
+        //         <Link to={"quotation"}><ListItemText primary="Quotation"/></Link>
+        //     </ListItemButton>
+        //     <ListItemButton>
+        //         <Link to={"quotationRequest"}><ListItemText primary="QuotationRequest"/></Link>
+        //     </ListItemButton>
+        // </List>
         <List
-            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
             component="nav"
             aria-labelledby="nested-list-subheader"
             subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
+                <ListSubheader component="div" id="nested-list-subheader" style={{ backgroundColor: '#FFA500', color: '#FFF' }}>
                     Nested List Items
                 </ListSubheader>
             }
         >
-            <ListItemButton>
-                <Link to={"member"}><ListItemText primary="Member"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"company"}><ListItemText primary="Company"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"portfolio"}><ListItemText primary="Portfolio"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"review"}><ListItemText primary="Review"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"report"}><ListItemText primary="Report"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"quotation"}><ListItemText primary="Quotation"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"quotationRequest"}><ListItemText primary="QuotationRequest"/></Link>
-            </ListItemButton>
+            {['Member', 'Company', 'Portfolio', 'Review', 'Report', 'Quotation', 'QuotationRequest'].map((text) => (
+                <ListItemButton className="list-item" key={text}>
+                    <Link to={text.toLowerCase()} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <ListItemText primary={text} />
+                    </Link>
+                </ListItemButton>
+            ))}
         </List>
     );
 }

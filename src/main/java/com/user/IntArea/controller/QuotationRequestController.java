@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,5 +91,12 @@ public class QuotationRequestController {
         }
         Page<QuotationAdminRequestDto> quotationAdminRequestDtos = quotationRequestService.findAllByFilter(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
         return ResponseEntity.ok().body(quotationAdminRequestDtos);
+    }
+
+    @PatchMapping("/admin/{ids}")
+    public ResponseEntity<?> deleteQuotationRequest(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        quotationRequestService.updateProgressByIds(idList);
+        return ResponseEntity.noContent().build();
     }
 }

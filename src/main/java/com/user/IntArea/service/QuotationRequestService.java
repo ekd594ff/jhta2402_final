@@ -192,4 +192,9 @@ public class QuotationRequestService {
         throw new RuntimeException("findAllByFilter : QuotationService");
     }
 
+    @Transactional
+    public void updateProgressByIds(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        quotationRequestRepository.updateProgressByIds(ids);
+    }
 }

@@ -148,7 +148,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/admin/soft/{ids}")
+    @DeleteMapping("/admin/{ids}")
     public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         memberService.softDeleteMembers(idList);

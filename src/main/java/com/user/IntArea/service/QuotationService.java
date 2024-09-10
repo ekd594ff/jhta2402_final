@@ -128,6 +128,15 @@ public class QuotationService {
         throw new RuntimeException("findAllByFilter : QuotationService");
     }
 
+    public void softDeleteQuotation(List<String> idList) {
+//        quotationRepository.
+    }
+
+    public void updateProgess(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        quotationRepository.updateQuotationById(ids);
+    }
+
 
     // (seller) 견적서 수정 - 견적서를 새로 생성하고 견적요청서와 연관관계를 맺음. 기존의 견적서는 isAvailable = false 처리
 

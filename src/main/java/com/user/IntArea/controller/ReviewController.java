@@ -66,7 +66,7 @@ public class ReviewController {
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
     }
 
-    @DeleteMapping("/admin/hard/{ids}")
+    @DeleteMapping("/admin/{ids}")
     public ResponseEntity<?> deleteReviews(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         reviewService.hardDeleteReviews(idList);

@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -41,10 +43,10 @@ public class QuotationController {
 
     @GetMapping("/admin/list/filter/contains")
     public ResponseEntity<Page<QuotationResponseDto>> getSearchMember(@RequestParam int page, @RequestParam(name = "pageSize") int size,
-                                                                   @RequestParam(defaultValue = "createdAt", required = false) String sortField,
-                                                                   @RequestParam(defaultValue = "desc", required = false) String sort,
-                                                                   @RequestParam(required = false) String filterColumn,
-                                                                   @RequestParam(required = false) String filterValue) {
+                                                                      @RequestParam(defaultValue = "createdAt", required = false) String sortField,
+                                                                      @RequestParam(defaultValue = "desc", required = false) String sort,
+                                                                      @RequestParam(required = false) String filterColumn,
+                                                                      @RequestParam(required = false) String filterValue) {
         log.info("sortField={}", sortField);
         log.info("sort={}", sort);
         log.info("filterColumn={}", filterColumn);
@@ -58,8 +60,15 @@ public class QuotationController {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<QuotationResponseDto> quotationResponseDtos = quotationService.findAllByFilter(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
+        Page<QuotationResponseDto> quotationResponseDtos = quotationService.findAllByFilter(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
         return ResponseEntity.ok().body(quotationResponseDtos);
+    }
+
+    @PatchMapping("/admin/progress/{ids}")
+    public ResponseEntity<?> softDeleteQuotations(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        quotationService.updateProgess(idList);
+        return ResponseEntity.noContent().build();
     }
 
 }
