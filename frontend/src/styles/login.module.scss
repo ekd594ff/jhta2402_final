@@ -39,20 +39,16 @@
 
         & > .register-btn {
           color: variables.$COLOR_PRIMARY;
-          border-color: variables.$COLOR_PRIMARY;
         }
 
         & > .others {
           display: flex;
           gap: 4px;
           justify-content: center;
-
-          & * {
+          & > a {
+            color: variables.$FONT_COLOR_700;
             text-decoration: none;
-            color: #000;
-            font-size: 14px;
           }
-
         }
       }
 
