@@ -15,6 +15,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface QuotationRequestRepository extends JpaRepository<QuotationRequest, UUID> {
+    List<QuotationRequest> findAllByMember(Member member);
+
+    Page<QuotationRequest> findAllByMemberId(UUID memberId, Pageable pageable);
+
+    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds")
+    public abstract Page<QuotationRequest> findAllByPortfolioIds(List<UUID> portfolioIds, Pageable pageable);
 
     Page<QuotationRequest> findAllByMember(Member member, Pageable pageable);
 
@@ -49,6 +55,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId")
-    Page<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId")UUID companyId, Pageable pageable);
+    Page<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId") UUID companyId, Pageable pageable);
+
 
 }

@@ -50,7 +50,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     @Query(value = "SELECT * FROM portfolio ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
     List<Portfolio> getRandomPortfolioInfoDtos(@Param("count") int count);
 
-    @Query(value = "SELECT DISTINCT p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url), p.id, p.createdAt " +
+    @Query(value = "SELECT p.id, p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url) " +
             "FROM Portfolio p " +
             "INNER JOIN Company c ON c.id = p.companyId " +
             "LEFT JOIN Image i ON i.refId = p.id " +
@@ -62,5 +62,8 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             nativeQuery = true
     )
     Page<Object[]> searchPortfolios(String searchWord, Pageable pageable);
+
+    @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
+    Page<Portfolio> findAllByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
 
 }
