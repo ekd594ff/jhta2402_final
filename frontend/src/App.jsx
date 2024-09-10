@@ -12,6 +12,7 @@ import CreateEditCompany from "./pages/company/createEdit.jsx";
 import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
 import QuotationRequestUserList from "./pages/quotationRequestUserList.jsx";
+import QuotationRequestSellerList from "./pages/quotationReqeustSellerList.jsx";
 
 function App() {
   return (
@@ -32,6 +33,10 @@ function App() {
           <Route
             path="/qr/userList/:memberId"
             element={<QuotationRequestUserList />}
+          />
+          <Route
+            path="/qr/sellerList/:companyId"
+            element={<QuotationRequestSellerList />}
           />
         </Routes>
       </BrowserRouter>

@@ -26,9 +26,9 @@ public class QuotationRequestService {
     private final SolutionRepository solutionRepository;
     private final MemberRepository memberRepository;
     private final PortfolioRepository portfolioRepository;
-    private final CompanyRepository companyRepository;
     private final RequestSolutionRepository requestSolutionRepository;
 
+    private final CompanyRepository companyRepository;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
@@ -86,7 +86,6 @@ public class QuotationRequestService {
         QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(""));
 
-        // DTO 변환
         return QuotationRequestDto.builder()
                 .memberId(quotationRequest.getMember().getId())
                 .portfolioId(quotationRequest.getPortfolio().getId())

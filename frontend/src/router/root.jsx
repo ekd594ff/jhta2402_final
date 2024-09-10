@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import SearchList from "../pages/searchlist";
 import QuotationRequest from "../pages/quotationRequest";
 import QuotationRequestUserList from "../pages/quotationRequestUserList";
+import QuotationRequestSellerList from "../pages/quotationReqeustSellerList";
 
 const Index = lazy(() => import("../pages/index"));
 const SignIn = lazy(() => import("../pages/signin"));
@@ -63,6 +64,14 @@ const root = createBrowserRouter([
     element: (
       <Suspense>
         <QuotationRequestUserList />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/qr/sellerList",
+    element: (
+      <Suspense>
+        <QuotationRequestSellerList />
       </Suspense>
     ),
   },
