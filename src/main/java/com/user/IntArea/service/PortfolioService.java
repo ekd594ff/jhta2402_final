@@ -73,22 +73,17 @@ public class PortfolioService {
                 .map(result -> new PortfolioSearchDto((String) result[0], (String) result[1], (String) result[2], (String[]) result[3], result[4].toString()));
     }
 
-    // (일반 권한) 특정한 하나의 포트폴리오 InfoDto 불러오기
-    public PortfolioInfoDto getOpenPortfolioInfoById(UUID id) throws NoSuchElementException {
-        try {
-            Portfolio portfolio = portfolioRepository.getOpenPortfolioInfoById(id);
-            PortfolioInfoDto portfolioInfoDto = PortfolioInfoDto.builder()
-                    .title(portfolio.getTitle())
-                    .description(portfolio.getDescription())
-                    .companyName(portfolio.getCompany().getCompanyName())
-                    .createdAt(portfolio.getCreatedAt())
-                    .updatedAt(portfolio.getUpdatedAt())
-                    .isDeleted(portfolio.isDeleted())
-                    .build();
-            return portfolioInfoDto;
-        } catch (Exception e) {
-            throw new NoSuchElementException("");
-        }
+    // (일반 권한) 특정한 하나의 포트폴리오 DetailInfoDto 불러오기
+    public PortfolioDetailInfoDto getOpenPortfolioInfoById(UUID id) {
+
+        Portfolio portfolio = portfolioRepository.findByIdAndIsDeletedAndIsActivated(id, false, true)
+                .orElseThrow(() -> new NoSuchElementException(""));
+
+        List<String> portfolioUrls = imageRepository.findAllByRefId(portfolio.getId())
+                .stream().map(Image::getUrl)
+                .toList();
+
+        return new PortfolioDetailInfoDto(portfolio, portfolioUrls);
     }
 
     // (일반 권한) 특정한 갯수만큼 램덤한 포트폴리오 InfoDto 불러오기
