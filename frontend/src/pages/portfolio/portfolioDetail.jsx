@@ -36,7 +36,7 @@ function PortfolioDetail() {
     const {id} = useParams();
     const navigate = useNavigate();
 
-    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const [portfolioImgList, setPortfolioImgList] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [solutionList, setSolutionList] = useState([]);
     const [selectedSolutionList, setSelectedSolutionList] = useState([]);
@@ -78,6 +78,7 @@ function PortfolioDetail() {
                     ...portfolioInfo,
                     ...res.data,
                 })
+                setPortfolioImgList(res.data.imageUrls);
             })
             .catch(() => {
                 alert("유효하지 않은 페이지입니다.");
@@ -101,7 +102,7 @@ function PortfolioDetail() {
 
     useEffect(() => {
         if (portfolioImgList.length) {
-            setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`);
+            setModalImg(portfolioImgList[0]);
         }
     }, [portfolioImgList]);
 
@@ -125,10 +126,10 @@ function PortfolioDetail() {
                                     {
                                         portfolioImgList[0] ?
                                             <img alt="selected-img"
-                                                 src={`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`}
+                                                 src={portfolioImgList[0]}
                                                  onClick={() => {
                                                      setModalOpen(prev => !prev);
-                                                     setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`)
+                                                     setModalImg(portfolioImgList[0])
                                                  }}/> :
                                             <></>
                                     }
@@ -139,7 +140,7 @@ function PortfolioDetail() {
                             <div className={style['info']}>
                                 <div className={style['top']}>
                                     <span
-                                        className={style['company-name']}>{`업체명_${portfolioInfo.company.companyName}`}</span>
+                                        className={style['company-name']}>{portfolioInfo.companyName}</span>
                                     <span className={style['btn-group']}>
                                         <Tooltip title="신고하기">
                                             <IconButton size="small" disableRipple onClick={() => {
@@ -156,11 +157,10 @@ function PortfolioDetail() {
                                     </span>
                                 </div>
                                 <div>
-                                    <span className={style['title']}>{`포트폴리오제목_${portfolioInfo.title}`}</span>
+                                    <span className={style['title']}>{portfolioInfo.title}</span>
                                 </div>
                                 <div>
-                                    <span
-                                        className={style['description']}>{`포트폴리오 상세_${portfolioInfo.description}`}</span>
+                                    <pre className={style['description']}>{portfolioInfo.description}</pre>
                                 </div>
                             </div>
                             <div className={style['solution-list-title']}>인테리어 솔루션</div>
