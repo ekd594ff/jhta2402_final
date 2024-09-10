@@ -38,7 +38,7 @@ public class Solution {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isDeleted = false;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "solution")
     private List<RequestSolution> requestSolutions;
 
     @CreatedDate

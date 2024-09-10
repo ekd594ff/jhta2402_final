@@ -6,7 +6,7 @@ import style from "../../styles/portfolio-solution-list-item.module.scss"
 
 function PortfolioSolutionListItem(props) {
 
-    const {value: {title, description, price}} = props;
+    const {title, description, price, setter, list, index} = props;
 
     return <ListItem
         disablePadding
@@ -21,6 +21,10 @@ function PortfolioSolutionListItem(props) {
                 '&.Mui-checked': {
                     color: '#FA4D56',
                 },
+            }} onClick={() => {
+                const newSelectedList = [...list];
+                newSelectedList[index] = !newSelectedList[index];
+                setter(newSelectedList);
             }}/>
         </div>
         <div className={style['right']}>

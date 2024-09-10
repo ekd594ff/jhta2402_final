@@ -14,6 +14,9 @@ import java.util.stream.Stream;
 public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     Optional<Image> findByRefId(UUID refId);
+
+    void deleteByRefId(UUID refId);
+
     List<Image> findAllByRefId(UUID refId);
 
     @Transactional

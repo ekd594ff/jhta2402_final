@@ -1,5 +1,6 @@
 package com.user.IntArea.dto.quotation;
 
+import com.user.IntArea.entity.QuotationRequest;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class QuotationCreateDto {
+public class QuotationUpdateDto {
 
     private UUID quotationRequestId;
     private Long totalTransactionAmount;

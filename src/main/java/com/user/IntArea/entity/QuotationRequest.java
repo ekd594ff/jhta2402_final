@@ -39,10 +39,10 @@ public class QuotationRequest {
     @Enumerated(EnumType.STRING)
     private QuotationProgress progress;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "quotationRequest")
     private List<Quotation> quotations;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "quotationRequest")
     private List<RequestSolution> requestSolutions;
 
     @CreatedDate
@@ -57,10 +57,6 @@ public class QuotationRequest {
         this.portfolio = portfolio;
         this.title = title;
         this.description = description;
-        this.progress = progress;
-    }
-
-    public Quotation getWrittenQuotation() {
-        return null; // 작성 필요
+        this.progress = progress != null ? progress : QuotationProgress.PENDING; // 기본값 설정
     }
 }

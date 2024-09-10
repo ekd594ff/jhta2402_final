@@ -29,7 +29,7 @@ public class Quotation {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private QuotationProgress progress;
+    private QuotationProgress progress; // 현재 진행상태
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -37,10 +37,11 @@ public class Quotation {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+
     @Builder
     public Quotation(QuotationRequest quotationRequest, Long totalTransactionAmount, QuotationProgress progress) {
         this.quotationRequest = quotationRequest;
         this.totalTransactionAmount = totalTransactionAmount;
-        this.progress = progress;
+        this.progress = progress != null ? progress : QuotationProgress.PENDING; // 기본값 설정
     }
 }

@@ -1,6 +1,7 @@
 package com.user.IntArea.repository;
 
 import com.user.IntArea.entity.Member;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     void softDeleteByIds(Iterable<UUID> ids);
 
     @Modifying
-    @Query("update Member m set m.isDeleted = true WHERE m.id = %:id")
+    @Query("update Member m set m.isDeleted = true WHERE m.id = :id")
     void softDeleteById(UUID id);
 
     @Override
