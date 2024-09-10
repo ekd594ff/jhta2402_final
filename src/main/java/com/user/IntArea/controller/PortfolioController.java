@@ -50,7 +50,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/{id}")
-    public PortfolioInfoDto getPortfolioInfoDto(@PathVariable(name = "id") UUID portfolioId) {
+    public PortfolioDetailInfoDto getPortfolioInfoDto(@PathVariable(name = "id") UUID portfolioId) {
         return portfolioService.getOpenPortfolioInfoById(portfolioId);
     }
 
