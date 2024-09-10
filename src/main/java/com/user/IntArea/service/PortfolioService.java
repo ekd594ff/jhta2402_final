@@ -209,9 +209,9 @@ public class PortfolioService {
             }
         }
 
-        // 솔루션 수정
-        // todo: soft delete
-//        solutionRepository.softDeleteAllByPortfolioId(portfolio.getId());
+        // 기존 솔루션 isDeleted = true, 새로운 solution 등록
+        solutionRepository.updateIsDeletedByPortfolioId(portfolio.getId());
+
         List<Solution> solutions = portfolioRequestDto.getSolutions().stream()
                 .map(solutionDto -> solutionDto.toSolution(portfolio))
                 .toList();

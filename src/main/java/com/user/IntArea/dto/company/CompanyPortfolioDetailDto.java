@@ -10,6 +10,7 @@ public class CompanyPortfolioDetailDto {
     private String description;
     private String phone;
     private String address;
+    private String detailAddress;
     private String url;
 
     public CompanyPortfolioDetailDto(Company company, String url) {
@@ -17,6 +18,7 @@ public class CompanyPortfolioDetailDto {
         this.description = company.getDescription();
         this.phone = company.getPhone();
         this.address = company.getAddress();
+        this.detailAddress = company.getDetailAddress();
         this.url = url;
     }
 }

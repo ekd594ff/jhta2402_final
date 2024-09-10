@@ -71,6 +71,7 @@ public class CompanyService {
         company.setCompanyName(companyRequestDto.getCompanyName());
         company.setPhone(companyRequestDto.getPhone());
         company.setAddress(companyRequestDto.getAddress());
+        company.setDetailAddress(companyRequestDto.getDetailAddress());
         companyRepository.save(company);
 
         // 이미지가 있으면 기존 이미지 삭제 & 저장
