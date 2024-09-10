@@ -39,7 +39,7 @@ public class QuotationRequest {
     @Enumerated(EnumType.STRING)
     private QuotationProgress progress;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "quotationRequest")
     private List<Quotation> quotations;
 
     @OneToMany(mappedBy = "quotationRequest")
@@ -52,15 +52,11 @@ public class QuotationRequest {
     private LocalDateTime updatedAt;
 
     @Builder
-    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, QuotationProgress progress) {
+    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, QuotationProgress progress, List<RequestSolution> requestSolutions) {
         this.member = member;
         this.portfolio = portfolio;
         this.title = title;
         this.description = description;
-        this.progress = progress != null ? progress : QuotationProgress.PENDING;
-    }
-
-    public Quotation getWrittenQuotation() {
-        return null; // 작성 필요
+        this.progress = progress != null ? progress : QuotationProgress.PENDING; // 기본값 설정
     }
 }
