@@ -133,6 +133,9 @@ public class MemberController {
         System.out.println(filterColumn);
         System.out.println(filterValue);
 
+        if (sortField.equals("deleted")) {
+            sortField = "isDeleted";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
@@ -162,9 +165,9 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PutMapping("/admin/update")
-//    public ResponseEntity<?> updateMember(@RequestParam UpdateMemberDto updateMemberDto) {
-//        memberService.update(updateMemberDto);
-//        return ResponseEntity.ok().build();
-//    }
+    @PatchMapping("/admin")
+    public ResponseEntity<?> updateMember(@RequestBody AdminEditMemberDto adminEditMemberDto) {
+        memberService.editMember(adminEditMemberDto);
+        return ResponseEntity.ok().build();
+    }
 }

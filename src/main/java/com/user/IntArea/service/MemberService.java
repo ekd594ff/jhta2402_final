@@ -191,4 +191,15 @@ public class MemberService {
         memberRepository.deleteAllById(ids);
 //        quotationRequestRepository.deleteAllById(ids);
     }
+
+    @Transactional
+    public void editMember(AdminEditMemberDto adminEditMemberDto) {
+        Optional<Member> member = memberRepository.findById(adminEditMemberDto.getId());
+        if (member.isPresent()) {
+            member.get().setRole(adminEditMemberDto.getRole());
+            member.get().setDeleted(adminEditMemberDto.isDelete());
+        } else {
+            throw new UsernameNotFoundException("editMember");
+        }
+    }
 }
