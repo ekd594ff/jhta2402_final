@@ -2,6 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
 import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
@@ -25,6 +26,7 @@ public class QuotationRequestService {
     private final PortfolioRepository portfolioRepository;
     private final RequestSolutionRepository requestSolutionRepository;
 
+    private final CompanyRepository companyRepository;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
@@ -221,4 +223,68 @@ public class QuotationRequestService {
     public void deleteQuotationRequest(UUID id) {
         quotationRequestRepository.deleteById(id);
     }
+
+
+    // 현재 로그인한 멤버가 관리하는 회사 확인
+    private Company getCompanyOfMember() {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일에 매칭되는 사용자 정보가 없습니다."));
+        Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException("관리중인 업체가 없습니다."));
+        return company;
+    }
+
+    // (견적요청서를 작성한 사용자 권한) 사용자가 작성한 모든 견적요청서 출력
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestOfMember(Pageable pageable) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일에 매칭되는 사용자 정보가 없습니다."));
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.findAllByMember(member, pageable);
+        return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+    // (견적요청서를 작성한 사용자 권한) 사용자가 작성한 견적요청서 중 특정한 진행상태(progress)만 선택 출력 출력 (progress 소팅)
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestOfMember(QuotationProgress progress, Pageable pageable) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인을 해주세요."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일에 매칭되는 사용자 정보가 없습니다."));
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.findAllByMemberAndProgress(member, progress, pageable);
+        return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+    public QuotationRequest findById(UUID id) {
+        return quotationRequestRepository.findById(id).orElse(null);
+    }
+
+    // seller
+
+    // (seller) 회사 관리자가 받은 모든 견적 요청서 출력
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestTowardCompany(Pageable pageable) {
+        Company company = getCompanyOfMember();
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.getAllQuotationRequestTowardCompany(company.getId(), pageable);
+        return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+    // (seller) 회사 관리자가 받은 특정 진행상태(progress)의 견적 요청서 출력
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestTowardCompany(QuotationProgress progress, Pageable pageable) {
+        Company company = getCompanyOfMember();
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.getAllQuotationRequestTowardCompanySortedByProgress(company.getId(), progress, pageable);
+        return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+    // admin
+
+    // (admin) 특정 회사가 받은 모든 견적 요청서 출력
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestOfCompanyByAdmin(UUID companyId, Pageable pageable) {
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.getAllQuotationRequestTowardCompanyByAdmin(companyId, pageable);
+        return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+    // (admin) 특정 사용자가 작성한 모든 견적 요청서 출력
+    public Page<QuotationRequestInfoDto> getAllQuotationRequestOfMemberByAdmin(Member member, Pageable pageable) {
+        Page<QuotationRequest> quotationRequests = quotationRequestRepository.findAllByMember(member, pageable);
+        Page<QuotationRequestInfoDto> quotationRequestInfoDtos = quotationRequests.map(QuotationRequestInfoDto::new);
+        return quotationRequestInfoDtos;
+    }
+
 }
