@@ -1,9 +1,14 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
+import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.service.QuotationRequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,15 +41,24 @@ public class QuotationRequestController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @GetMapping("/list/{memberId}")
+    public ResponseEntity<Page<QuotationRequestDto>> getQuotationRequestByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<QuotationRequestDto> responseDto = quotationRequestService.getQuotationRequestsByMemberId(memberId, pageable);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping("/companyList/{companyId}")
+    public ResponseEntity<Page<QuotationRequestCompanyDto>> getQuotationRequestByCompanyId(@PathVariable UUID companyId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<QuotationRequestCompanyDto> responseDto = quotationRequestService.getQuotationRequestsByCompanyId(companyId, pageable);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuotationRequest(@PathVariable UUID id) {
         quotationRequestService.deleteQuotationRequest(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<QuotationRequestDto>> getAllQuotationRequests() {
-        List<QuotationRequestDto> responseDtos = quotationRequestService.getAllQuotationRequests();
-        return ResponseEntity.ok(responseDtos);
-    }
 }
+
