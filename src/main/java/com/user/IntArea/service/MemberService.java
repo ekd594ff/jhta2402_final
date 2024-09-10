@@ -2,11 +2,15 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.exception.custom.LoginInfoNotFoundException;
 import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
+import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
+import com.user.IntArea.dto.member.*;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.*;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
+import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +20,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +35,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageUtil imageUtil;
+    private final ImageRepository imageRepository;
 
     public void signup(MemberRequestDto memberRequestDto) {
 
@@ -71,19 +82,98 @@ public class MemberService {
     }
 
     public Page<MemberResponseDto> getMemberList(Pageable pageable) {
-        return memberRepository.findAll(pageable)
-                .map(MemberResponseDto::new);
+        return memberRepository.findAll(pageable).map(MemberResponseDto::new);
     }
 
-    public MemberResponseDto getMemberByEmail() {
+    public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "email" -> {
+                    return memberRepository.findAllByEmailContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "role" -> {
+                    return memberRepository.findAllByRole(Role.valueOf(filterValue.get()), pageable).map(MemberResponseDto::new);
+                }
+                case "username" -> {
+                    return memberRepository.findAllByUsernameContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "platform" -> {
+                    return memberRepository.findAllByPlatformContaining(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "createdAt" -> {
+                    return memberRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return memberRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(MemberResponseDto::new);
+                }
+                case "deleted" -> {
+                    if (filterValue.get().equals("true")) {
+                        return memberRepository.findAllByIsDeletedIs(true, pageable).map(MemberResponseDto::new);
+                    } else {
+                        return memberRepository.findAllByIsDeletedIs(false, pageable).map(MemberResponseDto::new);
+                    }
+                }
+            }
+        } else {
+            return memberRepository.findAll(pageable).map(MemberResponseDto::new);
+        }
+        throw new RuntimeException("filterColumn이 잘못됨");
+    }
+
+    public MemberWithImagesResponseDto getMemberByEmail() {
         MemberDto memberDto = SecurityUtil.getCurrentMember()
                 .orElseThrow(() -> new LoginInfoNotFoundException(new MemberResponseDto()));
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new LoginInfoNotFoundException(new MemberResponseDto()));
 
-        // Member를 MemberResponseDto로 변환하여 반환
-        return new MemberResponseDto(member);
+        List<ImageDto> images = imageRepository.findAllByRefId(member.getId())
+                .stream()
+                .map(image -> ImageDto.builder()
+                        .refId(image.getRefId())
+                        .url(image.getUrl())
+                        .filename(image.getFilename())
+                        .originalFilename(image.getOriginalFilename())
+                        .build())
+                .collect(Collectors.toList());
+
+        // Member를 MemberResponseDto로 변환
+        return new MemberWithImagesResponseDto(member,images);
     }
 
+    @Transactional
+    public void updateProfile(UpdateProfileDto updateProfileDto) {
+        String email = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("로그인 되지 않았습니다.")).getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("updateProfile error"));
+
+        // 사용자 이름 및 비밀번호 업데이트
+        member.setUsername(updateProfileDto.getUsername());
+        member.setPassword(updateProfileDto.getPassword());
+
+        // 프로필 이미지가 있는 경우 업로드
+        if (updateProfileDto.getFile() != null && !updateProfileDto.getFile().isEmpty()) {
+            Optional<ImageDto> imageDtoOptional = uploadProfileImage(updateProfileDto.getFile());
+            imageDtoOptional.ifPresent(imageDto -> {
+                imageRepository.save(imageDto.toImage());
+            });
+        }
+    }
+
+    @Transactional
+    public Optional<ImageDto> uploadProfileImage(MultipartFile file) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("현재 로그인한 사용자가 없습니다."));
+        String email = memberDto.getEmail();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
+
+        Optional<ImageDto> imageDtoOptional = imageUtil.uploadS3(file, member.getId(), 0);
+
+        imageDtoOptional.ifPresent(imageDto -> {
+            imageRepository.save(imageDto.toImage());
+        });
+        return imageDtoOptional;
+    }
 }

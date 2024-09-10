@@ -1,61 +1,86 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import ImageGallerySlider from "./imageGallerySlider.jsx";
-import ImageRepresentative from "./imageRepresentative.jsx";
+import React from 'react';
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {Box, Button} from "@mui/material";
+import ImageItem from "./ImageItem.jsx";
+import {DndProvider} from "react-dnd";
 
-const ImageUpload = () => {
-    const [representativeImage, setRepresentativeImage] = useState(null);
-    const [otherImages, setOtherImages] = useState([]);
+const MAX_IMAGES = 32;
 
-    const handleRepresentativeImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setRepresentativeImage(URL.createObjectURL(file));
-        }
+function ImageUpload({images, setImages}) {
+
+    // Image -------------------------------------------
+
+    const handleImagesChange = (event) => {
+        const files = Array.from(event.target.files);
+        const remainingSlots = MAX_IMAGES - images.length;
+
+        // 새로운 이미지가 최대 갯수를 초과하지 않도록 제한
+        // if (files.length > remainingSlots) {
+        //     alert(`최대 ${MAX_IMAGES}개의 이미지만 등록할 수 있습니다.`);
+        //     return;
+        // }
+
+        const imageUrls = files.map(file => ({
+            id: URL.createObjectURL(file),
+            url: URL.createObjectURL(file),
+            file: file
+        }));
+        setImages([...images, ...imageUrls]);
     };
 
-    const handleOtherImagesChange = (event) => {
-        const files = Array.from(event.target.files);
-        const imageUrls = files.map(file => URL.createObjectURL(file));
-        setOtherImages(imageUrls);
+    const moveImage = (dragIndex, hoverIndex) => {
+        const draggedImages = [...images];
+        const [draggedImage] = draggedImages.splice(dragIndex, 1);
+        draggedImages.splice(hoverIndex, 0, draggedImage);
+        setImages(draggedImages);
+    };
+
+    const removeImage = (index) => {
+        setImages(images.filter((_, i) => i !== index));
     };
 
     return (
-        <div>
-            <Box sx={{ padding: 2, textAlign: 'left' }}>
-                <Stack spacing={2}>
-                    <label>
-                        대표 이미지(1개)
-                        <input
-                            type="file"
-                            id="representativeImage"
-                            onChange={handleRepresentativeImageChange}
-                            placeholder="대표이미지"
-                        />
-                    </label>
-                    <label>
-                        그 외 이미지(10개 이하)
-                        <input
-                            type="file"
-                            id="formFileMultiple"
-                            multiple
-                            onChange={handleOtherImagesChange}
-                        />
-                    </label>
-                </Stack>
-            </Box>
+        <DndProvider backend={HTML5Backend}>
+            <Button style={{
+                borderColor: '#FA4D56',
+                color: '#FA4D56',
+                margin: '32px 16px'
+            }}
+                    variant="outlined" component="label">
+                <input
+                    type="file"
+                    id="formFileMultiple"
+                    multiple
+                    onChange={handleImagesChange}
+                    disabled={images.length >= MAX_IMAGES} // 최대 갯수 초과 시 업로드 비활성화
+                    hidden
+                />이미지 등록
+            </Button>
 
             <Box sx={{padding: 1}}>
                 <div>
-                    <ImageRepresentative representativeImage={representativeImage}/>
-                </div>
-                <div>
-                    <ImageGallerySlider otherImages={otherImages}/>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 1, // 이미지 사이의 간격 설정
+                            justifyContent: 'flex-start', // 왼쪽 정렬
+                        }}
+                    >
+                        {images.map((image, index) => (
+                            <ImageItem
+                                key={image.id}
+                                index={index}
+                                image={image}
+                                moveImage={moveImage}
+                                removeImage={removeImage} // 이미지 삭제 함수 전달
+                            />
+                        ))}
+                    </Box>
                 </div>
             </Box>
-        </div>
+        </DndProvider>
     );
-};
+}
 
 export default ImageUpload;

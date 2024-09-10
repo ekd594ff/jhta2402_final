@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,9 @@ public class Portfolio {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isDeleted = false;
 
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isActivated = true;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -50,5 +54,17 @@ public class Portfolio {
         this.company = company;
         this.title = title;
         this.description = description;
+    }
+
+
+    public List<String> getPortfolioImages() {
+        List<String> images = new ArrayList<>();
+
+        return images;
+    }
+
+    public List<Quotation> getWrittenQuotations() {
+        List<Quotation> quotations = new ArrayList<>();
+        return quotations;
     }
 }

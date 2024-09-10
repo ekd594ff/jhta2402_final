@@ -1,0 +1,17 @@
+@use "variables";
+
+.portfolio-img-list-item {
+  height: variables.$PORTFOLIO_IMG_LIST_ITEM_SIZE;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+
+  & > img {
+    object-fit: cover;
+    display: block;
+  }
+}

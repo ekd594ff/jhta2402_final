@@ -1,8 +1,8 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.portfolio.PortfolioCreateDto;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
+import com.user.IntArea.dto.portfolio.*;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,22 +42,39 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
     }
 
+    // (일반 권한) 검색된 포트폴리오 반환 엔드포인트
+    @GetMapping("/search/detailed")
+    public Page<PortfolioSearchDto> searchPortfolios(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return portfolioService.getPortfolios(searchWord, pageable);
+    }
+
     @GetMapping("/{id}")
     public PortfolioInfoDto getPortfolioInfoDto(@PathVariable(name = "id") UUID portfolioId) {
         return portfolioService.getOpenPortfolioInfoById(portfolioId);
     }
 
-    // seller
+    // 본인의 portfolio가 아닌 경우 Exception을 던짐
+    @GetMapping("/my/{id}")
+    public PortfolioEditDetailDto getMyPortfolioInfoDto(@PathVariable(name = "id") UUID portfolioId) {
+        return portfolioService.getMyPortfolioInfoById(portfolioId);
+    }
 
+    @GetMapping("/list/random")
+    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(@RequestParam int count) {
+        return portfolioService.getRandomPortfolioInfoDtos(count);
+    }
+
+    // seller
     @PostMapping
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreateDto portfolioCreateDto) {
-        portfolioService.create(portfolioCreateDto);
+    public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+        portfolioService.create(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdateDto portfolioUpdateDto) {
-        portfolioService.updatePortfolio(portfolioUpdateDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updatePortfolio(PortfolioRequestDto portfolioRequestDto) {
+        portfolioService.updatePortfolio(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -76,6 +94,12 @@ public class PortfolioController {
         portfolioService.activatePortfolio(portfolioId, activated);
     }
 
+    /*@PostMapping("/draft") // 초안 임시저장 기능(서비스 매서드 미구현)
+    public ResponseEntity<?> saveDraftPortfolio(@RequestBody PortfolioDraftDto portfolioDraftDto) {
+        //portfolioService.saveDraft(portfolioDraftDto);
+        return ResponseEntity.ok().build();
+    }*/
+
     // admin
 
     @GetMapping("/admin/{id}")
@@ -89,7 +113,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/admin/list")
-    public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam int size) {
+    public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getAllPortfolioInfoDtosByAdmin(pageable);
     }
@@ -121,5 +145,4 @@ public class PortfolioController {
     public void hardDeletePortfolioInfoDtoByAdmin(@PathVariable(name = "id") UUID portfolioId) {
         portfolioService.deletePortfolioByAdmin(portfolioId);
     }
-
 }

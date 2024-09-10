@@ -19,4 +19,9 @@ public class ReviewService {
         return reviewRepository.findReviewsByPortfolioId(portfolioId, pageable)
                 .map(ReviewPortfolioDetailDto::new);
     }
+
+    public Page<ReviewPortfolioDetailDto> getAllReview(Pageable pageable) {
+        return reviewRepository.findAll(pageable)
+                .map(ReviewPortfolioDetailDto::new);
+    }
 }

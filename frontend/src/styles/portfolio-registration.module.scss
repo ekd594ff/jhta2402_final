@@ -1,0 +1,135 @@
+@use "variables";
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+    & > .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 32px 0 32px 0;
+      text-align: center;
+    }
+
+    & > .step-progress {
+
+      & > .step {
+        border-color: variables.$COLOR_PRIMARY;
+      }
+
+    }
+
+    & > .form1 {
+
+      & > .textfield-div {
+        display: flex;
+        flex-direction: column;
+        margin: 16px 0;
+
+        & > .default-textfield {
+          margin: 16px 28px;
+          padding: 4px 0;
+        }
+
+        & > .outlined-textfield {
+          margin: 16px;
+          padding: 4px 0;
+        }
+      }
+
+      & > .company-div {
+        display: block;
+        justify-content: space-between;
+        margin: 16px;
+
+        & > .info-container {
+          margin: 16px;
+
+          & > .info-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+
+            & > .info-title {
+              font-weight: 600;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+
+      & > .image-div {
+      }
+
+      & > .button-div {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        justify-content: end;
+
+        & > .next-button {
+          border-color: variables.$COLOR_PRIMARY;
+          color: variables.$COLOR_PRIMARY;
+        }
+      }
+
+
+    }
+
+    & > .form2 {
+
+      & > .button-div {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        justify-content: space-between;
+
+        & > .prev-button {
+          border-color: gray;
+          color: gray;
+        }
+
+        & > .next-button {
+          border-color: variables.$COLOR_PRIMARY;
+          color: variables.$COLOR_PRIMARY;
+        }
+      }
+    }
+
+    & > .form3 {
+
+      & > .button-div {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        justify-content: space-between;
+
+        & > .prev-button {
+          border-color: gray;
+          color: gray;
+        }
+
+        & > .register-button {
+          background-color: variables.$COLOR_PRIMARY;
+        }
+      }
+
+      & > .solution-item {
+        padding: 16px;
+      }
+    }
+  }
+
+  & > .snackbar {
+    margin-top: 48px;
+  }
+}

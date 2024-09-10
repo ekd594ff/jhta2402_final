@@ -23,6 +23,8 @@ public class ImageUtil {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+    @Value("${cloud.aws.region.static}")
+    private String region;
 
     public Optional<ImageDto> uploadS3(MultipartFile file, UUID refId, int index) {
 
@@ -41,10 +43,43 @@ public class ImageUtil {
 
         return Optional.of(ImageDto.builder()
                 .refId(refId)
-                .url("https://intarea.s3.ap-northeast-2.amazonaws.com/" + folderPath + fileName)
+                .url("https://" + bucket + ".s3." + region + ".amazonaws.com/" + folderPath + fileName)
                 .filename(fileName)
                 .originalFilename(file.getOriginalFilename())
                 .build());
 
+    }
+
+    // 기존 S3 이미지 이름 변경
+    public Optional<ImageDto> renameS3(String originalUrl, UUID refId, int index) {
+
+        String sourceKey = originalUrl.split(".amazonaws.com/")[1];
+        String extension = originalUrl.substring(originalUrl.lastIndexOf('.') + 1);
+
+        String folderPath = "upload/" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")) + "/";
+        String fileName = index + "_" + UUID.randomUUID() + "." + extension;
+
+        amazonS3Client.copyObject(
+                bucket,
+                sourceKey,
+                bucket,
+                folderPath + fileName
+        );
+
+        amazonS3Client.deleteObject(bucket, sourceKey);
+
+        return Optional.of(ImageDto.builder()
+                .refId(refId)
+                .url("https://" + bucket + ".s3." + region + ".amazonaws.com/" + folderPath + fileName)
+                .filename(fileName)
+                .build());
+    }
+
+    // S3 이미지 삭제
+    public void deleteS3(String url) {
+
+        String sourceKey = url.split(".amazonaws.com/")[1];
+
+        amazonS3Client.deleteObject(bucket, sourceKey);
     }
 }

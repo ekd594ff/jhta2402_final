@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -59,6 +58,27 @@ public class CompanyService {
 
         if (!companyRequestDto.getImage().isEmpty()) {
             ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
+                    .orElseThrow(() -> new NoSuchElementException("S3 오류"));
+
+            imageRepository.save(imageDto.toImage());
+        }
+    }
+
+    @Transactional
+    public void update(CompanyRequestDto companyRequestDto) {
+
+        Company company = getCompanyOfMember();
+        company.setCompanyName(companyRequestDto.getCompanyName());
+        company.setPhone(companyRequestDto.getPhone());
+        company.setAddress(companyRequestDto.getAddress());
+        companyRepository.save(company);
+
+        // 이미지가 있으면 기존 이미지 삭제 & 저장
+        if (!companyRequestDto.getImage().isEmpty()) {
+            imageRepository.findByRefId(company.getId())
+                    .ifPresent(imageRepository::delete);
+
+            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
                     .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
             imageRepository.save(imageDto.toImage());
@@ -122,5 +142,9 @@ public class CompanyService {
                 company.getAddress(),
                 company.getIsApplied(),
                 company.getCreatedAt());
+    }
+
+    public Page<CompanyResponseDto> getAllCompany(Pageable pageable) {
+        return companyRepository.findAll(pageable).map(this::converToDto);
     }
 }

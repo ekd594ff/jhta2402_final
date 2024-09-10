@@ -1,26 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Cookies from 'js-cookie'; // js-cookie 라이브러리 추가
+import { Container, Typography, TextField, Button, Grid, Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Mypage = () => {
     const [userData, setUserData] = useState({
         username: '',
+        email: '',
         password: '',
+        profileImage: '',
     });
+    const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState('');
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('/api/member/email'); // 이메일로 사용자 정보 가져오기
+                const response = await axios.get('/api/member/email');
+                console.log(response); // 이메일로 사용자 정보 가져오기
                 setUserData({
                     email: response.data.email,
                     username: response.data.username,
                     password: '', // 비밀번호는 초기화
+                    profileImage: response.data.profileImage || '',
                 });
             } catch (error) {
                 console.error('사용자 정보를 가져오는 중 오류 발생:', error);
                 setMessage('정보를 가져오는 데 실패했습니다.');
+                setOpenSnackbar(true);
             }
         };
 
@@ -35,47 +44,110 @@ const Mypage = () => {
         });
     };
 
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.patch('/api/member', userData); // 사용자 정보 수정 요청
+            const formData = new FormData();
+            formData.append('username', userData.username);
+            formData.append('password', userData.password);
+
+            // 이미지 업로드 요청
+            if (selectedFile) {
+                formData.append('file', selectedFile);
+            }
+
+            // 프로필 수정 요청
+            await axios.patch('/api/member/profile', formData, {
+                header: {
+                    'Content-Type' : 'multipart/form-data',
+                },
+            });
+
             setMessage('정보가 성공적으로 수정되었습니다.');
+            setOpenSnackbar(true);
         } catch (error) {
             console.error('수정 중 오류 발생:', error);
             setMessage('수정에 실패했습니다.');
+            setOpenSnackbar(true);
         }
     };
 
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+    };
+
+    const handleGoIndex = () => {
+        navigate('/');
+    };
+
     return (
-        <div>
-            <h1>내 프로필 수정</h1>
-            {message && <p>{message}</p>}
+        <Container maxWidth="sm" style={{ marginTop: '20px' }}>
+            <Typography variant="h4" gutterBottom>
+                내 프로필 수정
+            </Typography>
+            <Typography variant="h6">
+                이름: {userData.username}
+            </Typography>
+            <Typography variant="h6" style={{ marginBottom: '30px' }}>
+                이메일: {userData.email}
+            </Typography>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="username">이름:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={userData.username}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">이메일:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={userData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit">수정하기</button>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="새로운 이름은 2 ~ 17자 내로 작성"
+                            name="username"
+                            value={userData.username}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="비밀번호는 영문 숫자조합 8 ~ 25자 내로 작성"
+                            name="password"
+                            type="password"
+                            value={userData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={2} justifyContent="space-between">
+                            <Grid item>
+                                <Button variant="contained" color="secondary" type="submit">
+                                    수정하기
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant="contained" color="secondary" onClick={handleGoIndex}>
+                                    Home
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+            <Snackbar
+                open={openSnackbar}
+                onClose={handleCloseSnackbar}
+                message={message}
+                autoHideDuration={6000}
+            />
+        </Container>
     );
 };
 

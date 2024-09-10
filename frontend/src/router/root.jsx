@@ -1,5 +1,7 @@
 import {lazy, Suspense} from "react";
 import {createBrowserRouter} from "react-router-dom";
+import SearchList from "../pages/searchlist";
+import QuotationRequest from "../pages/quotationRequest";
 
 const Index = lazy(() => import("../pages/index"));
 const SignIn = lazy(() => import('../pages/signin'));
@@ -22,6 +24,14 @@ const root = createBrowserRouter([
     {
         path: '/mypage',
         element: <Suspense><Mypage/></Suspense>
+    },
+    {
+        path: '/search',
+        element: <Suspense><SearchList/></Suspense>
+    },
+    {
+        path: '/quotationRequest',
+        element: <Suspense><QuotationRequest/></Suspense>
     },
 ])
 

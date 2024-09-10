@@ -19,7 +19,12 @@ function Signup() {
         password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
         email: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
     });
-    const [validation, setValidation] = useState({email: false, password: false, passwordConfirm: false, username: false});
+    const [validation, setValidation] = useState({
+        email: false,
+        password: false,
+        passwordConfirm: false,
+        username: false
+    });
 
     const checkUsernameDebounce = debounce((username) => {
         axios.post('/api/duplication/username', {
@@ -47,9 +52,9 @@ function Signup() {
 
     const submit = (event) => {
         event.preventDefault();
-        for(const key in validation) {
+        for (const key in validation) {
             const item = validation[key];
-            if(!item) {
+            if (!item) {
                 window.alert("입력한 정보가 올바르지 않습니다. 다시 확인해주세요");
                 return;
             }
@@ -88,7 +93,7 @@ function Signup() {
                 </Link>
                 <form onKeyDown={(event) => {
                     const key = event.key;
-                    if(key === 'Enter') {
+                    if (key === 'Enter') {
                         submit(event);
                     }
                 }}>
@@ -115,8 +120,10 @@ function Signup() {
                                variant="standard"
                                label="이메일"
                                helperText={signUpMsg.email}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={signUp.username}
                                onChange={(e) => {
@@ -142,8 +149,10 @@ function Signup() {
                                variant="standard"
                                label="닉네임"
                                helperText={signUpMsg.username}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={signUp.password}
                                onChange={(e) => {
@@ -168,8 +177,10 @@ function Signup() {
                                placeholder="영문 숫자조합 8자리 이상"
                                variant="standard"
                                helperText={signUpMsg.password}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
                     <TextField value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}
                                type="password"
@@ -178,16 +189,18 @@ function Signup() {
                                placeholder="비밀번호 확인"
                                variant="standard"
                                helperText={signUpMsg.passwordConfirm}
-                               InputLabelProps={{
-                                   shrink: true,
+                               slotProps={{
+                                   inputLabel: {
+                                       shrink: true,
+                                   }
                                }}/>
-                    <Button disableRipple variant="contained" className={style['submit-btn']} size="large" onClick={submit}>
+                    <Button variant="outlined" className={style['register-btn']} size="large" onClick={submit}>
                         회원가입
                     </Button>
                 </form>
             </div>
         </main>
-    </>
+    </>;
 }
 
 export default Signup;
