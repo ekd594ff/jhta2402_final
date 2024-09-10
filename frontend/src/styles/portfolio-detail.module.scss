@@ -13,6 +13,67 @@
   }
 }
 
+.report-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+
+  & > .content {
+    box-sizing: border-box;
+    padding: 24px 24px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    background-color: variables.$color-100;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0 0 0 1px inset;
+
+    & > div {
+      width: 100%;
+    }
+
+    & > .top {
+      text-align: left;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    & > .middle {
+      & > .report-list {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+
+        & :global(.Mui-checked) {
+          color: variables.$COLOR_PRIMARY;
+        }
+
+        & .report-description {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          padding: 6px 0;
+        }
+
+        & * {
+          font-size: 15px;
+          user-select: none;
+        }
+
+        & > .report-submit {
+          background-color: variables.$COLOR_PRIMARY;
+          font-weight: bold;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
 .portfolio-detail {
   min-height: 100vh;
   display: flex;
@@ -29,7 +90,7 @@
     flex-direction: column;
     gap: 64px;
 
-    & .solution-list-title, & .review-list-title {
+    & .solution-list-title, & .review-list-title, & .portfolio-list-title {
       font-weight: bold;
       font-size: 16px;
     }
@@ -67,6 +128,17 @@
         flex-direction: column;
         gap: 16px;
 
+        & .empty {
+          padding: 32px 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          & > span {
+            color: variables.$color-600;
+          }
+        }
+
         & > li {
           list-style: none;
         }
@@ -74,7 +146,18 @@
     }
 
     .middle {
+      & > .portfolio-list-title {
+        display: flex;
+        gap: 8px;
 
+        & > span {
+          color: variables.$COLOR_PRIMARY;
+        }
+      }
+
+      & > .portfolio-swiper {
+        padding: 16px 0;
+      }
     }
 
     & > .top {
@@ -159,6 +242,17 @@
         flex-direction: column;
         gap: 16px;
 
+        & .empty {
+          padding: 32px 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          & > span {
+            color: variables.$color-600;
+          }
+        }
+
         @include variables.media-720 {
           width: 100%;
           padding-left: 0;
@@ -207,6 +301,21 @@
 
           & > div {
             width: 100%;
+
+            &.top {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+
+              & > .btn-group {
+                display: flex;
+                gap: 8px;
+
+                & * {
+                  color: variables.$color-600;
+                }
+              }
+            }
           }
 
           & .company-name {
