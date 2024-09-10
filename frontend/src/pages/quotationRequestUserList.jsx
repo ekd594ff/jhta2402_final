@@ -5,20 +5,22 @@ import {
   List,
   ListItem,
   ListItemText,
-  CircularProgress,
   Button,
-  Grid,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
 
-const QuotationRequestUserList = ({ memberId }) => {
+const QuotationRequestUserList = () => {
   const [quotationRequests, setQuotationRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
+  const { memberId } = useParams();
+
   useEffect(() => {
     const fetchQuotationRequests = async () => {
+      console.log(memberId);
       if (!memberId) return;
 
       setLoading(true);
@@ -34,6 +36,7 @@ const QuotationRequestUserList = ({ memberId }) => {
         ]);
         setHasMore(response.data.content.length > 0);
       } catch (err) {
+        console.error(err);
         setError(err);
       } finally {
         setLoading(false);
@@ -49,12 +52,17 @@ const QuotationRequestUserList = ({ memberId }) => {
     }
   };
 
-  if (loading && page === 0) {
-    return <CircularProgress />;
-  }
   if (error) {
-    return <Typography color="error">{error}</Typography>;
+    return (
+      <Typography color="error">
+        {error.message || "오류가 발생했습니다."}
+      </Typography>
+    );
   }
+
+  useEffect(() => {
+    console.log(quotationRequests);
+  }, [quotationRequests]);
 
   return (
     <div>
@@ -67,13 +75,12 @@ const QuotationRequestUserList = ({ memberId }) => {
             <ListItemText
               primary={request.title}
               secondary={
-                <>
+                <div>
                   <span>{request.description}</span>
-                  <br />
                   <Typography variant="subtitle2">솔루션 목록</Typography>
                   <List>
-                    {request.solutions.map((solution) => (
-                      <ListItem key={solution.id}>
+                    {request.solutions.map((solution, index) => (
+                      <ListItem key={`${solution.id}-${index}`}>
                         <ListItemText
                           primary={solution.title}
                           secondary={`가격: ${solution.price} 원`}
@@ -81,13 +88,17 @@ const QuotationRequestUserList = ({ memberId }) => {
                       </ListItem>
                     ))}
                   </List>
-                </>
+                </div>
               }
             />
           </ListItem>
         ))}
       </List>
-      {hasMore && <Button>{loading ? "Loading..." : "더보기"}</Button>}
+      {hasMore && (
+        <Button onClick={loadMoreResults} disabled={loading}>
+          {loading ? "Loading..." : "더보기"}
+        </Button>
+      )}
     </div>
   );
 };

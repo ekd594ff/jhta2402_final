@@ -29,7 +29,10 @@ function App() {
           <Route path="/portfolio/:id" element={<PortfolioDetail />} />
           <Route path="/search/detailed" element={<SearchList />} />
           <Route path="/quotationRequest" element={<QuotationRequest />} />
-          <Route path="/qr/userList" element={<QuotationRequestUserList />} />
+          <Route
+            path="/qr/userList/:memberId"
+            element={<QuotationRequestUserList />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

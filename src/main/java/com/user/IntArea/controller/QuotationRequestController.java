@@ -1,5 +1,6 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.QuotationRequest;
@@ -44,6 +45,13 @@ public class QuotationRequestController {
     public ResponseEntity<Page<QuotationRequestDto>> getQuotationRequestByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<QuotationRequestDto> responseDto = quotationRequestService.getQuotationRequestsByMemberId(memberId, pageable);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping("/companyList/{companyId}")
+    public ResponseEntity<Page<QuotationRequestCompanyDto>> getQuotationRequestByCompanyId(@PathVariable UUID companyId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<QuotationRequestCompanyDto> responseDto = quotationRequestService.getQuotationRequestsByCompanyId(companyId, pageable);
         return ResponseEntity.ok().body(responseDto);
     }
 

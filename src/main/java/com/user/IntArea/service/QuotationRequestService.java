@@ -1,8 +1,10 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.entity.*;
+import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,7 @@ public class QuotationRequestService {
                 .portfolio(portfolio)
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
+                .progress(QuotationProgress.PENDING)
                 .build();
         quotationRequestRepository.save(quotationRequest);
 
@@ -64,14 +67,14 @@ public class QuotationRequestService {
         }
 
         // 반환할 DTO 생성
-        QuotationRequestDto responseDto = new QuotationRequestDto();
-        responseDto.setMemberId(requestDto.getMemberId());
-        responseDto.setPortfolioId(requestDto.getPortfolioId());
-        responseDto.setTitle(requestDto.getTitle());
-        responseDto.setDescription(requestDto.getDescription());
-        responseDto.setSolutions(solutionDtos);
-
-        return responseDto;
+        return QuotationRequestDto.builder()
+                .memberId(requestDto.getMemberId())
+                .portfolioId(requestDto.getPortfolioId())
+                .title(requestDto.getTitle())
+                .description(requestDto.getDescription())
+                .solutions(solutionDtos)
+                .progress(QuotationProgress.PENDING.name())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -93,6 +96,7 @@ public class QuotationRequestService {
                                 .createdAt(rs.getSolution().getCreatedAt())
                                 .build())
                         .collect(Collectors.toList()))
+                .progress(quotationRequest.getProgress().name())
                 .build();
     }
 
@@ -113,6 +117,41 @@ public class QuotationRequestService {
                                 .createdAt(rs.getSolution().getCreatedAt())
                                 .build())
                         .collect(Collectors.toList()))
+                .progress(request.getProgress().name())
+                .build());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QuotationRequestCompanyDto> getQuotationRequestsByCompanyId(UUID companyId, Pageable pageable) {
+
+        // 회사에 속하는 포트폴리오 조회
+        Page<Portfolio> portfolios = portfolioRepository.findAllByCompanyId(companyId, pageable);
+
+        // 포트폴리오 ID 리스트 생성
+        List<UUID> portfolioIds = portfolios.stream()
+                .map(Portfolio::getId)
+                .collect(Collectors.toList());
+
+        // 해당 포트폴리오 ID를 가진 견적 신청서 조회
+        Page<QuotationRequest> requests = quotationRequestRepository.findAllByPortfolioIds(portfolioIds, pageable);
+
+        // DTO로 변환하여 반환
+        return requests.map(request -> QuotationRequestCompanyDto.builder()
+                .memberId(request.getMember().getId())
+                .portfolioId(request.getPortfolio().getId())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .solutions(request.getRequestSolutions().stream()
+                        .map(rs -> SolutionDto.builder()
+                                .id(rs.getSolution().getId())
+                                .title(rs.getSolution().getTitle())
+                                .description(rs.getSolution().getDescription())
+                                .price(rs.getSolution().getPrice())
+                                .createdAt(rs.getSolution().getCreatedAt())
+                                .build())
+                        .collect(Collectors.toList()))
+                .progress(request.getProgress().name())
+                .companyId(companyId)
                 .build());
     }
 
@@ -124,6 +163,7 @@ public class QuotationRequestService {
         // QuotationRequest 정보 업데이트
         quotationRequest.setTitle(requestDto.getTitle());
         quotationRequest.setDescription(requestDto.getDescription());
+        quotationRequest.setProgress(QuotationProgress.valueOf(requestDto.getProgress())); // progress 추가
 
         // 기존 솔루션 업데이트 및 새로운 솔루션 추가
         List<SolutionDto> newSolutions = requestDto.getSolutions();
@@ -169,7 +209,12 @@ public class QuotationRequestService {
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
                 .solutions(newSolutions)
+                .progress(requestDto.getProgress())
                 .build();
+    }
+
+    public void updateProgress () {
+        // 견적서 승인 전, 신청서를 취소할 수 있는 API
     }
 
     @Transactional

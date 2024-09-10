@@ -42,7 +42,7 @@ public class QuotationRequest {
     @OneToMany(mappedBy = "id")
     private List<Quotation> quotations;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "quotationRequest")
     private List<RequestSolution> requestSolutions;
 
     @CreatedDate
@@ -52,12 +52,12 @@ public class QuotationRequest {
     private LocalDateTime updatedAt;
 
     @Builder
-    public QuotationRequest(Member member, Portfolio portfolio, String title, String description) {
+    public QuotationRequest(Member member, Portfolio portfolio, String title, String description, QuotationProgress progress) {
         this.member = member;
         this.portfolio = portfolio;
         this.title = title;
         this.description = description;
-        this.progress = progress;
+        this.progress = progress != null ? progress : QuotationProgress.PENDING;
     }
 
     public Quotation getWrittenQuotation() {
