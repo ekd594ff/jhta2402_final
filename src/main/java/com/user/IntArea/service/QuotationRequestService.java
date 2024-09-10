@@ -2,9 +2,11 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
+import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
 import com.user.IntArea.dto.solution.SolutionDto;
+import com.user.IntArea.dto.solution.SolutionForQuotationRequestDto;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.*;
@@ -27,6 +29,10 @@ public class QuotationRequestService {
     private final PortfolioRepository portfolioRepository;
     private final CompanyRepository companyRepository;
     private final QuotationRepository quotationRepository;
+    private final QuotationService quotationService;
+    private final RequestSolutionRepository requestSolutionRepository;
+    private final RequestSolutionService requestSolutionService;
+    private final SolutionService solutionService;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
@@ -168,7 +174,10 @@ public class QuotationRequestService {
 
     private QuotationRequestInfoDto convertToQuotationRequestTotalInfoDto(QuotationRequest quotationRequest) {
         // 각 QuotationRequest에 대한 Quotation 및 RequestSolution 데이터를 가져와서 DTO로 변환
-        return QuotationRequestInfoDto.fromEntity(quotationRequest);
+        List<QuotationInfoDto> quotationInfoDtos = quotationService.getQuotationInfoDtoListFrom(quotationRequest);
+        List<SolutionForQuotationRequestDto> solutionDtos = solutionService.getSolutionListFor(quotationRequest);
+
+        return new QuotationRequestInfoDto(quotationRequest, quotationInfoDtos, solutionDtos);
     }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 작성한 모든 견적요청서 출력

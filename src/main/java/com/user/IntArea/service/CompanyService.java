@@ -6,10 +6,9 @@ import com.user.IntArea.dto.company.CompanyPortfolioDetailDto;
 import com.user.IntArea.dto.company.CompanyRequestDto;
 import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
-import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.entity.Company;
-import com.user.IntArea.entity.Image;
+import com.user.IntArea.entity.ImageDto;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Role;
 import com.user.IntArea.repository.CompanyRepository;
@@ -57,7 +56,7 @@ public class CompanyService {
         UUID refId = companyRepository.save(saveCompany).getId();
 
         if (!companyRequestDto.getImage().isEmpty()) {
-            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
+            com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
                     .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
             imageRepository.save(imageDto.toImage());
@@ -79,7 +78,7 @@ public class CompanyService {
             imageRepository.findByRefId(company.getId())
                     .ifPresent(imageRepository::delete);
 
-            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
+            com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
                     .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
             imageRepository.save(imageDto.toImage());
@@ -90,7 +89,7 @@ public class CompanyService {
 
         Company company = getCompanyOfMember();
 
-        Optional<Image> image = imageRepository.findByRefId(company.getId());
+        Optional<ImageDto> image = imageRepository.findByRefId(company.getId());
 
         String url = null;
         if (image.isPresent()) {
@@ -104,7 +103,7 @@ public class CompanyService {
 
         return companyRepository.getCompanyByIsApplied(false, pageable)
                 .map(company -> {
-                    Optional<Image> optionalImage = imageRepository.findByRefId(company.getId());
+                    Optional<ImageDto> optionalImage = imageRepository.findByRefId(company.getId());
 
                     return optionalImage.map(image ->
                                     new UnAppliedCompanyDto(company.getMember(), company, image.getUrl()))

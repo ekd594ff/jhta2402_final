@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Image {
+public class ImageDto {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -38,7 +38,7 @@ public class Image {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Image(UUID refId, String url, String filename, String originalFilename) {
+    public ImageDto(UUID refId, String url, String filename, String originalFilename) {
         this.refId = refId;
         this.url = url;
         this.filename = filename;

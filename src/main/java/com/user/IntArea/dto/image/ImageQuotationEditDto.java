@@ -6,12 +6,12 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class ImagePortfolioEditDto {
+public class ImageQuotationEditDto {
 
     private UUID id;
     private String url;
 
-    public ImagePortfolioEditDto(ImageDto image) {
+    public ImageQuotationEditDto(ImageDto image) {
         this.id = image.getId();
         this.url = image.getUrl();
     }

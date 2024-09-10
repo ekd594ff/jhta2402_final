@@ -12,10 +12,6 @@ public class QuotationInfoDto {
     private Long totalTransactionAmount;
     private List<String> imageUrls;
 
-    public QuotationInfoDto(Quotation quotation) {
-        this.quotationId = quotation.getId();
-        this.totalTransactionAmount = quotation.getTotalTransactionAmount();
-    }
 
     public QuotationInfoDto(Quotation quotation, List<String> imageUrls) {
         this.quotationId = quotation.getId();

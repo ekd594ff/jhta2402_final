@@ -60,14 +60,32 @@ public class QuotationService {
         return member.equals(quotationRequest.getMember());
     }
 
-    // 이 메서드는 quotation에서 이미지를 로드하여 URL 리스트를 반환
+    // quotation에서 이미지를 로드하여 URL 리스트를 반환
     private List<String> getImageUrlsForQuotation(Quotation quotation) {
-        List<Image> images = imageService.getImagesFrom(quotation);
+        List<ImageDto> imageDtos = imageService.getImagesFrom(quotation);
         List<String> imageUrls = new ArrayList<>();
-        for (Image image : images) {
+        for (ImageDto image : imageDtos) {
             imageUrls.add(image.getUrl());
         }
         return imageUrls;
+    }
+
+    // Quotation을 QuotationInfoDto로 변환하는 메서드
+    private QuotationInfoDto convertToQuotationInfoDto(Quotation quotation) {
+        List<String> imageUrls = new ArrayList<>();
+        try { // 견적서와 관련된 이미지 로드
+            List<ImageDto> imageDtos = imageService.getImagesFrom(quotation);
+            if (imageDtos != null) {
+                imageUrls = imageDtos.stream()
+                        .map(ImageDto::getUrl)
+                        .collect(Collectors.toList());
+            }
+        } catch (Exception e) { // 예외 발생 시 로그 남기기
+            System.err.println("이미지 로드 실패: " + e.getMessage());
+        }
+
+        // QuotationInfoDto로 매핑
+        return new QuotationInfoDto(quotation, imageUrls);
     }
 
     private void checkIfProgressIsPending(QuotationProgress progresss) {
@@ -87,17 +105,6 @@ public class QuotationService {
         }
     }
 
-    // Quotation을 QuotationInfoDto로 변환하는 메서드
-    private QuotationInfoDto convertToQuotationInfoDto(Quotation quotation) {
-        // 견적서와 관련된 이미지 로드
-        List<String> imageUrls = imageService.getImagesFrom(quotation).stream()
-                .map(Image::getUrl)
-                .collect(Collectors.toList());
-
-        // QuotationInfoDto로 매핑
-        return new QuotationInfoDto(quotation, imageUrls);
-    }
-
     // 견적 요청서 작성자 권한
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 여러 판매자들로부터 받은 모든 견적서 출력
@@ -106,13 +113,9 @@ public class QuotationService {
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
         Page<Quotation> quotationsForMember = quotationRepository.GetAllQuotationsTowardMember(member.getId(), pageable);
-        Page<QuotationInfoDto> result = quotationsForMember.map(quotation -> {
-            List<String> imageUrls = imageService.getImagesFrom(quotation).stream()
-                    .map(Image::getUrl)
-                    .collect(Collectors.toList());
-            return new QuotationInfoDto(quotation, imageUrls);
-        });
-        return result;
+
+        // Quotation을 QuotationInfoDto로 변환하여 반환
+        return quotationsForMember.map(this::convertToQuotationInfoDto);
     }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 여러 판매자들로부터 받은 모든 견적서 출력 (progress에 따라 소팅)
@@ -121,13 +124,9 @@ public class QuotationService {
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
         Page<Quotation> quotationsForMember = quotationRepository.GetAllQuotationsTowardMemberSortedByProgress(member.getId(), progress, pageable);
-        Page<QuotationInfoDto> result = quotationsForMember.map(quotation -> {
-            List<String> imageUrls = imageService.getImagesFrom(quotation).stream()
-                    .map(Image::getUrl)
-                    .collect(Collectors.toList());
-            return new QuotationInfoDto(quotation, imageUrls);
-        });
-        return result;
+
+        // Quotation을 QuotationInfoDto로 변환하여 반환
+        return quotationsForMember.map(this::convertToQuotationInfoDto);
     }
 
 
@@ -142,13 +141,8 @@ public class QuotationService {
                 .toList(); // updatedAt으로 정렬
 
         List<QuotationInfoDto> quotationInfoDtoList = new ArrayList<>();
-
         for (Quotation quotation : quotationList) {
-            List<Image> images = imageService.getImagesFrom(quotation);  // Quotation별로 이미지 로드
-            List<String> imageUrls = Optional.ofNullable(images)
-                    .map(imgList -> imgList.stream().map(Image::getUrl).toList())
-                    .orElse(new ArrayList<>());
-            quotationInfoDtoList.add(new QuotationInfoDto(quotation, imageUrls));
+            quotationInfoDtoList.add(convertToQuotationInfoDto(quotation));
         }
         return quotationInfoDtoList;
     }
@@ -160,7 +154,7 @@ public class QuotationService {
         }
         Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
-        List<String> imageUrls = imageService.getImagesFrom(quotation).stream().map(Image::getUrl).toList();
+        List<String> imageUrls = imageService.getImagesFrom(quotation).stream().map(ImageDto::getUrl).toList();
         return new QuotationInfoDto(quotation, imageUrls);
     }
 

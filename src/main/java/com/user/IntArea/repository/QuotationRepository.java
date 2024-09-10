@@ -68,7 +68,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "OR CAST(q.totalTransactionAmount AS string) LIKE %:searchWord% " +
             "OR CAST(q.progress AS string) LIKE %:searchWord% " +
             "OR CAST(qr.progress AS string) LIKE %:searchWord% )")
-    Page<Quotation> findAllByCompanyWithSearchWord(String searchWord, UUID id, Pageable pageable);
+    Page<Quotation> findAllByCompanyWithSearchWord(@Param("searchWord") String searchWord, @Param("companyId") UUID companyId, Pageable pageable);
 
 }
 

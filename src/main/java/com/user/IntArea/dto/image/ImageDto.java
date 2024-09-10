@@ -1,10 +1,7 @@
 package com.user.IntArea.dto.image;
 
-import com.user.IntArea.entity.Image;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -24,8 +21,8 @@ public class ImageDto {
         this.originalFilename = originalFilename;
     }
 
-    public Image toImage() {
-        return Image.builder()
+    public com.user.IntArea.entity.ImageDto toImage() {
+        return com.user.IntArea.entity.ImageDto.builder()
                 .refId(refId)
                 .url(url)
                 .filename(filename)

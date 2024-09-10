@@ -1,9 +1,9 @@
 package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
-import com.user.IntArea.dto.image.ImageDto;
-import com.user.IntArea.entity.Image;
-import com.user.IntArea.entity.QuotationRequest;
+import com.user.IntArea.entity.ImageDto;
+import com.user.IntArea.entity.Portfolio;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     private void saveSingleImage(MultipartFile image, UUID refId, int index) {
-        ImageDto imageDto = imageUtil.uploadS3(image, refId, index)
+        com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(image, refId, index)
                 .orElseThrow(() -> new NoSuchElementException("S3 오류"));
         imageRepository.save(imageDto.toImage());
     }
@@ -38,15 +38,12 @@ public class ImageService {
         }
     }
 
-    // 특정한 객체와 연관된 이미지 리스트 불러오기
-    public <T> List<Image> getImagesFrom(T entity) {
-        UUID refId;
-        if (entity instanceof QuotationRequest) {
-            refId = ((QuotationRequest) entity).getId();
-        } else {
-            throw new NoSuchElementException("이미지가 참조하는 클래스가 아닙니다.");
-        }
-        return imageRepository.findAllByRefId(refId);
+    public List<ImageDto> getImagesFrom(Portfolio portfolio) {
+        return imageRepository.findAllByRefId(portfolio.getId());
+    }
+
+    public List<ImageDto> getImagesFrom(Quotation quotation) {
+        return imageRepository.findAllByRefId(quotation.getId());
     }
 
     public void deleteImageByImageId(UUID id) {
