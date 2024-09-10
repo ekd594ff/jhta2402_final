@@ -39,6 +39,7 @@ function CreateEditCompany() {
                         description: res.data.description || "",
                         phone: res.data.phone,
                         address: res.data.address,
+                        detailAddress: res.data.detailAddress,
                         imageUrl: res.data.url
                     });
                 })
@@ -80,7 +81,8 @@ function CreateEditCompany() {
         formData.append("companyName", companyInfo.companyName);
         formData.append("description", companyInfo.description);
         formData.append("phone", companyInfo.phone);
-        formData.append("address", `${companyInfo.address} ${companyInfo.detailAddress}`);
+        formData.append("address", companyInfo.address);
+        formData.append("detailAddress", companyInfo.detailAddress);
         formData.append("image", companyInfo.image);
 
         axios.post(apiUrl,

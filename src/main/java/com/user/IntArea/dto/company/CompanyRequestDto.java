@@ -14,6 +14,7 @@ public class CompanyRequestDto {
     private final String description;
     private final String phone;
     private final String address;
+    private final String detailAddress;
     private MultipartFile image;
 
     public Company toEntity(Member member) {
@@ -23,6 +24,7 @@ public class CompanyRequestDto {
                 .description(description)
                 .phone(phone)
                 .address(address)
+                .detailAddress(detailAddress)
                 .isApplied(false)
                 .build();
     }
