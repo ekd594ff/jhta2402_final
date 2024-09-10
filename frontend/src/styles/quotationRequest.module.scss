@@ -1,0 +1,147 @@
+@use 'variables';
+
+.solution-list-item {
+  padding: 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  & :global(.Mui-checked) {
+    & * {
+      color: variables.$COLOR_PRIMARY;
+    }
+  }
+
+  & > .left {
+    padding: 0 8px;
+  }
+
+  & > .right {
+    font-size: 14px;
+    display: flex;
+    flex-grow: 1;
+
+    & > .left {
+      flex-grow: 1;
+
+      & > .title {
+        font-weight: bold;
+        font-size: 22px;
+      }
+
+      & > .description {
+        color: variables.$color-700;
+        font-size: 16px;
+      }
+    }
+
+    & > .right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      & > .price {
+        display: flex;
+        gap: 3px;
+        font-size: 16px;
+        font-weight: bold;
+
+        &::after {
+          content: "원"
+        }
+      }
+    }
+  }
+}
+
+.quotation-request {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: variables.$HEADER_HEIGHT;
+
+  & > .container {
+    width: variables.$CONTAINER_WIDTH;
+    max-width: 100%;
+    padding: 32px 16px 64px 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    & > .btn-group {
+      display: flex;
+      justify-content: space-between;
+
+      & > .back {
+        background-color: transparent;
+        color: variables.$COLOR_PRIMARY;
+        border: 0.5px solid variables.$COLOR_PRIMARY;
+        box-sizing: border-box;
+      }
+
+      & > .submit {
+        background-color: variables.$COLOR_PRIMARY;
+        color: variables.$color-100;
+      }
+    }
+
+    & > .portfolio-info {
+      padding: 32px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      & > .company {
+        font-size: 16px;
+        color: variables.$color-600;
+      }
+
+      & > .portfolio {
+        font-weight: bold;
+        font-size: 22px;
+      }
+
+      & > .description {
+        font-size: 18px;
+      }
+    }
+
+    & > .solution-list {
+      padding: 16px 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    & > .other-description {
+      & :global(label.Mui-focused) {
+        color: rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    & > .total-price {
+      padding: 16px 0;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 18px;
+
+      & > .total {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        & > span {
+          font-weight: bold;
+          color: variables.$COLOR_PRIMARY;
+        }
+      }
+    }
+
+    & > .title {
+      font-size: 18px;
+      display: flex;
+      font-weight: bold;
+    }
+  }
+}
+
