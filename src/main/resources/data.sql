@@ -214,7 +214,7 @@ INSERT INTO COMPANY (ID, MEMBERID, COMPANYNAME, DESCRIPTION, PHONE, ADDRESS, DET
 VALUES ('d7e3b2f1-4a5e-4d0d-bc18-8c79c63c7c68', 'a8a8cbf7-ae99-4b45-81ee-7d99b72aa317', '에코 디자인',
         '고객 만족도 100%를 목표로 디자인합니다.',
         '010-2345-6789', '서울 마포구 독막로38길 32 (대흥동, 마포나루타운)', '3층 에코 디자인', TRUE, FALSE, NOW(), NOW()),
-       ('168017c2-79ca-4c87-9eb1-1f97204150a2', 'f6b73d77-5fb8-462e-85f7-f6ed0425d2ba', '아트리움', NULL,
+       ('168017c2-79ca-4c87-9eb1-1f97204150a2', '6f3f2761-0fa0-43f3-bd22-e658e2a5d7df', '아트리움', NULL,
         '010-1234-5678', '서울 영등포구 영신로43길 8-14', '3층', TRUE, FALSE, NOW(), NOW()),
        ('48782f22-0d19-4548-a605-10327389ba6b', 'e766a25f-dd4a-4966-9b2c-cd1a1ec3a67d', 'Urban Chic Designs', NULL,
         '010-1234-5678', '서울 성북구 종암로13길 16-10', '1층 우반틱디자인스', TRUE, FALSE, NOW(), NOW()),

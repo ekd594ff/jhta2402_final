@@ -1,6 +1,7 @@
 package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestCountDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.QuotationRequest;
@@ -53,6 +54,11 @@ public class QuotationRequestController {
         Pageable pageable = PageRequest.of(page, size);
         Page<QuotationRequestCompanyDto> responseDto = quotationRequestService.getQuotationRequestsByCompanyId(companyId, pageable);
         return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping("/company/count")
+    public ResponseEntity<QuotationRequestCountDto> getQuotationCount() {
+        return ResponseEntity.ok().body(quotationRequestService.getQuotationRequestCount());
     }
 
     @DeleteMapping("/{id}")
