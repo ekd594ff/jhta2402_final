@@ -3,8 +3,8 @@ package com.user.IntArea.controller;
 import com.user.IntArea.dto.quotation.QuotationCreateDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.quotation.QuotationUpdateDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.service.QuotationRequestService;
@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -30,15 +31,15 @@ public class QuotationController {
 
     // 일반 권한
 
-    // 받은 특정한 quotation 거부(고객이 quotation만 취소)
-    @PostMapping("/cancel/{id}")
-    public void cancelQuotation(@RequestParam UUID id) {
-        QuotationRequest quotationRequest = quotationRequestService.findById(id);
-        quotationService.cancelQuotationByCustomer(quotationRequest);
+    // 받은 특정한 quotation 거부 (고객이 quotation만 취소) // ● Postman Pass
+    @GetMapping("/reject")
+    public void cancelQuotation(@RequestParam UUID quotationId) {
+        Quotation quotation = quotationService.findById(quotationId);
+        quotationService.cancelQuotationByCustomer(quotation);
     }
 
     // 받은 모든 quotation 조회
-    @GetMapping("/list") // a● Postman Pass
+    @GetMapping("/list") // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotations(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return quotationService.getQuotationInfoDtoListTowardMember(pageable);
@@ -54,24 +55,30 @@ public class QuotationController {
     // seller 권한
 
     // (seller) quotation 생성
-    @PostMapping("/company/create")
+    @PostMapping("/company/create") // ● Postman Pass
     public ResponseEntity<?> createQuotation(QuotationCreateDto quotationCreateDto) {
         quotationService.creatQuotationBySeller(quotationCreateDto);
         return ResponseEntity.ok().build();
     }
 
-    // (seller) quotation 수정
-    @PostMapping("/company/update")
-    public ResponseEntity<?> modifyQuotation(@RequestBody QuotationUpdateDto quotationUpdateDto) {
+    // (seller) quotation 수정(신규 생성 및 기존 quotation 취소처리)
+    @PostMapping("/company/update")// ● Postman Pass
+    public ResponseEntity<?> updateQuotation(QuotationUpdateDto quotationUpdateDto) {
         quotationService.updateQuotationBySeller(quotationUpdateDto);
         return ResponseEntity.ok().build();
     }
 
+    // (seller) 작성한 quotation 취소 처리
+    @GetMapping("/company/cancel/quotation") // ● Postman Pass
+    public void cancelQuotationBySeller(@RequestParam UUID quotationId) {
+        Quotation quotation = quotationService.findById(quotationId);
+        quotationService.cancelQuotationBySeller(quotation);
+    }
+
     // (seller) 거래종료 처리(작성한 quotation 취소 및 quotationRequest 취소)
-    @PostMapping("/company/cancel")
-    public void cancelQuotationAndQuotationRequest(@RequestBody QuotationRequestInfoDto quotationRequestInfoDto) {
-        QuotationRequest quotationRequest = quotationRequestService.findById(quotationRequestInfoDto.getId());
-        quotationService.cancelQuotationBySeller(quotationRequest);
+    @GetMapping("/company/cancel/contract") // ● Postman Pass
+    public void cancelQuotationAndQuotationRequest(@RequestParam UUID quotationId) {
+        quotationService.cancelQuotationAndQuotationRequestBySeller(quotationId);
     }
 
     // (seller) 작성한 전체 quotation 조회
