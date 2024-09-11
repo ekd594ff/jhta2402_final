@@ -189,8 +189,17 @@ public class QuotationService {
         Company company = getCompanyOfMember();
 
         // 견적 요청서 검증 로직 (견적요청이 PENDING인 경우 확인)
-        QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByIdAndProgressByCompany(company.getId(), quotationCreateDto.getQuotationRequestId(), QuotationProgress.PENDING)
-                .orElseThrow(() -> new NoSuchElementException("대기중인 견적 요청이 없습니다."));
+        /*QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByIdAndProgressByCompany(company.getId(), quotationCreateDto.getQuotationRequestId(), QuotationProgress.PENDING)
+                .orElseThrow(() -> new NoSuchElementException("대기중인 견적 요청이 없습니다."));*/
+
+        List<QuotationRequest> quotationList = quotationRequestRepository.getQuotationRequestTowardCompanySortedByProgressAsList(company.getId(), QuotationProgress.PENDING);
+        QuotationRequest quotationRequest = null;
+        if(!quotationList.isEmpty()) {
+            quotationRequest = quotationList.get(0);
+        } else {
+            throw new NoSuchElementException("대기중인 견적 요청이 없습니다.##");
+        }
+
 
         // 이미지파일 유무 검증 로직
         if(quotationCreateDto.getImageFiles().isEmpty()) {

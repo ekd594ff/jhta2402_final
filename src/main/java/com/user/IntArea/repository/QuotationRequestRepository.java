@@ -34,6 +34,12 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "WHERE c.id = :companyId")
     Page<QuotationRequest> getAllQuotationRequestTowardCompany(@Param("companyId") UUID companyId, Pageable pageable);
 
+    @Query("SELECT qr FROM QuotationRequest qr " +
+            "JOIN qr.portfolio p " +
+            "JOIN p.company c " +
+            "WHERE c.id = :companyId and qr.progress = :progress")
+    List<QuotationRequest> getQuotationRequestTowardCompanySortedByProgressAsList(@Param("companyId") UUID companyId, @Param("progress") QuotationProgress progress);
+
     @Query("SELECT DISTINCT qr FROM QuotationRequest qr " +
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
@@ -48,6 +54,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "JOIN p.company c " +
             "WHERE c.id = :companyId and qr.id = :quotationRequestId and qr.progress = :progress")
     Optional<QuotationRequest> findQuotationRequestByIdAndProgressByCompany(@Param("companyId") UUID companyId, @Param("quotationRequestId") UUID quotationRequestId, @Param("progress") QuotationProgress progress);
+
 
     // admin
 
