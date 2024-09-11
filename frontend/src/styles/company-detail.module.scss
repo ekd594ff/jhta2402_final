@@ -1,0 +1,95 @@
+@use "variables";
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 16px 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+    & > .sub-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 32px 0 16px 0;
+      text-align: center;
+    }
+
+    & > .button-div {
+      display: flex;
+      justify-content: end;
+      margin: 16px;
+
+      & > .button {
+        border-color: variables.$COLOR_PRIMARY;
+        color: variables.$COLOR_PRIMARY;
+      }
+    }
+
+    & > .company-info-div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      & > .company-img {
+        width: 280px;
+        height: 280px;
+        object-fit: cover;
+        margin: auto;
+      }
+
+      & > .company-table {
+        margin: 0 16px;
+
+        & > .table {
+          & > .table-body {
+            & > .table-row {
+              & > .table-name {
+                width: 96px;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    & > .request-card {
+
+      & > .card-content {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & > .card-div {
+          width: 100%;
+          text-align: center;
+          margin: auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          & > .title {
+            font-size: 18px;
+          }
+
+          & > .count {
+            margin: 16px 0 8px 0;
+            font-size: 24px;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+  }
+}
+

@@ -69,6 +69,7 @@ public class CompanyService {
 
         Company company = getCompanyOfMember();
         company.setCompanyName(companyRequestDto.getCompanyName());
+        company.setDescription(companyRequestDto.getDescription());
         company.setPhone(companyRequestDto.getPhone());
         company.setAddress(companyRequestDto.getAddress());
         company.setDetailAddress(companyRequestDto.getDetailAddress());
@@ -91,11 +92,7 @@ public class CompanyService {
         Company company = getCompanyOfMember();
 
         Optional<Image> image = imageRepository.findByRefId(company.getId());
-
-        String url = null;
-        if (image.isPresent()) {
-            url = image.get().getUrl();
-        }
+        String url = image.map(Image::getUrl).orElse(null);
 
         return new CompanyPortfolioDetailDto(company, url);
     }

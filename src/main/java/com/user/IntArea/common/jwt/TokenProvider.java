@@ -70,15 +70,6 @@ public class TokenProvider implements InitializingBean {
                 .build();
     }
 
-    public ResponseCookie getLoginToken() {
-        return ResponseCookie.from("login")
-                .value(UUID.randomUUID().toString())
-                .domain(domain)
-                .path("/")
-                .maxAge(tokenValidityInSeconds)
-                .build();
-    }
-
     public Map<String, ResponseCookie> getLogoutToken() {
         Map<String, ResponseCookie> resultMap = new HashMap<>();
 
@@ -143,11 +134,6 @@ public class TokenProvider implements InitializingBean {
     public Cookie getAccessServletCookie(Authentication authentication) {
 
         return toServletCookie(getAccessToken(authentication));
-    }
-
-    public Cookie getLoginServletCookie() {
-
-        return toServletCookie(getLoginToken());
     }
 
     private Cookie toServletCookie(ResponseCookie responseCookie) {

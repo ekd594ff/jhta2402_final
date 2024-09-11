@@ -4,8 +4,10 @@ import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestCountDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestListDto;
 import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.dto.solution.SolutionForQuotationRequestDto;
 import com.user.IntArea.entity.*;
@@ -109,9 +111,10 @@ public class QuotationRequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QuotationRequestDto> getQuotationRequestsByMemberId(UUID memberId, Pageable pageable) {
+    public Page<QuotationRequestListDto> getQuotationRequestsByMemberId(UUID memberId, Pageable pageable) {
         Page<QuotationRequest> requests = quotationRequestRepository.findAllByMemberId(memberId, pageable);
-        return  requests.map(request -> QuotationRequestDto.builder()
+        return  requests.map(request -> QuotationRequestListDto.builder()
+                .id(request.getId())
                 .memberId(request.getMember().getId())
                 .portfolioId(request.getPortfolio().getId())
                 .title(request.getTitle())
@@ -145,6 +148,7 @@ public class QuotationRequestService {
 
         // DTO로 변환하여 반환
         return requests.map(request -> QuotationRequestCompanyDto.builder()
+                .id(request.getId())
                 .memberId(request.getMember().getId())
                 .portfolioId(request.getPortfolio().getId())
                 .title(request.getTitle())
@@ -221,8 +225,18 @@ public class QuotationRequestService {
                 .build();
     }
 
-    public void updateProgress () {
-        // 견적서 승인 전, 신청서를 취소할 수 있는 API
+    @Transactional
+    public void cancelQuotationRequest(UUID id) {
+        QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("견적 요청을 찾을 수 없습니다."));
+        quotationRequest.setProgress(QuotationProgress.USER_CANCELLED);
+    }
+
+    @Transactional
+    public void cancelSellerQuotationRequest(UUID id) {
+        QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("견적 요청을 찾을 수 없습니다."));
+        quotationRequest.setProgress(QuotationProgress.SELLER_CANCELLED);
     }
 
     @Transactional
@@ -304,6 +318,14 @@ public class QuotationRequestService {
         Company company = getCompanyOfMember();
         Page<QuotationRequest> quotationRequests = quotationRequestRepository.getAllQuotationRequestTowardCompanySortedByProgress(company.getId(), progress, pageable);
         return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+
+    // (seller) 회사로부터 온 신청서 개수 Count
+    public QuotationRequestCountDto getQuotationRequestCount() {
+        Company company = getCompanyOfMember();
+        List<Object[]> results = quotationRequestRepository.findQuotationRequestCountById(company.getId());
+        return new QuotationRequestCountDto(results);
     }
 
     // admin

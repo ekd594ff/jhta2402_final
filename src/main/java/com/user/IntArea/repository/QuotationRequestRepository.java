@@ -68,4 +68,19 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "WHERE c.id = :companyId")
     Page<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId") UUID companyId, Pageable pageable);
 
+
+    @Query(value = "WITH Statuses AS (\n" +
+            "    SELECT 'APPROVED' as progress\n" +
+            "    UNION ALL\n" +
+            "    SELECT 'PENDING' as progress\n" +
+            ")\n" +
+            "SELECT c.companyname, s.progress, COUNT(qr.id) as count\n" +
+            "FROM company c\n" +
+            "         CROSS JOIN Statuses s\n" +
+            "         LEFT JOIN portfolio p ON p.companyid = c.id\n" +
+            "         LEFT JOIN quotationrequest qr ON qr.portfolioid = p.id AND qr.progress = s.progress\n" +
+            "WHERE c.id = :companyId \n" +
+            "GROUP BY c.companyname, s.progress\n" +
+            "ORDER BY c.companyname, s.progress;\n", nativeQuery = true)
+    List<Object[]> findQuotationRequestCountById(@Param("companyId") UUID companyId);
 }
