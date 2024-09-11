@@ -38,30 +38,24 @@ public class QuotationController {
     }
 
     // 받은 모든 quotation 조회
-    @GetMapping("/list")
+    @GetMapping("/list") // a● Postman Pass
     public Page<QuotationInfoDto> getAllQuotations(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return quotationService.getQuotationInfoDtoListTowardMember(pageable);
     }
 
     // 받은 quotation 을 progress에 따라 소팅하여 조회
-    @GetMapping("/list/{progress}")
+    @GetMapping("/list/progress") // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationsByProgress(@RequestParam QuotationProgress progress, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return quotationService.getQuotationInfoDtoListTowardMemberSortedByProgress(progress, pageable);
     }
 
-    // 받은 quotation 을 시간순에 따라 조회
-
-    // 검색 기능 - 받은 quotation 에 대해 totalTransactionAmount 값으로 검색
-
-
-
     // seller 권한
 
     // (seller) quotation 생성
     @PostMapping("/company/create")
-    public ResponseEntity<?> createQuotation(@RequestBody QuotationCreateDto quotationCreateDto) {
+    public ResponseEntity<?> createQuotation(QuotationCreateDto quotationCreateDto) {
         quotationService.creatQuotationBySeller(quotationCreateDto);
         return ResponseEntity.ok().build();
     }
