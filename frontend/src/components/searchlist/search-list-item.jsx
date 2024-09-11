@@ -11,7 +11,8 @@ import style from "../../styles/search-list-item.module.scss";
 
 
 function SearchListItem(props) {
-    const {title, description, companyName, imageUrls, portfolioId} = props;
+    const {title, description, companyName, imageUrls, id} = props;
+    console.log(props);
     const navigator = useNavigate();
     return <li className={style['search-list-item']}>
         <div className={style['top']}>
@@ -41,7 +42,7 @@ function SearchListItem(props) {
         <div className={style['bottom']}>
             <div className={style['name']}>{companyName}</div>
             <div className={style['info']} onClick={() => {
-                navigator(`/portfolio/${portfolioId}`);
+                navigator(`/portfolio/${id}`);
             }}>
                 <div className={style['rating']}>
                     <Rating readOnly defaultValue={1} max={1} size="small"/>
