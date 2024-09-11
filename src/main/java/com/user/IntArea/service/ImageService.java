@@ -1,7 +1,7 @@
 package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
-import com.user.IntArea.entity.ImageDto;
+import com.user.IntArea.entity.Image;
 import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.repository.ImageRepository;
@@ -38,11 +38,11 @@ public class ImageService {
         }
     }
 
-    public List<ImageDto> getImagesFrom(Portfolio portfolio) {
+    public List<Image> getImagesFrom(Portfolio portfolio) {
         return imageRepository.findAllByRefId(portfolio.getId());
     }
 
-    public List<ImageDto> getImagesFrom(Quotation quotation) {
+    public List<Image> getImagesFrom(Quotation quotation) {
         return imageRepository.findAllByRefId(quotation.getId());
     }
 

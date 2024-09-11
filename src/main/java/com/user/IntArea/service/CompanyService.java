@@ -8,7 +8,7 @@ import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.entity.Company;
-import com.user.IntArea.entity.ImageDto;
+import com.user.IntArea.entity.Image;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Role;
 import com.user.IntArea.repository.CompanyRepository;
@@ -89,7 +89,7 @@ public class CompanyService {
 
         Company company = getCompanyOfMember();
 
-        Optional<ImageDto> image = imageRepository.findByRefId(company.getId());
+        Optional<Image> image = imageRepository.findByRefId(company.getId());
 
         String url = null;
         if (image.isPresent()) {
@@ -103,7 +103,7 @@ public class CompanyService {
 
         return companyRepository.getCompanyByIsApplied(false, pageable)
                 .map(company -> {
-                    Optional<ImageDto> optionalImage = imageRepository.findByRefId(company.getId());
+                    Optional<Image> optionalImage = imageRepository.findByRefId(company.getId());
 
                     return optionalImage.map(image ->
                                     new UnAppliedCompanyDto(company.getMember(), company, image.getUrl()))

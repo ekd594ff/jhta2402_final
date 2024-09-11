@@ -2,7 +2,7 @@ package com.user.IntArea.dto.portfolio;
 
 import com.user.IntArea.dto.image.ImagePortfolioEditDto;
 import com.user.IntArea.dto.solution.SolutionPortfolioDto;
-import com.user.IntArea.entity.ImageDto;
+import com.user.IntArea.entity.Image;
 import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.entity.Solution;
 import lombok.Builder;
@@ -21,7 +21,7 @@ public class PortfolioEditDetailDto {
     private List<SolutionPortfolioDto> solution;
 
     @Builder
-    public PortfolioEditDetailDto(Portfolio portfolio, List<ImageDto> images, List<Solution> solution) {
+    public PortfolioEditDetailDto(Portfolio portfolio, List<Image> images, List<Solution> solution) {
         this.portfolioId = portfolio.getId();
         this.title = portfolio.getTitle();
         this.description = portfolio.getDescription();

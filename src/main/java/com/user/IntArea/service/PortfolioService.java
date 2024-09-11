@@ -141,7 +141,7 @@ public class PortfolioService {
 
         isCompanyManager(portfolio);
 
-        List<ImageDto> images = imageRepository.findAllByRefId(portfolio.getId());
+        List<Image> images = imageRepository.findAllByRefId(portfolio.getId());
 
         List<Solution> solutions = solutionRepository.findAllByPortfolioId(portfolio.getId());
 
@@ -187,7 +187,7 @@ public class PortfolioService {
             MultipartFile image = images.get(i);
             if (image.isEmpty()) {
                 // 기존 이미지 테이블 id로 S3 이름 변경, 이미지 테이블 업데이트
-                ImageDto dbImage = imageRepository.findById(UUID.fromString(Objects.requireNonNull(image.getOriginalFilename())))
+                Image dbImage = imageRepository.findById(UUID.fromString(Objects.requireNonNull(image.getOriginalFilename())))
                         .orElseThrow(() -> new NoSuchElementException("해당 이미지가 없습니다."));
                 com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.renameS3(dbImage.getUrl(), portfolio.getId(), i)
                         .orElseThrow(() -> new NoSuchElementException("S3 오류"));

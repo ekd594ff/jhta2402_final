@@ -1,6 +1,6 @@
 package com.user.IntArea.dto.image;
 
-import com.user.IntArea.entity.ImageDto;
+import com.user.IntArea.entity.Image;
 import lombok.Data;
 
 import java.util.UUID;
@@ -11,7 +11,7 @@ public class ImagePortfolioEditDto {
     private UUID id;
     private String url;
 
-    public ImagePortfolioEditDto(ImageDto image) {
+    public ImagePortfolioEditDto(Image image) {
         this.id = image.getId();
         this.url = image.getUrl();
     }

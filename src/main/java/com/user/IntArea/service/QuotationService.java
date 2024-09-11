@@ -62,9 +62,9 @@ public class QuotationService {
 
     // quotation에서 이미지를 로드하여 URL 리스트를 반환
     private List<String> getImageUrlsForQuotation(Quotation quotation) {
-        List<ImageDto> imageDtos = imageService.getImagesFrom(quotation);
+        List<Image> imageDtos = imageService.getImagesFrom(quotation);
         List<String> imageUrls = new ArrayList<>();
-        for (ImageDto image : imageDtos) {
+        for (Image image : imageDtos) {
             imageUrls.add(image.getUrl());
         }
         return imageUrls;
@@ -74,10 +74,10 @@ public class QuotationService {
     private QuotationInfoDto convertToQuotationInfoDto(Quotation quotation) {
         List<String> imageUrls = new ArrayList<>();
         try { // 견적서와 관련된 이미지 로드
-            List<ImageDto> imageDtos = imageService.getImagesFrom(quotation);
+            List<Image> imageDtos = imageService.getImagesFrom(quotation);
             if (imageDtos != null) {
                 imageUrls = imageDtos.stream()
-                        .map(ImageDto::getUrl)
+                        .map(Image::getUrl)
                         .collect(Collectors.toList());
             }
         } catch (Exception e) { // 예외 발생 시 로그 남기기
@@ -154,7 +154,7 @@ public class QuotationService {
         }
         Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
-        List<String> imageUrls = imageService.getImagesFrom(quotation).stream().map(ImageDto::getUrl).toList();
+        List<String> imageUrls = imageService.getImagesFrom(quotation).stream().map(Image::getUrl).toList();
         return new QuotationInfoDto(quotation, imageUrls);
     }
 
