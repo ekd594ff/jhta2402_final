@@ -13,6 +13,7 @@ import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
 import QuotationRequestUserList from "./pages/quotationRequestUserList.jsx";
 import QuotationRequestSellerList from "./pages/quotationReqeustSellerList.jsx";
+import CompanyDetail from "./pages/login/companyPage.jsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/company/info" element={<CompanyDetail />} />
           <Route path="/company/create" element={<CreateEditCompany />} />
           <Route path="/company/edit" element={<CreateEditCompany />} />
           <Route path="/admin/*" element={<Admin />} />

@@ -25,7 +25,6 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         response.addCookie(tokenProvider.getAccessServletCookie(authentication));
-        response.addCookie(tokenProvider.getLoginServletCookie());
 
         // http://localhost:808? 를 얻기 위한 코드 (개발 편의를 위한 코드, 배포 시 제거 필요)
         String requestUrl = request.getRequestURL().substring(0, 21);
