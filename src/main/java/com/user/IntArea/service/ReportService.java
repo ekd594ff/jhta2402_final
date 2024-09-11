@@ -1,14 +1,18 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.dto.report.EditReportDto;
 import com.user.IntArea.dto.report.ReportResponseDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
+import com.user.IntArea.entity.Report;
 import com.user.IntArea.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,5 +66,17 @@ public class ReportService {
             return reportRepository.findAllReportDto(pageable).map(ReportResponseDto::new);
         }
         throw new RuntimeException("findAllByFilter");
+    }
+
+    @Transactional
+    public void editReportForAdmin(EditReportDto editReportDto) {
+        Optional<Report> reportOptional = reportRepository.findById(editReportDto.getId());
+        if (reportOptional.isPresent()) {
+            Report report = reportOptional.get();
+            report.setComment(editReportDto.getComment());
+            report.setProgress(editReportDto.getProgress());
+        } else {
+            throw new NoSuchElementException("editReportForAdmin");
+        }
     }
 }

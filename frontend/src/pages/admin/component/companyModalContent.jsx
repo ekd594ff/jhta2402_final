@@ -97,6 +97,12 @@ function CompanyModalContent(inputValue) {
             label="APPLIED"
             defaultValue= {inputValue.applied}
             select
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, applied: value};
+                });
+            }}
         >
             {isApplied.map((option) => (
                 <MenuItem key={option.value} value={option.value}>

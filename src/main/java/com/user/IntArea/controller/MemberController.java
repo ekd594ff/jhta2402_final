@@ -166,8 +166,9 @@ public class MemberController {
     }
 
     @PatchMapping("/admin")
-    public ResponseEntity<?> updateMember(@RequestBody AdminEditMemberDto adminEditMemberDto) {
-        memberService.editMember(adminEditMemberDto);
+    public ResponseEntity<?> editMember(@RequestBody AdminEditMemberDto adminEditMemberDto) {
+        log.info("adminEditMemberDto = {}",adminEditMemberDto);
+        memberService.editMemberForAdmin(adminEditMemberDto);
         return ResponseEntity.ok().build();
     }
 }

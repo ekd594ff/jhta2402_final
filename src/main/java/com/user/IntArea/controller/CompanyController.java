@@ -1,9 +1,6 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.company.CompanyPortfolioDetailDto;
-import com.user.IntArea.dto.company.CompanyRequestDto;
-import com.user.IntArea.dto.company.CompanyResponseDto;
-import com.user.IntArea.dto.company.UnAppliedCompanyDto;
+import com.user.IntArea.dto.company.*;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.service.CompanyService;
 import lombok.RequiredArgsConstructor;
@@ -118,6 +115,12 @@ public class CompanyController {
     public ResponseEntity<?> hardDeleteMembers(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         companyService.hardDeleteCompanies(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/admin")
+    public ResponseEntity<?> editCompany(@RequestBody EditCompanyDto editCompanyDto) {
+        companyService.editCompanyForAdmin(editCompanyDto);
         return ResponseEntity.noContent().build();
     }
 }

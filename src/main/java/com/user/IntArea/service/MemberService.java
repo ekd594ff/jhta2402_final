@@ -193,11 +193,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void editMember(AdminEditMemberDto adminEditMemberDto) {
+    public void editMemberForAdmin(AdminEditMemberDto adminEditMemberDto) {
         Optional<Member> member = memberRepository.findById(adminEditMemberDto.getId());
         if (member.isPresent()) {
             member.get().setRole(adminEditMemberDto.getRole());
-            member.get().setDeleted(adminEditMemberDto.isDelete());
+            member.get().setDeleted(adminEditMemberDto.isDeleted());
         } else {
             throw new UsernameNotFoundException("editMember");
         }

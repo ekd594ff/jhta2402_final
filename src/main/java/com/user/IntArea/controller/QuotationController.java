@@ -1,6 +1,7 @@
 package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberResponseDto;
+import com.user.IntArea.dto.quotation.EditQuotationDto;
 import com.user.IntArea.dto.quotation.QuotationCreateDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
@@ -63,7 +64,6 @@ public class QuotationController {
     // 검색 기능 - 받은 quotation 에 대해 totalTransactionAmount 값으로 검색
 
 
-
     // seller 권한
 
     // quotation 생성
@@ -122,7 +122,10 @@ public class QuotationController {
     // 작성한 전체 quotation 를 검색어로 조회
 
 
-
     //
-
+    @PatchMapping("/admin")
+    public ResponseEntity<?> editQuotation(@RequestBody EditQuotationDto editQuotationDto) {
+        quotationService.editQuotationForAdmin(editQuotationDto);
+        return ResponseEntity.noContent().build();
+    }
 }

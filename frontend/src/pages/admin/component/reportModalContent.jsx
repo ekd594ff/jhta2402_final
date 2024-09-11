@@ -1,10 +1,29 @@
-import {TextField} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import * as React from "react";
+import {useState} from "react";
+import axios from "axios";
+import MenuItem from "@mui/material/MenuItem";
+
+
+const progresses = [
+    {
+        value : 'PENDING',
+        label : 'PENDING',
+    },
+    {
+        value : 'IN_PROGRESS',
+        label : 'IN_PROGRESS',
+    },
+    {
+        value : 'COMPLETED',
+        label : 'COMPLETED',
+    },
+]
 
 function ReportModalContent(inputValue) {
+    const [value, setValue] = useState(inputValue);
     return <div>
         <TextField
-            id="filled-read-only-input"
             label="ID"
             defaultValue= {inputValue.id}
             variant="filled"
@@ -15,7 +34,6 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="REF-TITLE"
             defaultValue= {inputValue.refTitle}
             variant="filled"
@@ -26,7 +44,6 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="USERNAME"
             defaultValue= {inputValue.username}
             variant="filled"
@@ -37,7 +54,6 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="SORT"
             defaultValue= {inputValue.sort}
             variant="filled"
@@ -48,7 +64,6 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="TITLE"
             defaultValue= {inputValue.title}
             variant="filled"
@@ -59,7 +74,6 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="DESCRIPTION"
             defaultValue= {inputValue.description}
             variant="filled"
@@ -70,29 +84,35 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="COMMENT"
             defaultValue= {inputValue.comment}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, comment: value};
+                });
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="PROGRESS"
             defaultValue= {inputValue.progress}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            select
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, progress: value};
+                });
             }}
-        />
+        >
+            {progresses.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                </MenuItem>
+            ))}
+        </TextField>
         <TextField
-            id="filled-read-only-input"
             label="CREATEDAT"
             defaultValue= {inputValue.createdAt}
             variant="filled"
@@ -103,7 +123,6 @@ function ReportModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="UPDATEDAT"
             defaultValue= {inputValue.updatedAt}
             variant="filled"
@@ -113,6 +132,19 @@ function ReportModalContent(inputValue) {
                 },
             }}
         />
+        <Button onClick={async (event) => {
+            const response =
+                await axios.patch(`/api/report/admin`, {
+                    id: value.id,
+                    comment : value.comment,
+                    progress : value.progress,
+                }).catch(response => console.log(response));
+            console.log("role", value.role);
+            console.log("value",value);
+            console.log("event", event);
+        }}>
+            수정
+        </Button>
     </div>
 }
 export default ReportModalContent;

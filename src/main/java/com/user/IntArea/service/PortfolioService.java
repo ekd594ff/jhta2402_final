@@ -355,4 +355,18 @@ public class PortfolioService {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         portfolioRepository.deleteAllById(ids);
     }
+
+    @Transactional
+    public void editPortfolioForAdmin(EditPortfolioDto editPortfolioDto) {
+        Optional<Portfolio> portfolioOptional = portfolioRepository.findById(editPortfolioDto.getId());
+        if (portfolioOptional.isPresent()) {
+            Portfolio portfolio = portfolioOptional.get();
+            portfolio.setDescription(editPortfolioDto.getDescription());
+            portfolio.setTitle(editPortfolioDto.getTitle());
+            portfolio.setDeleted(editPortfolioDto.isDeleted());
+            portfolio.setActivated(editPortfolioDto.isActivated());
+        } else {
+            throw new NoSuchElementException("editPortfolioForAdmin");
+        }
+    }
 }

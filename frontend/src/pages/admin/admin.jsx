@@ -28,7 +28,7 @@ import QuotationRequestModalContent from "./component/quotationRequestModalConte
 import ReviewModalContent from "./component/reviewModalContent.jsx";
 
 import style01 from '../../styles/admin.module.scss';
-import '../../styles/admin-list.scss'; // CSS 파일 임포트
+import style02 from '../../styles/admin-list.module.scss'; // CSS 파일 임포트
 
 function route(params, inputValue) {
     switch (params) {
@@ -58,40 +58,8 @@ function NestedList() {
     };
 
     return (
-        // <List
-        //     sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
-        //     component="nav"
-        //     aria-labelledby="nested-list-subheader"
-        //     subheader={
-        //         <ListSubheader component="div" id="nested-list-subheader">
-        //             Nested List Items
-        //         </ListSubheader>
-        //     }
-        // >
-        //     <ListItemButton>
-        //         <Link to={"member"}><ListItemText primary="Member"/></Link>
-        //     </ListItemButton>
-        //     <ListItemButton>
-        //         <Link to={"company"}><ListItemText primary="Company"/></Link>
-        //     </ListItemButton>
-        //     <ListItemButton>
-        //         <Link to={"portfolio"}><ListItemText primary="Portfolio"/></Link>
-        //     </ListItemButton>
-        //     <ListItemButton>
-        //         <Link to={"review"}><ListItemText primary="Review"/></Link>
-        //     </ListItemButton>
-        //     <ListItemButton>
-        //         <Link to={"report"}><ListItemText primary="Report"/></Link>
-        //     </ListItemButton>
-        //     <ListItemButton>
-        //         <Link to={"quotation"}><ListItemText primary="Quotation"/></Link>
-        //     </ListItemButton>
-        //     <ListItemButton>
-        //         <Link to={"quotationRequest"}><ListItemText primary="QuotationRequest"/></Link>
-        //     </ListItemButton>
-        // </List>
         <List
-            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+            sx={{height: '100%', width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
             component="nav"
             aria-labelledby="nested-list-subheader"
             subheader={
@@ -100,7 +68,7 @@ function NestedList() {
                     id="nested-list-subheader"
                     style={{backgroundColor: '#0056A6', color: '#FFF'}}
                 >
-                    Nested List Items
+                    Admin
                 </ListSubheader>
             }
         >
@@ -108,7 +76,7 @@ function NestedList() {
                 return (
                     <Link to={text.charAt(0).toLowerCase() + text.slice(1)}
                           style={{textDecoration: 'none', color: 'inherit'}} key={text}>
-                        <ListItemButton className="list-item" style={{backgroundColor: '#0056A6', color: '#FFF'}}>
+                        <ListItemButton className={style02["list-item"]} >
                             <ListItemText primary={text}/>
                         </ListItemButton>
                     </Link>
@@ -209,7 +177,6 @@ function DataTable() {
                 }));
                 console.log(response.data.content);
                 cols.push(buttonColumns);
-
                 setColumns(cols);
             }
             setData(response.data.content);
@@ -334,7 +301,10 @@ function DataTable() {
 
 
     return (
-        <Paper sx={{height: 400, width: '100%'}}>
+        <Paper sx={{height: '100%', width: '100%'}}>
+            <Button onClick={handleApiRequest} variant="contained" color="default">
+                soft delete
+            </Button>
             <DataGrid
                 rows={data}
                 columns={columns}
@@ -347,11 +317,12 @@ function DataTable() {
                 paginationMode="server"
                 sortingMode="server"
                 rowCount={totalCount}
+                pageSizeOptions={[5, 10,100]}
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}
                 onPaginationModelChange={handlePaginationModelChange}
                 onRowSelectionModelChange={handleRowSelection}
-                // onCellClick={handleButtonClick}
+                autoHeight
                 paginationModel={paginationModel}
             />
             <Modal
@@ -370,9 +341,6 @@ function DataTable() {
                     </Button>
                 </Box>
             </Modal>
-            <Button onClick={handleApiRequest} variant="contained" color="default">
-                soft delete
-            </Button>
         </Paper>
     );
 }

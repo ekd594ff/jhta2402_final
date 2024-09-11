@@ -1,6 +1,8 @@
 package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberResponseDto;
+import com.user.IntArea.dto.portfolio.EditPortfolioDto;
+import com.user.IntArea.dto.review.EditReviewDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +50,10 @@ public class ReviewController {
                                                                           @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                           @RequestParam(required = false) String filterColumn,
                                                                           @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}",sortField);
-        log.info("sort={}",sort);
-        log.info("filterColumn={}",filterColumn);
-        log.info("filterValue={}",filterValue);
+        log.info("sortField={}", sortField);
+        log.info("sort={}", sort);
+        log.info("filterColumn={}", filterColumn);
+        log.info("filterValue={}", filterValue);
 
         if (sortField.equals("username")) {
             sortField = "member.username";
@@ -62,7 +64,7 @@ public class ReviewController {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllSearchReview(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
+        Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllSearchReview(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
     }
 
@@ -70,6 +72,12 @@ public class ReviewController {
     public ResponseEntity<?> deleteReviews(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         reviewService.hardDeleteReviews(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/admin")
+    public ResponseEntity<?> editReview(@RequestBody EditReviewDto editReviewDto) {
+        reviewService.editReviewForAdmin(editReviewDto);
         return ResponseEntity.noContent().build();
     }
 }

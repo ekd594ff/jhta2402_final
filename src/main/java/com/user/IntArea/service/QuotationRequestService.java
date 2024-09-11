@@ -3,6 +3,7 @@ package com.user.IntArea.service;
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.quotation.QuotationResponseDto;
+import com.user.IntArea.dto.quotationRequest.EditQuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationAdminRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
@@ -262,5 +263,16 @@ public class QuotationRequestService {
     public void updateProgressByIds(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         quotationRequestRepository.updateProgressByIds(ids);
+    }
+
+    @Transactional
+    public void editQuotationRequestForAdmin(EditQuotationRequestDto editQuotationRequestDto) {
+        Optional<QuotationRequest> quotationRequestOptional = quotationRequestRepository.findById(editQuotationRequestDto.getId());
+        if (quotationRequestOptional.isPresent()) {
+            QuotationRequest quotationRequest = quotationRequestOptional.get();
+            quotationRequest.setProgress(editQuotationRequestDto.getProgress());
+        } else {
+            throw new NoSuchElementException("editQuotationRequestForAdmin");
+        }
     }
 }

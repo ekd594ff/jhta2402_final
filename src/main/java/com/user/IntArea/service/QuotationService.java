@@ -2,10 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
-import com.user.IntArea.dto.quotation.QuotationCreateDto;
-import com.user.IntArea.dto.quotation.QuotationInfoDto;
-import com.user.IntArea.dto.quotation.QuotationUpdateDto;
-import com.user.IntArea.dto.quotation.QuotationResponseDto;
+import com.user.IntArea.dto.quotation.*;
 import com.user.IntArea.dto.report.ReportResponseDto;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
@@ -331,4 +328,14 @@ public class QuotationService {
     }
 
 
+    @Transactional
+    public void editQuotationForAdmin(EditQuotationDto editQuotationDto) {
+        Optional<Quotation> quotationOptional = quotationRepository.findById(editQuotationDto.getId());
+        if (quotationOptional.isPresent()) {
+            Quotation quotation = quotationOptional.get();
+            quotation.setProgress(editQuotationDto.getProgress());
+        } else {
+            throw new NoSuchElementException("editQuotationForAdmin");
+        }
+    }
 }

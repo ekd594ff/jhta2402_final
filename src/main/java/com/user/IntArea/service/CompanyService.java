@@ -2,10 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
-import com.user.IntArea.dto.company.CompanyPortfolioDetailDto;
-import com.user.IntArea.dto.company.CompanyRequestDto;
-import com.user.IntArea.dto.company.CompanyResponseDto;
-import com.user.IntArea.dto.company.UnAppliedCompanyDto;
+import com.user.IntArea.dto.company.*;
 import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
@@ -195,5 +192,20 @@ public class CompanyService {
     public void hardDeleteCompanies(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         companyRepository.deleteAllById(ids);
+    }
+
+    @Transactional
+    public void editCompanyForAdmin(EditCompanyDto editCompanyDto) {
+        Optional<Company> company = companyRepository.findById(editCompanyDto.getId());
+        if (company.isPresent()) {
+            company.get().setCompanyName(editCompanyDto.getCompanyName());
+            company.get().setAddress(editCompanyDto.getAddress());
+            company.get().setPhone(editCompanyDto.getPhone());
+            company.get().setIsApplied(editCompanyDto.isApplied());
+            company.get().setDescription(editCompanyDto.getDescription());
+            company.get().setDetailAddress(editCompanyDto.getDetailAddress());
+        } else {
+            throw new RuntimeException("editCompany");
+        }
     }
 }

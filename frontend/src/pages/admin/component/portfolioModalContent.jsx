@@ -1,12 +1,27 @@
-import {TextField} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import * as React from "react";
+import axios from "axios";
+import {useState} from "react";
+import MenuItem from "@mui/material/MenuItem";
+
+
+const isDeleted = [
+    {
+        value : true,
+        label : 'true',
+    },
+    {
+        value : false,
+        label : 'false',
+    },
+];
 
 function PortfolioModalContent(inputValue) {
+    const [value, setValue] = useState(inputValue);
     return <div>
         <TextField
-            id="filled-read-only-input"
             label="ID"
-            defaultValue= {inputValue.id}
+            defaultValue={inputValue.id}
             variant="filled"
             slotProps={{
                 input: {
@@ -15,31 +30,30 @@ function PortfolioModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="TITLE"
-            defaultValue= {inputValue.title}
+            defaultValue={inputValue.title}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, title: value};
+                });
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="DESCRIPTION"
-            defaultValue= {inputValue.description}
+            defaultValue={inputValue.description}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, description: value};
+                });
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="COMPANY-NAME"
-            defaultValue= {inputValue.companyName}
+            defaultValue={inputValue.companyName}
             variant="filled"
             slotProps={{
                 input: {
@@ -48,9 +62,8 @@ function PortfolioModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="CREATEDAT"
-            defaultValue= {inputValue.createdAt}
+            defaultValue={inputValue.createdAt}
             variant="filled"
             slotProps={{
                 input: {
@@ -59,9 +72,8 @@ function PortfolioModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="UPDATEDAT"
-            defaultValue= {inputValue.updatedAt}
+            defaultValue={inputValue.updatedAt}
             variant="filled"
             slotProps={{
                 input: {
@@ -70,28 +82,55 @@ function PortfolioModalContent(inputValue) {
             }}
         />
         <TextField
-            id="filled-read-only-input"
             label="DELETED"
-            defaultValue= {inputValue.deleted}
+            defaultValue={inputValue.deleted}
+            select
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, deleted: value};
+                });
             }}
-        />
+        >
+            {isDeleted.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                </MenuItem>
+            ))}
+        </TextField>
         <TextField
-            id="filled-read-only-input"
-            label="ACTIATED"
-            defaultValue= {inputValue.activated}
+            label="ACTIVATED"
+            defaultValue={inputValue.activated}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            select
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, deleted: value};
+                });
             }}
-        />
-    </div>
+        >
+            {isDeleted.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                </MenuItem>
+            ))}
+        </TextField>
+        <Button onClick={async (event) => {
+            const response =
+                await axios.patch(`/api/portfolio/admin`, {
+                    id: value.id,
+                    title: value.title,
+                    description: value.description,
+                    isDeleted: value.deleted,
+                    isActivated: value.activated,
+                }).catch(response => console.log(response));
+            console.log("value", value);
+        }}>
+            수정
+        </Button>
+    </div>;
 }
 
 export default PortfolioModalContent;

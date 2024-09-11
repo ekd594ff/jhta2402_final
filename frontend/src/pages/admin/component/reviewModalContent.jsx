@@ -1,7 +1,10 @@
-import {TextField} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import * as React from "react";
+import {useState} from "react";
+import axios from "axios";
 
 function ReviewModalContent(inputValue) {
+    const [value, setValue] = useState(inputValue);
     return <div>
         <TextField
             id="filled-read-only-input"
@@ -30,10 +33,11 @@ function ReviewModalContent(inputValue) {
             label="TITLE"
             defaultValue= {inputValue.title}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, title: value};
+                });
             }}
         />
         <TextField
@@ -41,10 +45,11 @@ function ReviewModalContent(inputValue) {
             label="DESCRIPTION"
             defaultValue= {inputValue.description}
             variant="filled"
-            slotProps={{
-                input: {
-                    readOnly: true,
-                },
+            onChange={(event) => {
+                const value = event.target.value;
+                setValue(prev => {
+                    return {...prev, description: value};
+                });
             }}
         />
         <TextField
@@ -80,6 +85,19 @@ function ReviewModalContent(inputValue) {
                 },
             }}
         />
+        <Button onClick={async (event) => {
+            const response =
+                await axios.patch(`/api/review/admin`, {
+                    id: value.id,
+                    title : value.title,
+                    description : value.description,
+                }).catch(response => console.log(response));
+            console.log("role", value.role);
+            console.log("value",value);
+            console.log("event", event);
+        }}>
+            수정
+        </Button>
     </div>
 }
 

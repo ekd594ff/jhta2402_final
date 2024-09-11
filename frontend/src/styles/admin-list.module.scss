@@ -1,13 +1,15 @@
 .list-item {
-  background-color: #0056A6; /* 밝은 남색 */
-  border-radius: 12px; /* 둥근 모서리 */
-  margin: 10px 0; /* 아이템 간격 */
+  background-color: #0056A6; /* 기본 배경 색상 */
+  //border-radius: 12px; /* 둥근 모서리 */
+  //margin: 10px 0; /* 아이템 간격 */
   transition: background-color 0.3s, transform 0.2s; /* 전환 효과 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  position: relative; /* z-index 적용을 위해 추가 */
+  z-index: 10; /* 높은 z-index 값 */
 }
 
 .list-item:hover {
-  background-color: #007BFF; /* 호버 시 더 밝은 색 */
+  background-color: #FA4D56; /* 호버 시 색상 변경 */
   transform: scale(1.05); /* 호버 시 약간 커지는 효과 */
 }
 

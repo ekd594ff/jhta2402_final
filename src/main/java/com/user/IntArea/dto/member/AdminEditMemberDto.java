@@ -9,5 +9,5 @@ import java.util.UUID;
 public class AdminEditMemberDto {
     private UUID id;
     private Role role;
-    private boolean isDelete;
+    private boolean isDeleted;
 }

@@ -1,7 +1,9 @@
 package com.user.IntArea.service;
 
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
+import com.user.IntArea.dto.review.EditReviewDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
+import com.user.IntArea.entity.Review;
 import com.user.IntArea.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,5 +66,17 @@ public class ReviewService {
     public void hardDeleteReviews(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         reviewRepository.deleteAllById(ids);
+    }
+
+    @Transactional
+    public void editReviewForAdmin(EditReviewDto editReviewDto) {
+        Optional<Review> reviewOptional = reviewRepository.findById(editReviewDto.getId());
+        if (reviewOptional.isPresent()) {
+            Review review = reviewOptional.get();
+            review.setTitle(editReviewDto.getTitle());
+            review.setDescription(editReviewDto.getDescription());
+        } else {
+            throw new NoSuchElementException("editReviewForAdmin");
+        }
     }
 }

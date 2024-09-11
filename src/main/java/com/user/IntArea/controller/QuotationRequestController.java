@@ -1,6 +1,7 @@
 package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.quotation.QuotationResponseDto;
+import com.user.IntArea.dto.quotationRequest.EditQuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationAdminRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.entity.QuotationRequest;
@@ -67,10 +68,10 @@ public class QuotationRequestController {
 
     @GetMapping("/admin/list/filter/contains")
     public ResponseEntity<Page<QuotationAdminRequestDto>> findAllByFilter(@RequestParam int page, @RequestParam(name = "pageSize") int size,
-                                                                      @RequestParam(defaultValue = "createdAt", required = false) String sortField,
-                                                                      @RequestParam(defaultValue = "desc", required = false) String sort,
-                                                                      @RequestParam(required = false) String filterColumn,
-                                                                      @RequestParam(required = false) String filterValue) {
+                                                                          @RequestParam(defaultValue = "createdAt", required = false) String sortField,
+                                                                          @RequestParam(defaultValue = "desc", required = false) String sort,
+                                                                          @RequestParam(required = false) String filterColumn,
+                                                                          @RequestParam(required = false) String filterValue) {
         log.info("sortField={}", sortField);
         log.info("sort={}", sort);
         log.info("filterColumn={}", filterColumn);
@@ -89,7 +90,7 @@ public class QuotationRequestController {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<QuotationAdminRequestDto> quotationAdminRequestDtos = quotationRequestService.findAllByFilter(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue),pageable);
+        Page<QuotationAdminRequestDto> quotationAdminRequestDtos = quotationRequestService.findAllByFilter(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
         return ResponseEntity.ok().body(quotationAdminRequestDtos);
     }
 
@@ -97,6 +98,12 @@ public class QuotationRequestController {
     public ResponseEntity<?> deleteQuotationRequest(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         quotationRequestService.updateProgressByIds(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/admin")
+    public ResponseEntity<?> editQuotationRequest(@RequestBody EditQuotationRequestDto editQuotationRequestDto) {
+        quotationRequestService.editQuotationRequestForAdmin(editQuotationRequestDto);
         return ResponseEntity.noContent().build();
     }
 }
