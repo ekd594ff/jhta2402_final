@@ -33,6 +33,11 @@ function CreateEditCompany() {
 
             Promise.all([getCompanyInfo(), checkSeller()])
                 .then(([res, _]) => {
+                    if (res.data.deleted) {
+                        alert("삭제된 회사입니다.");
+                        navigate(-1);
+                    }
+
                     setCompanyInfo({
                         ...companyInfo,
                         companyName: res.data.companyName,

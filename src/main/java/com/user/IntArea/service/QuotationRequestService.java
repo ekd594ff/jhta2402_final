@@ -4,6 +4,7 @@ import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestCountDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
 import com.user.IntArea.dto.quotationRequest.QuotationRequestListDto;
@@ -317,6 +318,14 @@ public class QuotationRequestService {
         Company company = getCompanyOfMember();
         Page<QuotationRequest> quotationRequests = quotationRequestRepository.getAllQuotationRequestTowardCompanySortedByProgress(company.getId(), progress, pageable);
         return quotationRequests.map(QuotationRequestInfoDto::new);
+    }
+
+
+    // (seller) 회사로부터 온 신청서 개수 Count
+    public QuotationRequestCountDto getQuotationRequestCount() {
+        Company company = getCompanyOfMember();
+        List<Object[]> results = quotationRequestRepository.findQuotationRequestCountById(company.getId());
+        return new QuotationRequestCountDto(results);
     }
 
     // admin

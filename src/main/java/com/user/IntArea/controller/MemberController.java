@@ -43,11 +43,9 @@ public class MemberController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResponseCookie accessToken = tokenProvider.getAccessToken(authentication);
-        ResponseCookie loginToken = tokenProvider.getLoginToken();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessToken.toString())
-                .header(HttpHeaders.SET_COOKIE, loginToken.toString())
                 .build();
     }
 
