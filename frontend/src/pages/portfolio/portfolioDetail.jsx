@@ -2,10 +2,20 @@ import React, {useEffect, useState} from 'react';
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 
 import style from "../../styles/portfolio-detail.module.scss";
-import {Backdrop, FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, Tooltip} from "@mui/material";
+import {
+    Alert,
+    Backdrop,
+    Collapse,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    Radio,
+    RadioGroup,
+    Tooltip
+} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
@@ -34,6 +44,7 @@ const reviewListAJAXPromise = (portfolioId, pagination) =>
 
 function PortfolioDetail() {
     const {id} = useParams();
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
     const [portfolioImgList, setPortfolioImgList] = useState([]);
@@ -46,6 +57,11 @@ function PortfolioDetail() {
     const [reportData, setReportData] = useState({title: "", description: ""});
     const [customReportTitle, setCustomReportTitle] = useState("");
     const [disableCustomReport, setDisableCustomReport] = useState(true);
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: "success",
+        msg: ""
+    });
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: id,
@@ -114,11 +130,40 @@ function PortfolioDetail() {
         }
     }, [modalOpen, reportModalOpen]);
 
+    useEffect(() => {
+        const alertOpen = searchParams.get("requestSuccess");
+        if (alertOpen !== null) {
+            window.scrollTo(0, 0);
+            if (alertOpen === "true") {
+                // 솔루션 신청 성공
+                setAlert(prev => ({
+                    open: true,
+                    severity: "success",
+                    msg: "신청이 완료되었습니다"
+                }));
+            } else {
+                setAlert(prev => ({
+                    open: true,
+                    severity: "error",
+                    msg: "신청 실패하였습니다"
+                }));
+            }
+            setTimeout(() => {
+                setAlert(prev => ({
+                    open: false, severity: "", msg: ""
+                }));
+            }, 3000);
+        }
+    }, []);
+
     return (
         <>
             <Header/>
             <main className={style['portfolio-detail']}>
                 <div className={style['container']}>
+                    <Collapse className={style['collapse']} in={alert.open}>
+                        <Alert severity={alert.severity}>{alert.msg}</Alert>
+                    </Collapse>
                     <div className={style['top']}>
                         <div className={style['left']}>
                             <div className={style['selected-img']}>
@@ -187,7 +232,7 @@ function PortfolioDetail() {
                                                     state: {
                                                         list: solutionList,
                                                         selectedList: selectedSolutionList,
-                                                        portfolioInfo: portfolioInfo
+                                                        portfolioInfo: portfolioInfo,
                                                     }
                                                 })
                                             }} className={style['solution-list-submit']} size="large"

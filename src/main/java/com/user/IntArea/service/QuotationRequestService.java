@@ -51,14 +51,10 @@ public class QuotationRequestService {
 
         // Solution 엔티티 생성 및 저장
         List<SolutionDto> solutionDtos = requestDto.getSolutions();
-        List<Solution> solutions = new ArrayList<>();
         for (SolutionDto solutionDto : solutionDtos) {
-            Solution solution = Solution.builder()
-                    .title(solutionDto.getTitle())
-                    .description(solutionDto.getDescription())
-                    .portfolio(portfolio)
-                    .price(solutionDto.getPrice())
-                    .build();
+            Solution solution = solutionRepository
+                    .findById(solutionDto.getId())
+                    .orElseThrow(() -> new NoSuchElementException("no such solution"));
             solutionRepository.save(solution);
 
             // RequestSolution 엔티티 생성 및 저장
@@ -67,7 +63,6 @@ public class QuotationRequestService {
                     .solution(solution)
                     .build();
             requestSolutionRepository.save(requestSolution);
-            solutions.add(solution);
         }
 
         // 반환할 DTO 생성
@@ -107,7 +102,7 @@ public class QuotationRequestService {
     @Transactional(readOnly = true)
     public Page<QuotationRequestDto> getQuotationRequestsByMemberId(UUID memberId, Pageable pageable) {
         Page<QuotationRequest> requests = quotationRequestRepository.findAllByMemberId(memberId, pageable);
-        return  requests.map(request -> QuotationRequestDto.builder()
+        return requests.map(request -> QuotationRequestDto.builder()
                 .memberId(request.getMember().getId())
                 .portfolioId(request.getPortfolio().getId())
                 .title(request.getTitle())
@@ -217,7 +212,7 @@ public class QuotationRequestService {
                 .build();
     }
 
-    public void updateProgress () {
+    public void updateProgress() {
         // 견적서 승인 전, 신청서를 취소할 수 있는 API
     }
 
