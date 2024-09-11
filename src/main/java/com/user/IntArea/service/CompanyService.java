@@ -6,6 +6,7 @@ import com.user.IntArea.dto.company.CompanyPortfolioDetailDto;
 import com.user.IntArea.dto.company.CompanyRequestDto;
 import com.user.IntArea.dto.company.CompanyResponseDto;
 import com.user.IntArea.dto.company.UnAppliedCompanyDto;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Image;
@@ -56,7 +57,7 @@ public class CompanyService {
         UUID refId = companyRepository.save(saveCompany).getId();
 
         if (!companyRequestDto.getImage().isEmpty()) {
-            com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
+            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
                     .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
             imageRepository.save(imageDto.toImage());
@@ -78,7 +79,7 @@ public class CompanyService {
             imageRepository.findByRefId(company.getId())
                     .ifPresent(imageRepository::delete);
 
-            com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
+            ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), company.getId(), 0)
                     .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
             imageRepository.save(imageDto.toImage());

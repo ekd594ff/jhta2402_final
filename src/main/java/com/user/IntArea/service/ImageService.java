@@ -1,6 +1,7 @@
 package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.entity.Image;
 import com.user.IntArea.entity.Portfolio;
 import com.user.IntArea.entity.Quotation;
@@ -22,7 +23,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     private void saveSingleImage(MultipartFile image, UUID refId, int index) {
-        com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(image, refId, index)
+        ImageDto imageDto = imageUtil.uploadS3(image, refId, index)
                 .orElseThrow(() -> new NoSuchElementException("S3 오류"));
         imageRepository.save(imageDto.toImage());
     }

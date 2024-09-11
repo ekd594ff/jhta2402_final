@@ -2,6 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.ImageUtil;
 import com.user.IntArea.common.utils.SecurityUtil;
+import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.portfolio.*;
 import com.user.IntArea.entity.*;
@@ -114,7 +115,7 @@ public class PortfolioService {
 
                 MultipartFile image = portfolioRequestDto.getImages().get(i);
 
-                com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(
+                ImageDto imageDto = imageUtil.uploadS3(
                                 image,
                                 savedPortfolio.getId(),
                                 i)
@@ -189,7 +190,7 @@ public class PortfolioService {
                 // 기존 이미지 테이블 id로 S3 이름 변경, 이미지 테이블 업데이트
                 Image dbImage = imageRepository.findById(UUID.fromString(Objects.requireNonNull(image.getOriginalFilename())))
                         .orElseThrow(() -> new NoSuchElementException("해당 이미지가 없습니다."));
-                com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.renameS3(dbImage.getUrl(), portfolio.getId(), i)
+                ImageDto imageDto = imageUtil.renameS3(dbImage.getUrl(), portfolio.getId(), i)
                         .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
                 dbImage.setUrl(imageDto.getUrl());
@@ -197,7 +198,7 @@ public class PortfolioService {
                 imageRepository.save(dbImage);
 
             } else {
-                com.user.IntArea.dto.image.ImageDto imageDto = imageUtil.uploadS3(image, portfolio.getId(), i)
+                ImageDto imageDto = imageUtil.uploadS3(image, portfolio.getId(), i)
                         .orElseThrow(() -> new NoSuchElementException("S3 오류"));
                 imageRepository.save(imageDto.toImage());
             }
