@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,10 +89,9 @@ public class PortfolioService {
     }
 
     // (일반 권한) 특정한 갯수만큼 램덤한 포트폴리오 InfoDto 불러오기
-    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(int count) {
-        List<Portfolio> portfolios = portfolioRepository.getRandomPortfolioInfoDtos(count);
-        List<PortfolioInfoDto> portfolioInfoDtos = portfolios.stream().map(PortfolioInfoDto::new).collect(Collectors.toList());
-        return portfolioInfoDtos;
+    public List<Map<String, Object>> getRandomPortfolioInfoDtos(int count) {
+        List<Map<String, Object>> portfolios = portfolioRepository.getRandomPortfolioInfoDtos(count);
+        return portfolios;
     }
 
     // seller 권한

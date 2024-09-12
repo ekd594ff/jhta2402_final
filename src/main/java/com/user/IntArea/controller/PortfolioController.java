@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -61,7 +62,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/list/random")
-    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(@RequestParam int count) {
+    public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
     }
 

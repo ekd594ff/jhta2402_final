@@ -69,7 +69,6 @@ public class QuotationRequestService {
                     .solution(solution)
                     .build();
             requestSolutionRepository.save(requestSolution);
-            solutions.add(solution);
         }
 
         // 반환할 DTO 생성
