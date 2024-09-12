@@ -19,6 +19,17 @@ function ReviewModalContent(inputValue) {
         />
         <TextField
             id="filled-read-only-input"
+            label="PORTFOLIOID"
+            defaultValue= {inputValue.portfolioId}
+            variant="filled"
+            slotProps={{
+                input: {
+                    readOnly: true,
+                },
+            }}
+        />
+        <TextField
+            id="filled-read-only-input"
             label="USERNAME"
             defaultValue= {inputValue.username}
             variant="filled"

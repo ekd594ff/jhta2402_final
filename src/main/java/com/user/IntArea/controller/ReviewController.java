@@ -4,6 +4,7 @@ import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.portfolio.EditPortfolioDto;
 import com.user.IntArea.dto.review.EditReviewDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
+import com.user.IntArea.dto.review.ReviewPortfolioDto;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +39,14 @@ public class ReviewController {
     }
 
     @GetMapping("/admin/list")
-    public ResponseEntity<Page<ReviewPortfolioDetailDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
+    public ResponseEntity<Page<ReviewPortfolioDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllReview(pageable);
+        Page<ReviewPortfolioDto> reviewPortfolioDetailDtoPage = reviewService.getAllReview(pageable);
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
     }
 
     @GetMapping("/admin/list/filter/contains")
-    public ResponseEntity<Page<ReviewPortfolioDetailDto>> getSearchReview(@RequestParam int page, @RequestParam(name = "pageSize") int size,
+    public ResponseEntity<Page<ReviewPortfolioDto>> getSearchReview(@RequestParam int page, @RequestParam(name = "pageSize") int size,
                                                                           @RequestParam(defaultValue = "createdAt", required = false) String sortField,
                                                                           @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                           @RequestParam(required = false) String filterColumn,
@@ -64,7 +65,7 @@ public class ReviewController {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<ReviewPortfolioDetailDto> reviewPortfolioDetailDtoPage = reviewService.getAllSearchReview(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
+        Page<ReviewPortfolioDto> reviewPortfolioDetailDtoPage = reviewService.getAllSearchReview(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
     }
 

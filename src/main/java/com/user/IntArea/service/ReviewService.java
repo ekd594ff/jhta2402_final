@@ -3,6 +3,7 @@ package com.user.IntArea.service;
 import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
 import com.user.IntArea.dto.review.EditReviewDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
+import com.user.IntArea.dto.review.ReviewPortfolioDto;
 import com.user.IntArea.entity.Review;
 import com.user.IntArea.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,35 +30,35 @@ public class ReviewService {
                 .map(ReviewPortfolioDetailDto::new);
     }
 
-    public Page<ReviewPortfolioDetailDto> getAllReview(Pageable pageable) {
+    public Page<ReviewPortfolioDto> getAllReview(Pageable pageable) {
         return reviewRepository.findAll(pageable)
-                .map(ReviewPortfolioDetailDto::new);
+                .map(ReviewPortfolioDto::new);
     }
 
-    public Page<ReviewPortfolioDetailDto> getAllSearchReview(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
+    public Page<ReviewPortfolioDto> getAllSearchReview(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
         if (filterValue.isPresent() && filterColumn.isPresent()) {
             switch (filterColumn.get()) {
                 case "title" -> {
-                    return reviewRepository.findAllByTitleContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto ::new);
+                    return reviewRepository.findAllByTitleContains(filterValue.get(), pageable).map(ReviewPortfolioDto ::new);
                 }
                 case "description" -> {
-                    return reviewRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto ::new);
+                    return reviewRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(ReviewPortfolioDto ::new);
                 }
                 case "rate" -> {
-                    return reviewRepository.findAllByRate(Double.parseDouble(filterValue.get()), pageable).map(ReviewPortfolioDetailDto::new);
+                    return reviewRepository.findAllByRate(Double.parseDouble(filterValue.get()), pageable).map(ReviewPortfolioDto::new);
                 }
                 case "createdAt" -> {
-                    return reviewRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto::new);
+                    return reviewRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(ReviewPortfolioDto::new);
                 }
                 case "updatedAt" -> {
-                    return reviewRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto::new);
+                    return reviewRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(ReviewPortfolioDto::new);
                 }
                 case "username" -> {
-                    return reviewRepository.findAllByUsernameContains(filterValue.get(), pageable).map(ReviewPortfolioDetailDto::new);
+                    return reviewRepository.findAllByUsernameContains(filterValue.get(), pageable).map(ReviewPortfolioDto::new);
                 }
             }
         } else {
-            return reviewRepository.findAll(pageable).map(ReviewPortfolioDetailDto::new);
+            return reviewRepository.findAll(pageable).map(ReviewPortfolioDto::new);
         }
         throw new RuntimeException("getSearchPortfolio");
     }
