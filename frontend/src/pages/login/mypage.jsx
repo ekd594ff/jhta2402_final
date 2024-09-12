@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Mypage = () => {
+const MyPage = () => {
   const [userData, setUserData] = useState({
     username: "",
     email: "",
@@ -165,4 +165,4 @@ const Mypage = () => {
   );
 };
 
-export default Mypage;
+export default MyPage;
