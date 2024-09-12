@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
 
+
+
     @Query("SELECT DISTINCT q FROM Quotation q " +
             "JOIN q.quotationRequest qr " +
             "JOIN qr.member m " +
@@ -38,6 +40,12 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
 
     List<Quotation> findAllByQuotationRequestId(UUID quotationRequestId);
 
+    @Query("SELECT DISTINCT q FROM Quotation q " +
+            "JOIN q.quotationRequest qr " +
+            "JOIN qr.portfolio p " +
+            "JOIN p.company " +
+            "WHERE p.id = :portfolioId")
+    List<Quotation> getAllByPortfolioId(UUID portfolioId);
 
     // seller
 
@@ -77,6 +85,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "OR CAST(q.progress AS string) LIKE %:searchWord% " +
             "OR CAST(qr.progress AS string) LIKE %:searchWord% )")
     Page<Quotation> getAllByCompanyWithSearchWord(@Param("searchWord") String searchWord, @Param("companyId") UUID companyId, Pageable pageable);
+
 
 }
 

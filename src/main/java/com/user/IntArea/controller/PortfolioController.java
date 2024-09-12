@@ -61,8 +61,8 @@ public class PortfolioController {
     }
 
     @GetMapping("/list/random")
-    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(@RequestParam int count) {
-        return portfolioService.getRandomPortfolioInfoDtos(count);
+    public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(@RequestParam int count) {
+        return portfolioService.getRandomPortfolioAllInfoDtos(count);
     }
 
     // seller

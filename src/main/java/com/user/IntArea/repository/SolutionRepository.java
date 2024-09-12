@@ -23,4 +23,6 @@ public interface SolutionRepository extends JpaRepository<Solution, UUID> {
             "join rs.quotationRequest qr " +
             "WHERE qr.id=:QuotationRequestId")
     List<Solution> getSolutionsByQuotationRequestId(UUID QuotationRequestId);
+
+    List<Solution> findByPortfolioId(UUID id);
 }
