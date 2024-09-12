@@ -27,8 +27,6 @@ import ReportModalContent from "./component/reportModalContent.jsx";
 import QuotationRequestModalContent from "./component/quotationRequestModalContent.jsx";
 import ReviewModalContent from "./component/reviewModalContent.jsx";
 
-import style01 from '../../styles/admin.module.scss';
-import style02 from '../../styles/admin-list.module.scss'; // CSS 파일 임포트
 
 function route(params, inputValue) {
     switch (params) {
@@ -66,7 +64,7 @@ function NestedList() {
                 <ListSubheader
                     component="div"
                     id="nested-list-subheader"
-                    style={{backgroundColor: '#0056A6', color: '#FFF'}}
+                    style={{backgroundColor: '#27AE60', color: '#FFF'}}
                 >
                     Admin
                 </ListSubheader>
@@ -76,7 +74,7 @@ function NestedList() {
                 return (
                     <Link to={text.charAt(0).toLowerCase() + text.slice(1)}
                           style={{textDecoration: 'none', color: 'inherit'}} key={text}>
-                        <ListItemButton className={style02["list-item"]} >
+                        <ListItemButton className={style["list-item"]} >
                             <ListItemText primary={text}/>
                         </ListItemButton>
                     </Link>
@@ -85,10 +83,32 @@ function NestedList() {
         </List>
     );
 }
+const handleApiRequest = async () => {
+    try {
+        const ids = selectedRows;
+        const response = await axios.delete(`/api/${pathname}/admin/soft/${ids}`,
+        );
 
+        console.log('selectedRows', selectedRows);
+        console.log('API Response:', response.data);
+    } catch (error) {
+        console.error('Error sending API request:', error);
+    } finally {
+        console.log('selectedRows', selectedRows);
+    }
+};
 function CustomToolbar(props) {
     return (
         <GridToolbarContainer>
+            <Button
+                onClick={handleApiRequest}
+                variant="outlined"
+                style={{backgroundColor: '#f50057', color: '#fff', marginRight: '10px'}} // 오른쪽 여백 추가
+                size="small"
+                className={style.customButton}
+            >
+                soft delete
+            </Button>
             <GridToolbarFilterButton/>
             <GridToolbarExport/>
         </GridToolbarContainer>
@@ -284,27 +304,12 @@ function DataTable() {
         setSelectedRows(newSelection.join(","));
     };
 
-    const handleApiRequest = async () => {
-        try {
-            const ids = selectedRows;
-            const response = await axios.delete(`/api/${pathname}/admin/soft/${ids}`,
-            );
 
-            console.log('selectedRows', selectedRows);
-            console.log('API Response:', response.data);
-        } catch (error) {
-            console.error('Error sending API request:', error);
-        } finally {
-            console.log('selectedRows', selectedRows);
-        }
-    };
 
 
     return (
         <Paper sx={{height: '100%', width: '100%'}}>
-            <Button onClick={handleApiRequest} variant="contained" color="default">
-                soft delete
-            </Button>
+
             <DataGrid
                 rows={data}
                 columns={columns}
@@ -312,12 +317,17 @@ function DataTable() {
                 components={{
                     Toolbar: CustomToolbar
                 }}
+                componentsProps={{
+                    pagination: {
+                        className: 'style.customPagination',
+                    },
+                }}
                 pagination
                 filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
                 paginationMode="server"
                 sortingMode="server"
                 rowCount={totalCount}
-                pageSizeOptions={[5, 10,100]}
+                pageSizeOptions={[5, 10, 100]}
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}
                 onPaginationModelChange={handlePaginationModelChange}
@@ -331,7 +341,7 @@ function DataTable() {
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
             >
-                <Box className={style01["modal-style"]}>
+                <Box className={style["modal-style"]}>
                     <Typography id="modal-title" variant="h6" component="h2">
                         수정
                     </Typography>
