@@ -57,14 +57,10 @@ public class QuotationRequestService {
 
         // Solution 엔티티 생성 및 저장
         List<SolutionDto> solutionDtos = requestDto.getSolutions();
-        List<Solution> solutions = new ArrayList<>();
         for (SolutionDto solutionDto : solutionDtos) {
-            Solution solution = Solution.builder()
-                    .title(solutionDto.getTitle())
-                    .description(solutionDto.getDescription())
-                    .portfolio(portfolio)
-                    .price(solutionDto.getPrice())
-                    .build();
+            Solution solution = solutionRepository
+                    .findById(solutionDto.getId())
+                    .orElseThrow(() -> new NoSuchElementException("no such solution"));
             solutionRepository.save(solution);
 
             // RequestSolution 엔티티 생성 및 저장

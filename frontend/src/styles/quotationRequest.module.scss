@@ -87,23 +87,48 @@
     }
 
     & > .portfolio-info {
+      width: 100%;
       padding: 32px 0 0 0;
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      gap: 16px;
 
-      & > .company {
-        font-size: 16px;
-        color: variables.$color-600;
+      & > .left {
+        display: flex;
+        align-items: center;
+
+        & > .avatar {
+          width: 84px;
+          height: 84px;
+        }
       }
 
-      & > .portfolio {
-        font-weight: bold;
-        font-size: 22px;
-      }
+      & > .right {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-grow: 1;
 
-      & > .description {
-        font-size: 18px;
+        & > .company {
+          font-size: 16px;
+          color: variables.$color-600;
+        }
+
+        & > .portfolio {
+          font-weight: bold;
+          font-size: 22px;
+        }
+
+        & > .description {
+          font-size: 16px;
+          overflow: hidden;
+          white-space: normal;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          word-break: keep-all;   // 문단으로 끊어져서 줄바꿈 됨
+        }
       }
     }
 

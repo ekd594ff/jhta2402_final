@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import React, {useEffect, useState} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -6,6 +8,9 @@ import Footer from "../components/common/footer.jsx";
 
 import RecommendSlideContent from "../components/index/recommend-slide-content.jsx";
 import PortfolioListItem from "../components/index/portfolio-list-item.jsx";
+import SolutionListItem from "../components/index/solution-list-item.jsx";
+import CompanyListItem from "../components/index/company-list-item.jsx";
+
 
 import {Pagination, Autoplay} from 'swiper/modules';
 
@@ -13,20 +18,21 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import style from "../styles/index.module.scss";
-import SolutionListItem from "../components/index/solution-list-item.jsx";
-import CompanyListItem from "../components/index/company-list-item.jsx";
 
+const getRandomPortfolioListPromise = axios.get("/api/portfolio/list/random?count=8");
 
 function Index() {
 
-    const [recommendList, setRecommendList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const [recommendList, setRecommendList] = useState([]);
     const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
     const [solutionList, setSolutionList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
     const [companyList, setCompanyList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
-    const [hotPortfolioList ,setHotPortfolioList] = useState([1,2,3,4]);
+    const [hotPortfolioList, setHotPortfolioList] = useState([1, 2, 3, 4]);
 
     useEffect(() => {
-        console.log(document.cookie);
+        Promise.all([getRandomPortfolioListPromise]).then(([randomPortfolioList]) => {
+            setRecommendList(() => [...randomPortfolioList.data]);
+        });
     }, []);
 
     return (
@@ -45,7 +51,7 @@ function Index() {
                             className={style['recommend-swiper']}
                         >{recommendList.map((item, index) =>
                             <SwiperSlide key={index}>
-                                <RecommendSlideContent value={item + index}/>
+                                <RecommendSlideContent {...item}/>
                             </SwiperSlide>)}
                         </Swiper>
                     </section>
