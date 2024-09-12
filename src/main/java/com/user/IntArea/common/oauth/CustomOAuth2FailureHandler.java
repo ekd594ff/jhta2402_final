@@ -20,11 +20,14 @@ public class CustomOAuth2FailureHandler extends SimpleUrlAuthenticationFailureHa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
+        OAuth2UserAlreadyException oAuth2UserAlreadyException = (OAuth2UserAlreadyException) exception;
+
         // http://localhost:808? 를 얻기 위한 코드 (개발 편의를 위한 코드, 배포 시 제거 필요)
         String requestUrl = request.getRequestURL().substring(0, 21);
 
-        OAuth2UserAlreadyException oAuth2UserAlreadyException = (OAuth2UserAlreadyException) exception;
-        // 배포 시 clientUrl 로 변경
-        response.sendRedirect(requestUrl + "/login?error=" + oAuth2UserAlreadyException.getError().getErrorCode());
+        // 이후 response.sendRedirect(clientUrl); 로 변경
+        response.sendRedirect((!requestUrl.startsWith("http://localhost:808"))
+                ? clientUrl + "/login?error=" + oAuth2UserAlreadyException.getError().getErrorCode()
+                : requestUrl + "/login?error=" + oAuth2UserAlreadyException.getError().getErrorCode());
     }
 }

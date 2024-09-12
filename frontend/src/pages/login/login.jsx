@@ -44,15 +44,15 @@ function Login() {
     }, []);
 
     const naverLogin = () => {
-        window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+        window.location.href = "/oauth2/authorization/naver";
     }
 
     const googleLogin = () => {
-        window.location.href = "http://localhost:8080/oauth2/authorization/google"
+        window.location.href = "/oauth2/authorization/google"
     }
 
     const kakaoLogin = () => {
-        window.location.href = "http://localhost:8080/oauth2/authorization/kakao"
+        window.location.href = "/oauth2/authorization/kakao"
     }
 
     return <>
