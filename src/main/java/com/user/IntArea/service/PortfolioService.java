@@ -307,4 +307,63 @@ public class PortfolioService {
         portfolioRepository.save(portfolio);
     }
 
+    // (admin 권한)  포트폴리오 리스트 출력
+    public Page<PortfolioInfoDto> getSearchPortfolio(Optional<String> filterColumn, Optional<String> filterValue,Pageable pageable) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "title" -> {
+                    return portfolioRepository.findAllByTitleContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                }
+                case "description" -> {
+                    return portfolioRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                }
+                case "companyName" -> {
+                    return portfolioRepository.findAllByCompanyNameContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                }
+                case "updatedAt" -> {
+                    return portfolioRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                }
+                case "createdAt" -> {
+                    return portfolioRepository.findAllByCreatedAtContains(filterColumn.get(), pageable).map(PortfolioInfoDto::new);
+                }
+                case "deleted" -> {
+                    if (filterValue.get().equals("true")) {
+                        return portfolioRepository.findAllByDeletedIs(true, pageable).map(PortfolioInfoDto ::new);
+                    } else {
+                        return portfolioRepository.findAllByDeletedIs(false, pageable).map(PortfolioInfoDto ::new);
+                    }
+                }
+            }
+        } else {
+            return portfolioRepository.findAll(pageable).map(PortfolioInfoDto ::new);
+        }
+        throw new RuntimeException("getSearchPortfolio");
+    }
+
+    @Transactional
+    public void softDeletePortfolios(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        portfolioRepository.softDeleteByIds(ids);
+    }
+
+    @Transactional
+    public void hardDeletePortfolios(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        portfolioRepository.deleteAllById(ids);
+    }
+
+    @Transactional
+    public void editPortfolioForAdmin(EditPortfolioDto editPortfolioDto) {
+        Optional<Portfolio> portfolioOptional = portfolioRepository.findById(editPortfolioDto.getId());
+        if (portfolioOptional.isPresent()) {
+            Portfolio portfolio = portfolioOptional.get();
+            portfolio.setDescription(editPortfolioDto.getDescription());
+            portfolio.setTitle(editPortfolioDto.getTitle());
+            portfolio.setDeleted(editPortfolioDto.isDeleted());
+            portfolio.setActivated(editPortfolioDto.isActivated());
+        } else {
+            throw new NoSuchElementException("editPortfolioForAdmin");
+        }
+    }
 }
+

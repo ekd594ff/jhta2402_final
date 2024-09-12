@@ -1,10 +1,14 @@
 package com.user.IntArea.repository;
 
+import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
+import com.user.IntArea.dto.portfolio.PortfolioDetailDto;
+import com.user.IntArea.dto.portfolio.PortfolioSearchDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Portfolio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -68,6 +72,27 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     )
     Page<Object[]> searchPortfolios(String searchWord, Pageable pageable);
 
+    Page<Portfolio> findAllByTitleContains(String title, Pageable pageable);
+
+    Page<Portfolio> findAllByDescriptionContains(String Description, Pageable pageable);
+
+    @Query("select p from Portfolio p " +
+            "join fetch p.company c " +
+            "where 1=1 and c.companyName like %:companyName% ")
+    Page<Portfolio> findAllByCompanyNameContains(String companyName, Pageable pageable);
+
+    Page<Portfolio> findAllByCreatedAtContains(String createdAt, Pageable pageable);
+
+    Page<Portfolio> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
+
+    Page<Portfolio> findAllByDeletedIs(boolean Deleted, Pageable pageable);
+
+    @Query("select p from Portfolio p join fetch p.company c")
+    Page<Portfolio> findAll(Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Portfolio p SET p.isDeleted = true WHERE p.id IN :ids")
+    void softDeleteByIds(Iterable<UUID> ids);
     @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
     Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 

@@ -19,9 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/member")
@@ -117,32 +116,53 @@ public class MemberController {
 
     @GetMapping("/admin/list/filter/contains")
     public ResponseEntity<Page<MemberResponseDto>> getSearchMember(@RequestParam int page, @RequestParam(name = "pageSize") int size,
-                                                                   @RequestParam(defaultValue = "createdAt",required = false) String sortField,
-                                                                   @RequestParam(defaultValue = "desc",required = false) String sort,
+                                                                   @RequestParam(defaultValue = "createdAt", required = false) String sortField,
+                                                                   @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                    @RequestParam(required = false) String filterColumn,
                                                                    @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}",sortField);
-        log.info("sort={}",sort);
-        log.info("filterColumn={}",filterColumn);
+        log.info("sortField={}", sortField);
+        log.info("sort={}", sort);
+        log.info("filterColumn={}", filterColumn);
+        log.info("filterValue={}", filterValue);
         System.out.println(filterColumn);
-        log.info("filterValue={}",filterValue);
         System.out.println(filterValue);
 
-        Optional<String> filterColumnOptional = Optional.ofNullable(filterColumn);
-        Optional<String> filterValueOptional = Optional.ofNullable(filterValue);
-
+        if (sortField.equals("deleted")) {
+            sortField = "isDeleted";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, filterColumnOptional, filterValueOptional);
+        Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberListByFilter(pageable, Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue));
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }
 
     @GetMapping("/seller/role")
     public ResponseEntity<?> getSellerRole() {
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/admin/{ids}")
+    public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        memberService.softDeleteMembers(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> deleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        memberService.hardDeleteMembers(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/admin")
+    public ResponseEntity<?> editMember(@RequestBody AdminEditMemberDto adminEditMemberDto) {
+        log.info("adminEditMemberDto = {}",adminEditMemberDto);
+        memberService.editMemberForAdmin(adminEditMemberDto);
         return ResponseEntity.ok().build();
     }
 }
