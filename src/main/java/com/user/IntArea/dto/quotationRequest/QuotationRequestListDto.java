@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuotationRequestCompanyDto {
+public class QuotationRequestListDto {
     private UUID id;
     private UUID memberId;
     private UUID portfolioId;
@@ -19,5 +19,4 @@ public class QuotationRequestCompanyDto {
     private String description;
     private List<SolutionDto> solutions;
     private String progress;
-    private UUID companyId;
 }

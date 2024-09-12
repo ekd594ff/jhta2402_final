@@ -16,4 +16,11 @@ public interface SolutionRepository extends JpaRepository<Solution, UUID> {
     @Modifying
     @Query("UPDATE Solution s SET s.isDeleted = true WHERE s.portfolio.id = :portfolioId")
     void updateIsDeletedByPortfolioId(UUID portfolioId);
+
+
+    @Query("SELECT s from Solution s " +
+            "join s.requestSolutions rs " +
+            "join rs.quotationRequest qr " +
+            "WHERE qr.id=:QuotationRequestId")
+    List<Solution> getSolutionsByQuotationRequestId(UUID QuotationRequestId);
 }

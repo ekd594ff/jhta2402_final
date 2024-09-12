@@ -87,6 +87,7 @@
     }
 
     & > .portfolio-info {
+      width: 100%;
       padding: 32px 0 0 0;
       display: flex;
       align-items: center;
@@ -106,6 +107,7 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
+        flex-grow: 1;
 
         & > .company {
           font-size: 16px;
@@ -119,6 +121,13 @@
 
         & > .description {
           font-size: 16px;
+          overflow: hidden;
+          white-space: normal;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          word-break: keep-all;   // 문단으로 끊어져서 줄바꿈 됨
         }
       }
     }

@@ -54,7 +54,7 @@ const QuotationRequest = () => {
 
     const {state: {portfolioInfo, list: solutions}} = location;
 
-    const {imageUrls, portfolioId} = portfolioInfo;
+    const {imageUrls, portfolioId, companyName, title} = portfolioInfo;
 
     const navigator = useNavigate();
 
@@ -84,14 +84,16 @@ const QuotationRequest = () => {
                 throw new Error("login failed");
             }
 
+            const selectedSolutionList = solutions.filter((item, index) => {
+                return selectedSolutions[index];
+            });
+
             const data = {
                 memberId,
                 portfolioId,
-                title: `title`,
+                title: `${companyName}_${title}_${selectedSolutionList[0].title} ${selectedSolutionList.length > 1 ? `외 ${selectedSolutionList.length - 1}건` : ''}`,
                 description: customDescription,
-                solutions: solutions.filter((item, index) => {
-                    return selectedSolutions[index];
-                }),
+                solutions: selectedSolutionList,
             };
 
             const response = await axios.post('/api/quotationRequest/create', data);

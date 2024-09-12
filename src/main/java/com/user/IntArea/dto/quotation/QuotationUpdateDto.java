@@ -1,6 +1,5 @@
 package com.user.IntArea.dto.quotation;
 
-import com.user.IntArea.entity.QuotationRequest;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
