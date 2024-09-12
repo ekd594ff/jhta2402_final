@@ -29,17 +29,17 @@ public class QuotationService {
 
 
     // 견적서에 접근하는 멤버가 그 견적서와 연관된 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
-    private void isCompanyManager(Quotation quotation) {
+    private void checkIsCompanyManagerOf(Quotation quotation) {
         Portfolio portfolio = quotation.getQuotationRequest().getPortfolio();
         if (portfolio == null) {
-            throw new NoSuchElementException("포트폴리오가 존재하지 않습니다.");
+            throw new NoSuchElementException("알 수 없는 오류. 포트폴리오가 존재하지 않습니다.");
         }
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(""));
         Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException(""));
         if (!company.equals(portfolio.getCompany())) {
-            throw new NoSuchElementException("");
+            throw new NoSuchElementException("권한이 없습니다.");
         }
     }
 
@@ -48,7 +48,7 @@ public class QuotationService {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(""));
-        Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException(""));
+        Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException("판매자 권한이 없습니다."));
         return company;
     }
 
@@ -93,11 +93,11 @@ public class QuotationService {
             case USER_CANCELLED:
                 throw new NoSuchElementException("고객의 견적 신청이 취소되었습니다.");
             case SELLER_CANCELLED:
-                throw new NoSuchElementException("판매자가 이미 고객의 견적 요청을 거절하였습니다.");
+                throw new NoSuchElementException("판매자가 고객의 견적 요청을 거절하였습니다.");
             case ADMIN_CANCELLED:
                 throw new NoSuchElementException("관리자 조치: 고객의 견적 신청이 유효하지 않습니다.");
             case APPROVED:
-                throw new NoSuchElementException("고객이 견적을 승인하여 취소가 불가합니다.");
+                throw new NoSuchElementException("고객이 이미 견적을 승인하여 취소가 불가합니다.");
             case PENDING:
                 break;
             default:
@@ -158,8 +158,21 @@ public class QuotationService {
         return new QuotationInfoDto(quotation, imageUrls);
     }
 
+    // (견적요청서를 작성한 사용자 권한) 사용자가 받은 견적서만 취소
+    public void cancelQuotationByCustomer(Quotation quotation) {
+        // 접근권한자인지 확인
+        if(!isLoggedMemberQuotationRequestWriter(quotation.getQuotationRequest())) {
+            throw new NoSuchElementException("잘못된 접근입니다.");
+        }
+        // 견적서 취소 가능 조건: 견적서의 진행상태가 PENDING
+        checkIfProgressIsPending(quotation.getProgress());
+
+        quotation.setProgress(QuotationProgress.USER_CANCELLED);
+        quotationRepository.save(quotation);
+    }
+
     // (견적요청서를 작성한 사용자 권한) 사용자가 견적서를 받은 이후 거래 취소
-    public void cancelQuotationByCustomer(QuotationRequest quotationRequest) {
+    public void cancelContractByCustomer(QuotationRequest quotationRequest) {
         if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
@@ -186,14 +199,22 @@ public class QuotationService {
 
     // (seller) 신규 견적서 생성 - 받은 견적 요청서와 연관된 견적서를 작성
     public void creatQuotationBySeller(QuotationCreateDto quotationCreateDto) {
+        // 작성권한 확인
         Company company = getCompanyOfMember();
 
         // 견적 요청서 검증 로직 (견적요청이 PENDING인 경우 확인)
-        QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByIdAndProgressByCompany(company.getId(), quotationCreateDto.getQuotationRequestId(), QuotationProgress.PENDING)
-                .orElseThrow(() -> new NoSuchElementException("대기중인 견적 요청이 없습니다."));
+        List<QuotationRequest> quotationRequestList = quotationRequestRepository.findQuotationRequestByIdAndProgressByCompany(company.getId(), quotationCreateDto.getQuotationRequestId(), QuotationProgress.PENDING);
+        QuotationRequest quotationRequest;
+        if (quotationRequestList.isEmpty()) {
+            throw new NoSuchElementException("대기중인 견적 요청이 없습니다.");
+        }
+        if (quotationRequestList.size() >= 2) {
+            throw new NoSuchElementException("알 수 없는 오류. 대기중인 견적 요청이 2개 이상입니다.");
+        }
+        quotationRequest = quotationRequestList.get(0);
 
         // 이미지파일 유무 검증 로직
-        if(quotationCreateDto.getImageFiles().isEmpty()) {
+        if(quotationCreateDto.getImageFiles() == null || quotationCreateDto.getImageFiles().isEmpty()) {
             throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
         }
 
@@ -205,11 +226,14 @@ public class QuotationService {
 
         // 이미지 파일 업로드 및 이미지 객체 저장
         imageService.saveMultiImages(quotationCreateDto.getImageFiles(), savedQuotation.getId());
-
     }
 
     // (seller) 선택한 견적서 취소처리
     public void cancelQuotationBySeller(Quotation quotation) {
+        // 작성권한자 확인
+        checkIsCompanyManagerOf(quotation);
+
+        // 취소 가능 조건
         if (!quotation.getProgress().equals(QuotationProgress.PENDING)) {
             throw new NoSuchElementException("견적서가 대기중 상태가 아니라 취소 불가합니다.");
         }
@@ -217,21 +241,36 @@ public class QuotationService {
         quotationRepository.save(quotation);
     }
 
-    // (seller) 견적서 수정(견적서 생성 및 기존 견적서의 유효성 제거) - 견적요청서와 연관관계를 맺은 견적서를 새로 생성,기존의 견적서는 취소처리
+    // (seller) 견적서 수정(견적서 새로 생성 및 기존 견적서가 있을 경우 그 유효성 제거) - 견적요청서와 연관관계를 맺은 견적서를 새로 생성,기존의 견적서는 취소처리
+    @Transactional
     public void updateQuotationBySeller(QuotationUpdateDto quotationUpdateDto) {
+        // 작성권한 확인
+        Company company = getCompanyOfMember();
 
-        // 견적 요청 검증 로직(대기중인 견적요청만 가능)
-        QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestById(quotationUpdateDto.getQuotationRequestId())
-                .orElseThrow(() -> new NoSuchElementException("견적 요청이 없습니다."));
+        // 견적 요청서 검증 로직 (견적요청이 PENDING인 경우 확인)
+        List<QuotationRequest> quotationRequestList = quotationRequestRepository.findQuotationRequestByIdAndProgressByCompany(company.getId(), quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
+        QuotationRequest quotationRequest;
+        if (quotationRequestList.isEmpty()) {
+            throw new NoSuchElementException("판매자가 받은 대기중인 견적 요청이 없습니다.");
+        }
+        if (quotationRequestList.size() >= 2) {
+            throw new NoSuchElementException("알 수 없는 오류. 같은 아이디를 가진 견적요청이 2개 이상입니다.");
+        }
+        quotationRequest = quotationRequestList.get(0);
 
-        // 거래 거철 처리가 가능한 조건: quotationRequest 가 대기중
-        checkIfProgressIsPending(quotationRequest.getProgress());
+        // 이미지파일 유무 검증 로직
+        if(quotationUpdateDto.getImageFiles() == null || quotationUpdateDto.getImageFiles().isEmpty()) {
+            throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
+        }
 
         // 기존의 대기중인 견적서가 있을 경우 취소 처리 및 저장
-        Optional<Quotation> formerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
-        if (formerQuotation.isPresent()) {
-            cancelQuotationBySeller(formerQuotation.get());
-            quotationRepository.save(formerQuotation.get());
+        List<Quotation> formerQuotationList = quotationRepository.findByQuotationRequestIdAndProgressAsList(quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
+        if (formerQuotationList.size() >= 2) {
+            throw new NoSuchElementException("알 수 없는 오류. 해당 견적요청서에 대해 작성된 대기중 견적서가 2개 이상입니다.");
+        }
+        if (formerQuotationList.size() == 1) {
+            cancelQuotationBySeller(formerQuotationList.get(0));
+            quotationRepository.save(formerQuotationList.get(0));
         }
 
         // 수정된 새 견적서 생성 및 저장
@@ -247,7 +286,14 @@ public class QuotationService {
 
     @Transactional
     // (seller) 고객 결제 전 거래 취소 처리 (견적 요청서에 대해 '거래 불가' 내용이 담긴 견적서 생성. 발송 후 해당 요청서에 대해서 판매자의 견적서 작성 권한 박탈)
-    public void cancelQuotationBySeller(QuotationRequest quotationRequest) {
+    public void cancelQuotationAndQuotationRequestBySeller(UUID quotationId) {
+
+        // Seller가 quotationRequest 에 대해 접근권한이 있는지 확인
+        Company company = getCompanyOfMember();
+        QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByQuotationIdAndCompany(company.getId(), quotationId);
+        if(quotationRequest == null) {
+            throw new NoSuchElementException("견적요청에 대한 접근 권한이 없습니다.");
+        }
 
         // 거래 거절 처리가 가능한 조건: quotationRequest 가 대기중
         checkIfProgressIsPending(quotationRequest.getProgress());
@@ -274,6 +320,9 @@ public class QuotationService {
 
         // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
         Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
+        if(result.getTotalElements() == 0) {
+            System.out.println("====================비어있음=========================");
+        }
         return result;
     }
 
@@ -327,4 +376,11 @@ public class QuotationService {
         return result;
     }
 
+    public Quotation findById(UUID quotationId) {
+        Optional<Quotation> quotation = quotationRepository.findById(quotationId);
+        if(quotation.isEmpty()) {
+            throw new NoSuchElementException("작성된 견적서가 없습니다.");
+        }
+        return quotation.get();
+    }
 }
