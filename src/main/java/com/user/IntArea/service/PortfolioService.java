@@ -325,12 +325,12 @@ public class PortfolioService {
         portfolioRepository.save(portfolio);
     }
 
-    // (seller 권한) 포트폴리오 활성화-비활성화(일반 고객에게 비공개-회사 관리자만 열람 및 수정 가능) (todo : 엔티티 수정 이후 작성)
+    // (seller 권한) 포트폴리오 활성화-비활성화(일반 고객에게 비공개-회사 관리자만 열람 및 수정 가능)
     public void activatePortfolio(UUID id, boolean isActivated) {
         Company company = getCompanyOfMember();
         Portfolio portfolio = portfolioRepository.findByIdByCompanyManager(id, company.getId());
         isCompanyManager(portfolio);
-//        portfolio.setActivated(!isActivated);
+        portfolio.setActivated(!isActivated);
         portfolioRepository.save(portfolio);
     }
 

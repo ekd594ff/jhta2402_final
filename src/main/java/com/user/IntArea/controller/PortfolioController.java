@@ -5,6 +5,7 @@ import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,10 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/api/portfolio")
 @RequiredArgsConstructor
