@@ -67,8 +67,10 @@ public class CompanyService {
 
         Company company = getCompanyOfMember();
         company.setCompanyName(companyRequestDto.getCompanyName());
+        company.setDescription(companyRequestDto.getDescription());
         company.setPhone(companyRequestDto.getPhone());
         company.setAddress(companyRequestDto.getAddress());
+        company.setDetailAddress(companyRequestDto.getDetailAddress());
         companyRepository.save(company);
 
         // 이미지가 있으면 기존 이미지 삭제 & 저장
@@ -88,11 +90,7 @@ public class CompanyService {
         Company company = getCompanyOfMember();
 
         Optional<Image> image = imageRepository.findByRefId(company.getId());
-
-        String url = null;
-        if (image.isPresent()) {
-            url = image.get().getUrl();
-        }
+        String url = image.map(Image::getUrl).orElse(null);
 
         return new CompanyPortfolioDetailDto(company, url);
     }

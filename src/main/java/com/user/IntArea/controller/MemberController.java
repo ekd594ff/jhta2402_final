@@ -1,8 +1,5 @@
 package com.user.IntArea.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.*;
 import com.user.IntArea.service.MemberService;
 import com.user.IntArea.common.jwt.TokenProvider;
@@ -21,7 +18,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -46,11 +42,9 @@ public class MemberController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResponseCookie accessToken = tokenProvider.getAccessToken(authentication);
-        ResponseCookie loginToken = tokenProvider.getLoginToken();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessToken.toString())
-                .header(HttpHeaders.SET_COOKIE, loginToken.toString())
                 .build();
     }
 

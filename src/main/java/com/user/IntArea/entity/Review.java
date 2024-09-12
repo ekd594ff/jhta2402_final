@@ -24,7 +24,7 @@ public class Review {
     @JoinColumn(name = "quotationId")
     private Quotation quotation;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
 

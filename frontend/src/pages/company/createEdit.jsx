@@ -33,12 +33,18 @@ function CreateEditCompany() {
 
             Promise.all([getCompanyInfo(), checkSeller()])
                 .then(([res, _]) => {
+                    if (res.data.deleted) {
+                        alert("삭제된 회사입니다.");
+                        navigate(-1);
+                    }
+
                     setCompanyInfo({
                         ...companyInfo,
                         companyName: res.data.companyName,
                         description: res.data.description || "",
                         phone: res.data.phone,
                         address: res.data.address,
+                        detailAddress: res.data.detailAddress,
                         imageUrl: res.data.url
                     });
                 })
@@ -80,7 +86,8 @@ function CreateEditCompany() {
         formData.append("companyName", companyInfo.companyName);
         formData.append("description", companyInfo.description);
         formData.append("phone", companyInfo.phone);
-        formData.append("address", `${companyInfo.address} ${companyInfo.detailAddress}`);
+        formData.append("address", companyInfo.address);
+        formData.append("detailAddress", companyInfo.detailAddress);
         formData.append("image", companyInfo.image);
 
         axios.post(apiUrl,

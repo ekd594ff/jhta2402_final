@@ -70,25 +70,20 @@ public class PortfolioService {
     // (일반 권한) 검색된 포트폴리오 검색 메서드
     public Page<PortfolioSearchDto> getPortfolios(String searchWord, Pageable pageable) {
         return portfolioRepository.searchPortfolios(searchWord, pageable)
-                .map(result -> new PortfolioSearchDto((String) result[0], (String) result[1], (String) result[2], (String[]) result[3], result[4].toString()));
+                .map(result -> new PortfolioSearchDto((UUID) result[0], (String) result[1], (String) result[2], (String) result[3], (String[]) result[4]));
     }
 
-    // (일반 권한) 특정한 하나의 포트폴리오 InfoDto 불러오기
-    public PortfolioInfoDto getOpenPortfolioInfoById(UUID id) throws NoSuchElementException {
-        try {
-            Portfolio portfolio = portfolioRepository.getOpenPortfolioInfoById(id);
-            PortfolioInfoDto portfolioInfoDto = PortfolioInfoDto.builder()
-                    .title(portfolio.getTitle())
-                    .description(portfolio.getDescription())
-                    .companyName(portfolio.getCompany().getCompanyName())
-                    .createdAt(portfolio.getCreatedAt())
-                    .updatedAt(portfolio.getUpdatedAt())
-                    .isDeleted(portfolio.isDeleted())
-                    .build();
-            return portfolioInfoDto;
-        } catch (Exception e) {
-            throw new NoSuchElementException("");
-        }
+    // (일반 권한) 특정한 하나의 포트폴리오 DetailInfoDto 불러오기
+    public PortfolioDetailInfoDto getOpenPortfolioInfoById(UUID id) {
+
+        Portfolio portfolio = portfolioRepository.findByIdAndIsDeletedAndIsActivated(id, false, true)
+                .orElseThrow(() -> new NoSuchElementException(""));
+
+        List<String> portfolioUrls = imageRepository.findAllByRefId(portfolio.getId())
+                .stream().map(Image::getUrl)
+                .toList();
+
+        return new PortfolioDetailInfoDto(portfolio, portfolioUrls);
     }
 
     // (일반 권한) 특정한 갯수만큼 램덤한 포트폴리오 InfoDto 불러오기
@@ -209,9 +204,9 @@ public class PortfolioService {
             }
         }
 
-        // 솔루션 수정
-        // todo: soft delete
-//        solutionRepository.softDeleteAllByPortfolioId(portfolio.getId());
+        // 기존 솔루션 isDeleted = true, 새로운 solution 등록
+        solutionRepository.updateIsDeletedByPortfolioId(portfolio.getId());
+
         List<Solution> solutions = portfolioRequestDto.getSolutions().stream()
                 .map(solutionDto -> solutionDto.toSolution(portfolio))
                 .toList();
@@ -370,3 +365,4 @@ public class PortfolioService {
         }
     }
 }
+

@@ -1,11 +1,17 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.report.ReportDto;
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.report.EditReportDto;
 import com.user.IntArea.dto.report.ReportResponseDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
 import com.user.IntArea.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +31,18 @@ import java.util.Optional;
 public class ReportController {
 
     private final ReportService reportService;
+
+    @PostMapping("/create/review")
+    public ResponseEntity<ReportDto> createReviewReport(@RequestBody ReportDto reportDto) {
+        ReportDto createdReport = reportService.createReviewReport(reportDto);
+        return ResponseEntity.ok(createdReport);
+    }
+
+    @PostMapping("/create/portfolio")
+    public ResponseEntity<ReportDto> createPortfolioReport(@RequestBody ReportDto reportDto) {
+        ReportDto createdReport = reportService.createPortfolioReport(reportDto);
+        return ResponseEntity.ok(createdReport);
+    }
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReportResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {

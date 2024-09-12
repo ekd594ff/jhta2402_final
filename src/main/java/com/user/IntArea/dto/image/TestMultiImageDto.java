@@ -4,9 +4,11 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class TestMultiImageDto {
 
+    UUID refId;
     List<MultipartFile> images;
 }

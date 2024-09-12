@@ -11,11 +11,13 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuotationRequestDto {
+public class QuotationRequestCompanyDto {
+    private UUID id;
     private UUID memberId;
     private UUID portfolioId;
     private String title;
     private String description;
     private List<SolutionDto> solutions;
     private String progress;
+    private UUID companyId;
 }
