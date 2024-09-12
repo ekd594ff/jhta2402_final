@@ -72,7 +72,6 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "WHERE c.id = :companyId")
     Page<QuotationRequest> getAllQuotationRequestTowardCompanyByAdmin(@Param("companyId") UUID companyId, Pageable pageable);
 
-    List<QuotationRequest> findAllByMember(Member member);
 
     @Query("select q from QuotationRequest q " +
             "join fetch q.member m " +

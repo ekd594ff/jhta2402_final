@@ -1,5 +1,11 @@
 package com.user.IntArea.service;
 
+import com.user.IntArea.dto.report.EditReportDto;
+import com.user.IntArea.dto.report.ReportDto;
+import com.user.IntArea.dto.report.ReportResponseDto;
+import com.user.IntArea.entity.Report;
+import com.user.IntArea.entity.enums.ReportProgress;
+import com.user.IntArea.entity.enums.ReportSort;
 import com.user.IntArea.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

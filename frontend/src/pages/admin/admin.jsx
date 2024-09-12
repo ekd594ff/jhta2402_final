@@ -100,20 +100,12 @@ const handleApiRequest = async () => {
 function CustomToolbar(props) {
     return (
         <GridToolbarContainer>
-            <Button
-                onClick={handleApiRequest}
-                variant="outlined"
-                style={{backgroundColor: '#f50057', color: '#fff', marginRight: '10px'}} // 오른쪽 여백 추가
-                size="small"
-                className={style.customButton}
-            >
-                soft delete
-            </Button>
             <GridToolbarFilterButton/>
             <GridToolbarExport/>
         </GridToolbarContainer>
     );
 }
+
 
 const filterOperators = getGridStringOperators()
     .filter(
@@ -192,7 +184,7 @@ function DataTable() {
                 const cols = Object.keys(response.data.content[0]).map(key => ({
                     field: key,
                     headerName: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자 대문자
-                    width: 200, // 기본 너비 설정
+                    flex: 1,
                     filterOperators
                 }));
                 console.log(response.data.content);
@@ -243,7 +235,7 @@ function DataTable() {
                 const cols = Object.keys(response.data.content[0]).map(key => ({
                     field: key,
                     headerName: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자 대문자
-                    width: 200, // 기본 너비 설정
+                    flex: 1, // 기본 너비
                     filterOperators
                 }));
 
@@ -305,36 +297,55 @@ function DataTable() {
     };
 
 
-
-
     return (
         <Paper sx={{height: '100%', width: '100%'}}>
-
-            <DataGrid
-                rows={data}
-                columns={columns}
-                checkboxSelection
-                components={{
-                    Toolbar: CustomToolbar
-                }}
-                componentsProps={{
-                    pagination: {
-                        className: 'style.customPagination',
-                    },
-                }}
-                pagination
-                filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
-                paginationMode="server"
-                sortingMode="server"
-                rowCount={totalCount}
-                pageSizeOptions={[5, 10, 100]}
-                onFilterModelChange={handleFilterModelChange}
-                onSortModelChange={handleSortModelChange}
-                onPaginationModelChange={handlePaginationModelChange}
-                onRowSelectionModelChange={handleRowSelection}
-                autoHeight
-                paginationModel={paginationModel}
-            />
+            <div className={style.buttonContainer}>
+                {/*<Button*/}
+                {/*    onClick={handleApiRequest}*/}
+                {/*    variant="outlined"*/}
+                {/*    style={{backgroundColor: 'default', color: 'default', marginRight: '10px'}} // 오른쪽 여백 추가*/}
+                {/*    size="small"*/}
+                {/*    className={style.customButton}*/}
+                {/*>*/}
+                {/*    추가*/}
+                {/*</Button>*/}
+                <Button
+                    onClick={handleApiRequest}
+                    variant="outlined"
+                    style={{backgroundColor: '#f50057', color: '#fff', marginRight: '10px'}} // 오른쪽 여백 추가
+                    size="small"
+                    className={style.customButton}
+                >
+                    삭제
+                </Button>
+            </div>
+            <div className={style["data-Grid"]} >
+                <DataGrid
+                    rows={data}
+                    columns={columns}
+                    checkboxSelection
+                    components={{
+                        Toolbar: CustomToolbar,
+                        Footer: () => (
+                            <div className={style["footerCell"]}>
+                                Footer Content
+                            </div>
+                        ),
+                    }}
+                    pagination
+                    filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
+                    paginationMode="server"
+                    sortingMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[5, 10, 100]}
+                    onFilterModelChange={handleFilterModelChange}
+                    onSortModelChange={handleSortModelChange}
+                    onPaginationModelChange={handlePaginationModelChange}
+                    onRowSelectionModelChange={handleRowSelection}
+                    autoHeight
+                    paginationModel={paginationModel}
+                />
+            </div>
             <Modal
                 open={open}
                 onClose={handleClose}
