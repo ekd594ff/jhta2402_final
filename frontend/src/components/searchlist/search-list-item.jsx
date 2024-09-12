@@ -12,7 +12,6 @@ import style from "../../styles/search-list-item.module.scss";
 
 function SearchListItem(props) {
     const {title, description, companyName, imageUrls, id} = props;
-    console.log(props);
     const navigator = useNavigate();
     return <li className={style['search-list-item']}>
         <div className={style['top']}>
@@ -28,27 +27,29 @@ function SearchListItem(props) {
                     className={style['swiper']}
                 >
                     {
-                        imageUrls.map((url, index) => <SwiperSlide key={`${companyName}_${url}`}>
+                        imageUrls.map((url, index) => <SwiperSlide className={style['slide']}
+                                                                   key={`${companyName}_${url}`}>
                             <img className={style['thumbnail']}
-                                 src={`https://picsum.photos/seed/${Date.now() + index}/1200/800`}
+                                 src={url}
                                  alt='portfolio thumbnail'/>
                         </SwiperSlide>)
                     }
                 </Swiper> : <img className={style['thumbnail']}
-                                 src={`https://picsum.photos/seed/${Date.now() + companyName}/1200/800`}
+                                 src={imageUrls[0]}
                                  alt='portfolio thumbnail'/>
             }
         </div>
         <div className={style['bottom']}>
             <div className={style['name']}>{companyName}</div>
+
             <div className={style['info']} onClick={() => {
                 navigator(`/portfolio/${id}`);
             }}>
-                <div className={style['rating']}>
-                    <Rating readOnly defaultValue={1} max={1} size="small"/>
-                    4.8
-                </div>
                 <div className={style['portfolio-title']}>{title}</div>
+            </div>
+            <div className={style['rating']}>
+                <Rating readOnly defaultValue={1} max={1} size="small"/>
+                4.8
             </div>
             <div className={style['description']}>{description}</div>
         </div>

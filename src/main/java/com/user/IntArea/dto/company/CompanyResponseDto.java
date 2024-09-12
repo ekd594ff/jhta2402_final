@@ -1,5 +1,6 @@
 package com.user.IntArea.dto.company;
 
+import com.user.IntArea.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,6 +16,18 @@ public class CompanyResponseDto {
     private String description;
     private String phone;
     private String address;
-    private Boolean isApplied;
+    private String detailAddress;
+    private boolean isApplied;
     private LocalDateTime createdAt;
+
+    public CompanyResponseDto(Company company) {
+        this.id = company.getId();
+        this.companyName = company.getCompanyName();
+        this.description = company.getDescription();
+        this.phone = company.getPhone();
+        this.address = company.getAddress();
+        this.detailAddress = company.getDetailAddress();
+        this.isApplied = company.getIsApplied();
+        this.createdAt = company.getCreatedAt();
+    }
 }

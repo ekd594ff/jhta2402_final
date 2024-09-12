@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -63,6 +64,11 @@ public class PortfolioController {
     @GetMapping("/list/random")
     public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioAllInfoDtos(count);
+    }
+
+    @GetMapping("/list/random2")
+    public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
+        return portfolioService.getRandomPortfolioInfoDtos(count);
     }
 
     // seller
@@ -144,5 +150,49 @@ public class PortfolioController {
     @GetMapping("/admin/hard-delete/{id}")
     public void hardDeletePortfolioInfoDtoByAdmin(@PathVariable(name = "id") UUID portfolioId) {
         portfolioService.deletePortfolioByAdmin(portfolioId);
+    }
+
+    @GetMapping("/admin/list/filter/contains")
+    public ResponseEntity<Page<PortfolioInfoDto>> getSearchReview(@RequestParam int page, @RequestParam(name = "pageSize") int size,
+                                                                  @RequestParam(defaultValue = "createdAt", required = false) String sortField,
+                                                                  @RequestParam(defaultValue = "desc", required = false) String sort,
+                                                                  @RequestParam(required = false) String filterColumn,
+                                                                  @RequestParam(required = false) String filterValue) {
+        log.info("sortField={}", sortField);
+        log.info("sort={}", sort);
+        log.info("filterColumn={}", filterColumn);
+        log.info("filterValue={}", filterValue);
+        if (sortField.equals("companyName")) {
+            sortField = "company.companyName";
+        }
+        Pageable pageable;
+        if (sort.equals("desc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
+        }
+        log.info("pageable={}", pageable);
+        Page<PortfolioInfoDto> portfolioInfoDtoPage = portfolioService.getSearchPortfolio(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
+        return ResponseEntity.ok().body(portfolioInfoDtoPage);
+    }
+
+    @DeleteMapping("/admin/{ids}")
+    public ResponseEntity<?> softDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        portfolioService.softDeletePortfolios(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/admin/hard/{ids}")
+    public ResponseEntity<?> hardDeleteMembers(@PathVariable String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        portfolioService.hardDeletePortfolios(idList);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/admin")
+    public ResponseEntity<?> editPortfolio(@RequestBody EditPortfolioDto editPortfolioDto) {
+        portfolioService.editPortfolioForAdmin(editPortfolioDto);
+        return ResponseEntity.noContent().build();
     }
 }

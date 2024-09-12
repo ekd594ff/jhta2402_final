@@ -2,9 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
-import com.user.IntArea.dto.quotation.QuotationCreateDto;
-import com.user.IntArea.dto.quotation.QuotationInfoDto;
-import com.user.IntArea.dto.quotation.QuotationUpdateDto;
+import com.user.IntArea.dto.quotation.*;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.*;
@@ -16,6 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -373,4 +375,61 @@ public class QuotationService {
         return quotations.map(this::convertToQuotationInfoDto);
     }
 
+    public Quotation findById(UUID quotationId) {
+        Optional<Quotation> quotation = quotationRepository.findById(quotationId);
+        if(quotation.isEmpty()) {
+            throw new NoSuchElementException("작성된 견적서가 없습니다.");
+        }
+        return quotation.get();
+    }
+
+    public Page<QuotationResponseDto> findAllQutationResponseDto(Pageable pageable) {
+        return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
+    }
+
+    public Page<QuotationResponseDto> findAllByFilter(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "id" -> {
+                    return quotationRepository.findAllByIdContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "totalTransactionAmount" -> {
+                    return quotationRepository.findAllByTotalTransactionAmountContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "progress" -> {
+                    return quotationRepository.findAllByProgressContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "createdAt" -> {
+                    return quotationRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return quotationRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+            }
+        } else {
+            return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
+        }
+        throw new RuntimeException("findAllByFilter : QuotationService");
+    }
+
+    public void softDeleteQuotation(List<String> idList) {
+//        quotationRepository.
+    }
+
+    public void updateProgess(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        quotationRepository.updateQuotationById(ids);
+    }
+
+
+    @Transactional
+    public void editQuotationForAdmin(EditQuotationDto editQuotationDto) {
+        Optional<Quotation> quotationOptional = quotationRepository.findById(editQuotationDto.getId());
+        if (quotationOptional.isPresent()) {
+            Quotation quotation = quotationOptional.get();
+            quotation.setProgress(editQuotationDto.getProgress());
+        } else {
+            throw new NoSuchElementException("editQuotationForAdmin");
+        }
+    }
 }

@@ -5,10 +5,12 @@ import com.user.IntArea.entity.Portfolio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,6 +49,13 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     @Query(value = "SELECT * FROM portfolio ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
     List<Portfolio> getRandomPortfolio(@Param("count") int count);
 
+    @Query(value = "SELECT p.*, i.url as thumbnail, c.companyName as companyName " +
+            "FROM Portfolio p " +
+            "INNER JOIN Image i on i.refId = p.id " +
+            "INNER JOIN Company c on p.companyid =  c.id " +
+            "ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
+    List<Map<String, Object>> getRandomPortfolioInfoDtos(@Param("count") int count);
+
     @Query(value = "SELECT p.id, p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url) " +
             "FROM Portfolio p " +
             "INNER JOIN Company c ON c.id = p.companyId " +
@@ -60,9 +69,31 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     )
     Page<Object[]> searchPortfolios(String searchWord, Pageable pageable);
 
+    Page<Portfolio> findAllByTitleContains(String title, Pageable pageable);
+
+    Page<Portfolio> findAllByDescriptionContains(String Description, Pageable pageable);
+
+    @Query("select p from Portfolio p " +
+            "join fetch p.company c " +
+            "where 1=1 and c.companyName like %:companyName% ")
+    Page<Portfolio> findAllByCompanyNameContains(String companyName, Pageable pageable);
+
+    Page<Portfolio> findAllByCreatedAtContains(String createdAt, Pageable pageable);
+
+    Page<Portfolio> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
+
+    Page<Portfolio> findAllByDeletedIs(boolean Deleted, Pageable pageable);
+
+    @Query("select p from Portfolio p join fetch p.company c")
+    Page<Portfolio> findAll(Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Portfolio p SET p.isDeleted = true WHERE p.id IN :ids")
+    void softDeleteByIds(Iterable<UUID> ids);
+
     @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
     Page<Portfolio> getAllValidByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
 
-    @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId")
-    Page<Portfolio> findAllByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
+    Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
+
 }

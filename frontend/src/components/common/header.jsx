@@ -106,7 +106,6 @@ function Header() {
     axios
       .get(`/api/member/email`)
       .then((res) => {
-        console.log(res);
         setIsLoggedIn(res.data.id !== null);
         setUsername(res.data.username); // 사용자 이름 설정
 
