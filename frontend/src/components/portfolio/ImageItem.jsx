@@ -48,13 +48,13 @@ function ImageItem({image, index, moveImage, removeImage}) {
                    cursor: 'move',
                    margin: 'auto',
                    flex: '1 1 180px', // 최소 너비를 설정하여 브라우저 크기에 따라 유동적으로 조정
-                   marginBottom: '8px'  ,
+                   marginBottom: '8px',
                    boxSizing: 'border-box',
                    maxWidth: 'calc(25% + 20px)', // 최대 너비를 설정하여 큰 화면에서도 적절히 배치
                }}
         >
             {/* 순서 태그 */}
-            <Card>
+            <Card sx={{textAlign: 'center'}}>
                 <div
                     style={{
                         position: 'absolute',
@@ -65,6 +65,7 @@ function ImageItem({image, index, moveImage, removeImage}) {
                         borderRadius: '50%',
                         width: '20px',
                         height: '20px',
+                        margin: 'auto',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -97,6 +98,7 @@ function ImageItem({image, index, moveImage, removeImage}) {
                         width: '200px',
                         height: '200px',
                         objectFit: "cover",
+                        margin: "auto",
                     }}
                 />
             </Card>

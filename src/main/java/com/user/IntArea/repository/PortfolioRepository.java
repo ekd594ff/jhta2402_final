@@ -20,6 +20,8 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
         // (Todo) p.isActivated = true
     Portfolio getOpenPortfolioInfoById(UUID id);
 
+    Page<Portfolio> findAllByCompanyAndIsDeleted(Company company, boolean isDeleted, Pageable pageable);
+
     Page<Portfolio> findAllByCompany(Company company, Pageable pageable);
 
     @Query("SELECT p from Portfolio p where p.isDeleted = false and 1=1")
@@ -64,6 +66,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     Page<Object[]> searchPortfolios(String searchWord, Pageable pageable);
 
     @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
-    Page<Portfolio> findAllByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
+    Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
 }

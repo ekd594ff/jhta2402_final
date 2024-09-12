@@ -18,6 +18,7 @@ public class PortfolioDetailInfoDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;
+    private boolean isActivated;
 
     public PortfolioDetailInfoDto(Portfolio portfolio, List<String> imageUrls) {
         this.id = portfolio.getId();
@@ -28,5 +29,6 @@ public class PortfolioDetailInfoDto {
         this.createdAt = portfolio.getCreatedAt();
         this.updatedAt = portfolio.getUpdatedAt();
         this.isDeleted = portfolio.isDeleted();
+        this.isActivated = portfolio.isActivated();
     }
 }

@@ -160,7 +160,7 @@ function Header() {
                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
                 <MenuItem
                   onClick={() =>
-                    navigate(hasCompany ? "/company/edit" : "/company/create")
+                    navigate(hasCompany ? "/company/info" : "/company/create")
                   }
                 >
                   Company
