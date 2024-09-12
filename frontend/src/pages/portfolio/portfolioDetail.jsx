@@ -2,10 +2,20 @@ import React, {useEffect, useState} from 'react';
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import axios from "axios";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 
 import style from "../../styles/portfolio-detail.module.scss";
-import {Backdrop, FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, Tooltip} from "@mui/material";
+import {
+    Alert,
+    Backdrop,
+    Collapse,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    Radio,
+    RadioGroup,
+    Tooltip
+} from "@mui/material";
 import List from "@mui/material/List";
 import PortfolioSolutionListItem from "./portfolio-solution-list-item.jsx";
 import PortfolioReviewListItem from "./portfolio-review-list-item.jsx";
@@ -34,9 +44,10 @@ const reviewListAJAXPromise = (portfolioId, pagination) =>
 
 function PortfolioDetail() {
     const {id} = useParams();
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    const [portfolioImgList, setPortfolioImgList] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const [portfolioImgList, setPortfolioImgList] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [solutionList, setSolutionList] = useState([]);
     const [selectedSolutionList, setSelectedSolutionList] = useState([]);
@@ -46,6 +57,11 @@ function PortfolioDetail() {
     const [reportData, setReportData] = useState({title: "", description: ""});
     const [customReportTitle, setCustomReportTitle] = useState("");
     const [disableCustomReport, setDisableCustomReport] = useState(true);
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: "success",
+        msg: ""
+    });
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: id,
@@ -78,6 +94,7 @@ function PortfolioDetail() {
                     ...portfolioInfo,
                     ...res.data,
                 })
+                setPortfolioImgList(res.data.imageUrls);
             })
             .catch(() => {
                 alert("유효하지 않은 페이지입니다.");
@@ -101,7 +118,7 @@ function PortfolioDetail() {
 
     useEffect(() => {
         if (portfolioImgList.length) {
-            setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`);
+            setModalImg(portfolioImgList[0]);
         }
     }, [portfolioImgList]);
 
@@ -113,11 +130,40 @@ function PortfolioDetail() {
         }
     }, [modalOpen, reportModalOpen]);
 
+    useEffect(() => {
+        const alertOpen = searchParams.get("requestSuccess");
+        if (alertOpen !== null) {
+            window.scrollTo(0, 0);
+            if (alertOpen === "true") {
+                // 솔루션 신청 성공
+                setAlert(prev => ({
+                    open: true,
+                    severity: "success",
+                    msg: "신청이 완료되었습니다"
+                }));
+            } else {
+                setAlert(prev => ({
+                    open: true,
+                    severity: "error",
+                    msg: "신청 실패하였습니다"
+                }));
+            }
+            setTimeout(() => {
+                setAlert(prev => ({
+                    open: false, severity: "", msg: ""
+                }));
+            }, 3000);
+        }
+    }, []);
+
     return (
         <>
             <Header/>
             <main className={style['portfolio-detail']}>
                 <div className={style['container']}>
+                    <Collapse className={style['collapse']} in={alert.open}>
+                        <Alert severity={alert.severity}>{alert.msg}</Alert>
+                    </Collapse>
                     <div className={style['top']}>
                         <div className={style['left']}>
                             <div className={style['selected-img']}>
@@ -125,10 +171,10 @@ function PortfolioDetail() {
                                     {
                                         portfolioImgList[0] ?
                                             <img alt="selected-img"
-                                                 src={`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`}
+                                                 src={portfolioImgList[0]}
                                                  onClick={() => {
                                                      setModalOpen(prev => !prev);
-                                                     setModalImg(`https://picsum.photos/seed/${portfolioImgList[0]}/1200/800`)
+                                                     setModalImg(portfolioImgList[0])
                                                  }}/> :
                                             <></>
                                     }
@@ -139,7 +185,7 @@ function PortfolioDetail() {
                             <div className={style['info']}>
                                 <div className={style['top']}>
                                     <span
-                                        className={style['company-name']}>{`업체명_${portfolioInfo.company.companyName}`}</span>
+                                        className={style['company-name']}>{portfolioInfo.companyName}</span>
                                     <span className={style['btn-group']}>
                                         <Tooltip title="신고하기">
                                             <IconButton size="small" disableRipple onClick={() => {
@@ -156,11 +202,10 @@ function PortfolioDetail() {
                                     </span>
                                 </div>
                                 <div>
-                                    <span className={style['title']}>{`포트폴리오제목_${portfolioInfo.title}`}</span>
+                                    <span className={style['title']}>{portfolioInfo.title}</span>
                                 </div>
                                 <div>
-                                    <span
-                                        className={style['description']}>{`포트폴리오 상세_${portfolioInfo.description}`}</span>
+                                    <pre className={style['description']}>{portfolioInfo.description}</pre>
                                 </div>
                             </div>
                             <div className={style['solution-list-title']}>인테리어 솔루션</div>
@@ -187,7 +232,7 @@ function PortfolioDetail() {
                                                     state: {
                                                         list: solutionList,
                                                         selectedList: selectedSolutionList,
-                                                        portfolioInfo: portfolioInfo
+                                                        portfolioInfo: portfolioInfo,
                                                     }
                                                 })
                                             }} className={style['solution-list-submit']} size="large"

@@ -5,6 +5,7 @@ import com.user.IntArea.dto.member.MemberRequestDto;
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.repository.CompanyRepository;
+import com.user.IntArea.repository.PortfolioRepository;
 import com.user.IntArea.service.CompanyService;
 import com.user.IntArea.service.MemberService;
 import org.junit.jupiter.api.DisplayName;

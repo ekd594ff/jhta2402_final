@@ -23,13 +23,13 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "JOIN q.quotationRequest qr " +
             "JOIN qr.member m " +
             "WHERE m.id = :memberId")
-    Page<Quotation> GetAllQuotationsTowardMember(@Param("memberId") UUID memberId, Pageable pageable);
+    Page<Quotation> GetAllByMemberId(@Param("memberId") UUID memberId, Pageable pageable);
 
     @Query("SELECT DISTINCT q FROM Quotation q " +
             "JOIN q.quotationRequest qr " +
             "JOIN qr.member m " +
             "WHERE m.id = :memberId and q.progress = :progress")
-    Page<Quotation> GetAllQuotationsTowardMemberSortedByProgress(@Param("memberId") UUID memberId, @Param("progress") QuotationProgress progress, Pageable pageable);
+    Page<Quotation> GetAllByMemberIdAndProgress(@Param("memberId") UUID memberId, @Param("progress") QuotationProgress progress, Pageable pageable);
 
 
     Optional<Quotation> findByQuotationRequestIdAndProgress(UUID quotationRequestId, QuotationProgress progress);
@@ -39,7 +39,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE qr.id = :quotationRequestId and q.progress = :progress")
-    List<Quotation> findByQuotationRequestIdAndProgressAsList(UUID quotationRequestId, QuotationProgress progress);
+    List<Quotation> getAllListByQuotationRequestIdAndProgress(UUID quotationRequestId, QuotationProgress progress);
 
     List<Quotation> findAllByQuotationRequestId(UUID quotationRequestId);
 
@@ -51,14 +51,14 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId")
-    List<Quotation> findAllByCompany(@Param("companyId") UUID companyId);
+    List<Quotation> getAllByCompanyAsList(@Param("companyId") UUID companyId);
 
     @Query("SELECT DISTINCT q FROM Quotation q " +
             "JOIN q.quotationRequest qr " +
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId")
-    Page<Quotation> findAllByCompany(@Param("companyId") UUID companyId, Pageable pageable);
+    Page<Quotation> getAllByCompany(@Param("companyId") UUID companyId, Pageable pageable);
 
     Page<Quotation> findAllByProgress(QuotationProgress progress, Pageable pageable);
 
@@ -67,7 +67,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "JOIN qr.portfolio p " +
             "JOIN p.company c " +
             "WHERE c.id = :companyId and q.progress=:progress")
-    Page<Quotation> findAllByCompanySortedByProgress(@Param("progress") QuotationProgress progress, @Param("companyId") UUID companyId, Pageable pageable);
+    Page<Quotation> getAllByCompanySortedByProgress(@Param("progress") QuotationProgress progress, @Param("companyId") UUID companyId, Pageable pageable);
 
     @Query("SELECT DISTINCT q FROM Quotation q " +
             "JOIN q.quotationRequest qr " +
@@ -81,7 +81,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "OR CAST(q.totalTransactionAmount AS string) LIKE %:searchWord% " +
             "OR CAST(q.progress AS string) LIKE %:searchWord% " +
             "OR CAST(qr.progress AS string) LIKE %:searchWord% )")
-    Page<Quotation> findAllByCompanyWithSearchWord(@Param("searchWord") String searchWord, @Param("companyId") UUID companyId, Pageable pageable);
+    Page<Quotation> getAllByCompanyWithSearchWord(@Param("searchWord") String searchWord, @Param("companyId") UUID companyId, Pageable pageable);
 
 
     @Query("select q from Quotation q where cast(q.id as string ) LIKE %:id% ")

@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,8 +52,12 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
         // (Todo) p.isActivated = true
     Portfolio findByIdByCompanyManager(UUID id, UUID companyId);
 
-    @Query(value = "SELECT * FROM portfolio ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
-    List<Portfolio> getRandomPortfolioInfoDtos(@Param("count") int count);
+    @Query(value = "SELECT p.*, i.url as thumbnail, c.companyName as companyName " +
+            "FROM Portfolio p " +
+            "INNER JOIN Image i on i.refId = p.id " +
+            "INNER JOIN Company c on p.companyid =  c.id " +
+            "ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
+    List<Map<String, Object>> getRandomPortfolioInfoDtos(@Param("count") int count);
 
     @Query(value = "SELECT p.id, p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url) " +
             "FROM Portfolio p " +
@@ -89,6 +94,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     @Query("UPDATE Portfolio p SET p.isDeleted = true WHERE p.id IN :ids")
     void softDeleteByIds(Iterable<UUID> ids);
     @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
-    Page<Portfolio> findAllByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
+    Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
 }

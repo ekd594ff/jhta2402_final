@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,7 +66,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/list/random")
-    public List<PortfolioInfoDto> getRandomPortfolioInfoDtos(@RequestParam int count) {
+    public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
     }
 
