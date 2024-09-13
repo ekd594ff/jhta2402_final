@@ -31,10 +31,10 @@ public class Portfolio {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "portfolio")
     private List<Solution> solutions;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "portfolio")
     private List<QuotationRequest> quotationRequests;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
@@ -54,17 +54,5 @@ public class Portfolio {
         this.company = company;
         this.title = title;
         this.description = description;
-    }
-
-
-    public List<String> getPortfolioImages() {
-        List<String> images = new ArrayList<>();
-
-        return images;
-    }
-
-    public List<Quotation> getWrittenQuotations() {
-        List<Quotation> quotations = new ArrayList<>();
-        return quotations;
     }
 }

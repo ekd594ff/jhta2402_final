@@ -1,13 +1,14 @@
 package com.user.IntArea.dto.portfolio;
 
+import com.user.IntArea.dto.quotation.QuotationInfoDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
+import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.entity.Portfolio;
-import com.user.IntArea.entity.Quotation;
-import com.user.IntArea.entity.QuotationRequest;
-import com.user.IntArea.entity.Solution;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,13 +23,13 @@ public class PortfolioAllInfoDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;
-    private List<String> imageUrl;
-    private List<Solution> solutions;
-    private List<QuotationRequest> quotationRequests;
-    private List<Quotation> quotations;
+    private List<SolutionDto> solutions;
+    private List<QuotationRequestDto> quotationRequests;
+    private List<QuotationInfoDto> quotations;
+    private List<String> imageUrls ;
 
-
-    public PortfolioAllInfoDto(Portfolio portfolio) {
+    @Builder
+    public PortfolioAllInfoDto(Portfolio portfolio, List<SolutionDto> solutions, List<QuotationRequestDto> quotationRequests, List<QuotationInfoDto> quotations, List<String> imageUrls) {
         this.id = portfolio.getId();
         this.title = portfolio.getTitle();
         this.description = portfolio.getDescription();
@@ -37,25 +38,9 @@ public class PortfolioAllInfoDto {
         this.createdAt = portfolio.getCreatedAt();
         this.updatedAt = portfolio.getUpdatedAt();
         this.isDeleted = portfolio.isDeleted();
-        this.imageUrl = portfolio.getPortfolioImages();
-        this.solutions = portfolio.getSolutions();
-        this.quotationRequests = portfolio.getQuotationRequests();
-        this.quotations = portfolio.getWrittenQuotations();
-    }
-
-    @Builder
-    public PortfolioAllInfoDto(UUID id, String title, String description, UUID companyId, String companyName, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isDeleted, List<String> imageUrl, List<Solution> solutions, List<QuotationRequest> quotationRequests, List<Quotation> quotations) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.companyId = companyId;
-        this.companyName = companyName;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.isDeleted = isDeleted;
-        this.imageUrl = imageUrl;
         this.solutions = solutions;
         this.quotationRequests = quotationRequests;
         this.quotations = quotations;
+        this.imageUrls = imageUrls == null ? new ArrayList<>() : imageUrls;
     }
 }

@@ -24,6 +24,8 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
     @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds")
     public abstract Page<QuotationRequest> findAllByPortfolioIds(List<UUID> portfolioIds, Pageable pageable);
 
+    List<QuotationRequest> getAllByPortfolioId(UUID id);
+
     Page<QuotationRequest> findAllByMember(Member member, Pageable pageable);
 
     Page<QuotationRequest> findAllByMemberAndProgress(Member member, QuotationProgress progress, Pageable pageable);
@@ -125,4 +127,6 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "GROUP BY c.companyname, s.progress\n" +
             "ORDER BY c.companyname, s.progress;\n", nativeQuery = true)
     List<Object[]> findQuotationRequestCountById(@Param("companyId") UUID companyId);
+
+    List<QuotationRequest> findByPortfolioId(UUID id);
 }

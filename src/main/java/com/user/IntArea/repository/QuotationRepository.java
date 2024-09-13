@@ -4,16 +4,12 @@ import com.user.IntArea.entity.Quotation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.user.IntArea.entity.enums.QuotationProgress;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,6 +39,12 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
 
     List<Quotation> findAllByQuotationRequestId(UUID quotationRequestId);
 
+    @Query("SELECT DISTINCT q FROM Quotation q " +
+            "JOIN q.quotationRequest qr " +
+            "JOIN qr.portfolio p " +
+            "JOIN p.company " +
+            "WHERE p.id = :portfolioId")
+    List<Quotation> getAllByPortfolioId(UUID portfolioId);
 
     // seller
 

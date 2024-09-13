@@ -13,16 +13,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/api/portfolio")
 @RequiredArgsConstructor
-@Slf4j
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
@@ -65,9 +62,21 @@ public class PortfolioController {
         return portfolioService.getMyPortfolioInfoById(portfolioId);
     }
 
+//    @GetMapping("/list/random")
+//    public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(@RequestParam int count) {
+//        return portfolioService.getRandomPortfolioAllInfoDtos(count);
+//    }
+
     @GetMapping("/list/random")
     public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
+    }
+
+    // 평점순으로 받기(평점이 같을 경우 생성일이 더 오래된 것부터 배치)
+    @GetMapping("/list/recommended")
+    public List<Map<String, Object>> getRecommendedPortfolioByAvgRate(@RequestParam int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
     // seller
@@ -83,20 +92,20 @@ public class PortfolioController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/company/list/company")
-    public Page<PortfolioInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
+    @GetMapping("/list/company")
+    public Page<PortfolioDetailInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getCompanyPortfolioInfoDtosByCompanyManager(pageable);
     }
 
-    @GetMapping("/company/delete/{id}")
+    @PatchMapping("/seller/delete/{id}")
     public void deletePortfolioInfoDtoByCompany(@PathVariable(name = "id") UUID portfolioId) {
         portfolioService.softDeletePortfolio(portfolioId);
     }
 
-    @GetMapping("/company/activate")
-    public void activatePortfolioInfoDtoByCompany(@RequestParam UUID portfolioId, @RequestParam Boolean activated) {
-        portfolioService.activatePortfolio(portfolioId, activated);
+    @PatchMapping("/seller/activate")
+    public void updateActivatePortfolioInfoDtoByCompany(@RequestBody PortfolioIsActivatedRequestDto dto) {
+        portfolioService.updateActivatePortfolio(dto);
     }
 
     /*@PostMapping("/draft") // 초안 임시저장 기능(서비스 매서드 미구현)
@@ -112,9 +121,9 @@ public class PortfolioController {
         return portfolioService.getPortfolioInfoByIdByAdmin(portfolioId);
     }
 
-    @GetMapping("/admin/activate/{id}")
-    public void activatePortfolioByAdmin(@PathVariable UUID portfolioId, @RequestParam Boolean activated) {
-        portfolioService.activatePortfolio(portfolioId, activated);
+    @PatchMapping("/admin/activate")
+    public void updateActivatePortfolioByAdmin(PortfolioIsActivatedRequestDto dto) {
+        portfolioService.updateActivatePortfolio(dto);
     }
 
     @GetMapping("/admin/list")
