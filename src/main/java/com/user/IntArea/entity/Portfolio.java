@@ -31,10 +31,10 @@ public class Portfolio {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "portfolio")
     private List<Solution> solutions;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "portfolio")
     private List<QuotationRequest> quotationRequests;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
