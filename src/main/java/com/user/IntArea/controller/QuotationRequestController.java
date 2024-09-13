@@ -53,8 +53,6 @@ public class QuotationRequestController {
     }
 
 
-
-
     @GetMapping("/list/{memberId}")
     public ResponseEntity<Page<QuotationRequestListDto>> getQuotationRequestByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size);
