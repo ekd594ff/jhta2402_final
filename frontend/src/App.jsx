@@ -30,6 +30,7 @@ function App() {
           <Route path="/admin/*" element={<Admin />} />
           <Route path="/portfolio/registration" element={<Registration />} />
           <Route path="/portfolio/:id" element={<PortfolioDetail />} />
+          <Route path="/portfolio/edit/:id" element={<Registration />} />
           <Route path="/search/detailed" element={<SearchList />} />
           <Route path="/quotationRequest" element={<QuotationRequest />} />
           <Route

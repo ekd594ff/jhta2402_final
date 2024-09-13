@@ -28,7 +28,8 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         // http://localhost:808? 를 얻기 위한 코드 (개발 편의를 위한 코드, 배포 시 제거 필요)
         String requestUrl = request.getRequestURL().substring(0, 21);
-        // 배포 시 clientUrl 로 변경
-        response.sendRedirect(requestUrl);
+
+        // 이후 response.sendRedirect(clientUrl); 로 변경
+        response.sendRedirect((!requestUrl.startsWith("http://localhost:808")) ? clientUrl : requestUrl);
     }
 }

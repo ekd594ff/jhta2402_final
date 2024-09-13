@@ -106,7 +106,6 @@ function Header() {
     axios
       .get(`/api/member/email`)
       .then((res) => {
-        console.log(res);
         setIsLoggedIn(res.data.id !== null);
         setUsername(res.data.username); // 사용자 이름 설정
 
@@ -160,7 +159,7 @@ function Header() {
                 <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
                 <MenuItem
                   onClick={() =>
-                    navigate(hasCompany ? "/company/edit" : "/company/create")
+                    navigate(hasCompany ? "/company/info" : "/company/create")
                   }
                 >
                   Company

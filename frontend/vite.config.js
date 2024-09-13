@@ -14,6 +14,9 @@ export default ({mode}) => {
             proxy: {
                 '/api': {
                     target: `${env.VITE_API_HOST || ""}`
+                },
+                '/oauth2': {
+                    target: `${env.VITE_API_HOST || ""}`
                 }
             }
         }

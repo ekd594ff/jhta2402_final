@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Divider, Snackbar, TextField} from '@mui/material';
+import {Button, Divider, TextField} from '@mui/material';
 import axios from 'axios';
 import Header from "../components/common/header.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 
 import Checkbox from "@mui/material/Checkbox";
-
-import style from "../styles/quotationRequest.module.scss";
 import Footer from "../components/common/footer.jsx";
 
+import style from "../styles/quotationRequest.module.scss";
+import Avatar from "@mui/material/Avatar";
+import * as PropTypes from "prop-types";
 
 function SolutionItemList(props) {
     const {list, setter, index, title, price, description} = props;
@@ -42,11 +43,18 @@ function SolutionItemList(props) {
     </li>);
 }
 
+function CloseIcon(props) {
+    return null;
+}
+
+CloseIcon.propTypes = {fontSize: PropTypes.string};
 const QuotationRequest = () => {
 
     const location = useLocation();
 
-    const {state: {portfolioInfo}} = location;
+    const {state: {portfolioInfo, list: solutions}} = location;
+
+    const {imageUrls, portfolioId, companyName, title} = portfolioInfo;
 
     const navigator = useNavigate();
 
@@ -56,7 +64,6 @@ const QuotationRequest = () => {
     const [Count, setCount] = useState(1);
     const [customDescription, setCustomDescription] = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
-    const [customTitle, setCustomTitle] = useState("");
 
     // 솔루션 추가
     const addSolution = (solution) => {
@@ -71,15 +78,28 @@ const QuotationRequest = () => {
     // 신청 완료 핸들러
     const handleRequestSubmit = async () => {
         try {
+            const memberId = (await axios.get("api/member/email"))?.data?.id;
+
+            if (!memberId) {
+                throw new Error("login failed");
+            }
+
+            const selectedSolutionList = solutions.filter((item, index) => {
+                return selectedSolutions[index];
+            });
+
             const data = {
-                memberId: "6f3f2761-0fa0-43f3-bd22-e658e2a5d7df",
-                portfolioId: "a84a9e98-3eb0-4542-9bd0-94b54de5276f",
-                title: `title${Count}`,
+                memberId,
+                portfolioId,
+                title: `${companyName}_${title}_${selectedSolutionList[0].title} ${selectedSolutionList.length > 1 ? `외 ${selectedSolutionList.length - 1}건` : ''}`,
                 description: customDescription,
-                solutions: selectedSolutions,
+                solutions: selectedSolutionList,
             };
+
             const response = await axios.post('/api/quotationRequest/create', data);
+
             if (response.status === 200) {
+                navigator(`/portfolio/${portfolioId}?requestSuccess=${true}`)
                 setSnackbarMessage('신청 완료');
                 setOpenSnackbar(true);
                 setSelectedSolutions([]);
@@ -89,6 +109,7 @@ const QuotationRequest = () => {
 
         } catch (error) {
             setSnackbarMessage('신청 실패: ' + error.message);
+            navigator(`/portfolio/${portfolioId}?requestSuccess=${false}`)
             setOpenSnackbar(true);
         }
     };
@@ -115,9 +136,14 @@ const QuotationRequest = () => {
             <div className={style['container']}>
                 <div className={style['title']}>신청한 솔루션</div>
                 <div className={style['portfolio-info']}>
-                    <div className={style['company']}>{portfolioInfo.companyName}</div>
-                    <div className={style['portfolio']}>{portfolioInfo.title}</div>
-                    <div className={style['description']}>{portfolioInfo.description}</div>
+                    <div className={style['left']}>
+                        <Avatar className={style['avatar']} src={imageUrls[0]} variant="rounded"/>
+                    </div>
+                    <div className={style['right']}>
+                        <div className={style['company']}>{portfolioInfo.companyName}</div>
+                        <div className={style['portfolio']}>{portfolioInfo.title}</div>
+                        <div className={style['description']}>{portfolioInfo.description}</div>
+                    </div>
                 </div>
                 <ul className={style['solution-list']}>
                     {location.state.list.map((solution, index) => <SolutionItemList key={index}

@@ -2,9 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
-import com.user.IntArea.dto.quotation.QuotationCreateDto;
-import com.user.IntArea.dto.quotation.QuotationInfoDto;
-import com.user.IntArea.dto.quotation.QuotationUpdateDto;
+import com.user.IntArea.dto.quotation.*;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.*;
@@ -16,6 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -105,6 +107,15 @@ public class QuotationService {
         }
     }
 
+    // (일반) 특정 견적서 출력
+    public Quotation getById(UUID quotationId) {
+        Optional<Quotation> quotation = quotationRepository.findById(quotationId);
+        if(quotation.isEmpty()) {
+            throw new NoSuchElementException("작성된 견적서가 없습니다.");
+        }
+        return quotation.get();
+    }
+
     // 견적 요청서 작성자 권한
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 여러 판매자들로부터 받은 모든 견적서 출력
@@ -112,7 +123,7 @@ public class QuotationService {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
-        Page<Quotation> quotationsForMember = quotationRepository.GetAllQuotationsTowardMember(member.getId(), pageable);
+        Page<Quotation> quotationsForMember = quotationRepository.GetAllByMemberId(member.getId(), pageable);
 
         // Quotation을 QuotationInfoDto로 변환하여 반환
         return quotationsForMember.map(this::convertToQuotationInfoDto);
@@ -123,7 +134,7 @@ public class QuotationService {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
         String email = memberDto.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
-        Page<Quotation> quotationsForMember = quotationRepository.GetAllQuotationsTowardMemberSortedByProgress(member.getId(), progress, pageable);
+        Page<Quotation> quotationsForMember = quotationRepository.GetAllByMemberIdAndProgress(member.getId(), progress, pageable);
 
         // Quotation을 QuotationInfoDto로 변환하여 반환
         return quotationsForMember.map(this::convertToQuotationInfoDto);
@@ -264,7 +275,7 @@ public class QuotationService {
         }
 
         // 기존의 대기중인 견적서가 있을 경우 취소 처리 및 저장
-        List<Quotation> formerQuotationList = quotationRepository.findByQuotationRequestIdAndProgressAsList(quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
+        List<Quotation> formerQuotationList = quotationRepository.getAllListByQuotationRequestIdAndProgress(quotationUpdateDto.getQuotationRequestId(), QuotationProgress.PENDING);
         if (formerQuotationList.size() >= 2) {
             throw new NoSuchElementException("알 수 없는 오류. 해당 견적요청서에 대해 작성된 대기중 견적서가 2개 이상입니다.");
         }
@@ -314,66 +325,54 @@ public class QuotationService {
 
 
     // (seller) 회사가 작성한 모든 견적서 출력
-    public Page<QuotationInfoDto> getAllQuotationOfCompany(Pageable pageable) {
+    public Page<QuotationInfoDto> getAllQuotationsOfCompany(Pageable pageable) {
+        // 접근 권한 확인
         Company company = getCompanyOfMember();
-        Page<Quotation> quotations = quotationRepository.findAllByCompany(company.getId(), pageable);
+        Page<Quotation> quotations = quotationRepository.getAllByCompany(company.getId(), pageable);
 
         // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
-        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
-        if(result.getTotalElements() == 0) {
-            System.out.println("====================비어있음=========================");
-        }
-        return result;
+        return quotations.map(this::convertToQuotationInfoDto);
     }
 
     // (seller) 회사가 작성한 특정 진행상태의 모든 견적서 출력 (progress로 소팅)
-    public Page<QuotationInfoDto> getAllQuotationOfCompanySortedByProgress(QuotationProgress progress, Pageable pageable) {
+    public Page<QuotationInfoDto> getAllQuotationsOfCompanySortedByProgress(QuotationProgress progress, Pageable pageable) {
         Company company = getCompanyOfMember();
-        Page<Quotation> quotations = quotationRepository.findAllByCompanySortedByProgress(progress, company.getId(), pageable);
-
-        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
-        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
-        return result;
+        Page<Quotation> quotations = quotationRepository.getAllByCompanySortedByProgress(progress, company.getId(), pageable);
+        return quotations.map(this::convertToQuotationInfoDto);
     }
 
     // (seller) 회사가 작성한 Quotation 중 검색어를 이용하여 찾기
-    public Page<QuotationInfoDto> findQuotationInfoDtosBySearchword(String searchWord, Pageable pageable) {
+    public Page<QuotationInfoDto> getAllQuotationsOfCompanyBySearchword(String searchWord, Pageable pageable) {
         Company company = getCompanyOfMember();
-        Page<Quotation> quotations = quotationRepository.findAllByCompanyWithSearchWord(searchWord, company.getId(), pageable);
-
-        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
-        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
-        return result;
+        Page<Quotation> quotations = quotationRepository.getAllByCompanyWithSearchWord(searchWord, company.getId(), pageable);
+        return quotations.map(this::convertToQuotationInfoDto);
     }
 
 
     // admin
 
     // (admin) 특정 회사가 작성한 모든 견적서 출력
-    public Page<QuotationInfoDto> getAllQuotationOfCompanyByAdmin(Company company, Pageable pageable) {
-        Page<Quotation> quotations = quotationRepository.findAllByCompany(company.getId(), pageable);
-
-        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
-        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
-        return result;
+    public Page<QuotationInfoDto> getAllQuotationsOfCompanyByAdmin(UUID companyId, Pageable pageable) {
+        Page<Quotation> quotations = quotationRepository.getAllByCompany(companyId, pageable);
+        return quotations.map(this::convertToQuotationInfoDto);
     }
 
-    // (admin) 회사가 작성한 특정 진행상태의 모든 견적서 출력 (progress로 소팅)
-    public Page<QuotationInfoDto> getAllQuotationOfCompanySortedByProgressByAdmin(UUID companyId, QuotationProgress progress, Pageable pageable) {
-        Page<Quotation> quotations = quotationRepository.findAllByCompanySortedByProgress(progress, companyId, pageable);
+    // (admin) 특정 회사가 작성한 특정 진행상태의 모든 견적서 출력 (progress로 소팅)
+    public Page<QuotationInfoDto> getAllQuotationsOfCompanySortedByProgressByAdmin(UUID companyId, QuotationProgress progress, Pageable pageable) {
+        Page<Quotation> quotations = quotationRepository.getAllByCompanySortedByProgress(progress, companyId, pageable);
+        return quotations.map(this::convertToQuotationInfoDto);
+    }
 
-        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
-        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
-        return result;
+    // (admin) 모든 견적서 출력
+    public Page<QuotationInfoDto> getAllQuotationsByAdmin(Pageable pageable) {
+        Page<Quotation> quotations = quotationRepository.findAll(pageable);
+        return quotations.map(this::convertToQuotationInfoDto);
     }
 
     // (admin) 모든 견적서 출력 (progress로 소팅)
-    public Page<QuotationInfoDto> getAllQuotationInfoDtos (QuotationProgress progress, Pageable pageable) {
+    public Page<QuotationInfoDto> getAllQuotationsByProgressByAdmin(QuotationProgress progress, Pageable pageable) {
         Page<Quotation> quotations = quotationRepository.findAllByProgress(progress, pageable);
-
-        // Quotation을 QuotationInfoDto로 변환하여 Page로 반환
-        Page<QuotationInfoDto> result = quotations.map(this::convertToQuotationInfoDto);
-        return result;
+        return quotations.map(this::convertToQuotationInfoDto);
     }
 
     public Quotation findById(UUID quotationId) {
@@ -382,5 +381,55 @@ public class QuotationService {
             throw new NoSuchElementException("작성된 견적서가 없습니다.");
         }
         return quotation.get();
+    }
+
+    public Page<QuotationResponseDto> findAllQutationResponseDto(Pageable pageable) {
+        return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
+    }
+
+    public Page<QuotationResponseDto> findAllByFilter(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
+        if (filterValue.isPresent() && filterColumn.isPresent()) {
+            switch (filterColumn.get()) {
+                case "id" -> {
+                    return quotationRepository.findAllByIdContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "totalTransactionAmount" -> {
+                    return quotationRepository.findAllByTotalTransactionAmountContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "progress" -> {
+                    return quotationRepository.findAllByProgressContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "createdAt" -> {
+                    return quotationRepository.findAllByCreatedAtContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+                case "updatedAt" -> {
+                    return quotationRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(QuotationResponseDto::new);
+                }
+            }
+        } else {
+            return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
+        }
+        throw new RuntimeException("findAllByFilter : QuotationService");
+    }
+
+    public void softDeleteQuotation(List<String> idList) {
+//        quotationRepository.
+    }
+
+    public void updateProgess(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        quotationRepository.updateQuotationById(ids);
+    }
+
+
+    @Transactional
+    public void editQuotationForAdmin(EditQuotationDto editQuotationDto) {
+        Optional<Quotation> quotationOptional = quotationRepository.findById(editQuotationDto.getId());
+        if (quotationOptional.isPresent()) {
+            Quotation quotation = quotationOptional.get();
+            quotation.setProgress(editQuotationDto.getProgress());
+        } else {
+            throw new NoSuchElementException("editQuotationForAdmin");
+        }
     }
 }

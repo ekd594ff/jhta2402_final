@@ -16,6 +16,6 @@ public class QuotationInfoDto {
     public QuotationInfoDto(Quotation quotation, List<String> imageUrls) {
         this.quotationId = quotation.getId();
         this.totalTransactionAmount = quotation.getTotalTransactionAmount();
-        this.imageUrls = imageUrls == null ? new ArrayList<String>() : imageUrls;
+        this.imageUrls = imageUrls == null ? new ArrayList<>() : imageUrls;
     }
 }

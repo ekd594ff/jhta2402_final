@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,6 +18,7 @@ public class PortfolioInfoDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;
+    private boolean isActivated;
 
     public PortfolioInfoDto(Portfolio portfolio) {
         this.id = portfolio.getId();
@@ -26,6 +28,7 @@ public class PortfolioInfoDto {
         this.createdAt = portfolio.getCreatedAt();
         this.updatedAt = portfolio.getUpdatedAt();
         this.isDeleted = portfolio.isDeleted();
+        this.isActivated = portfolio.isActivated();
     }
 
     @Builder
