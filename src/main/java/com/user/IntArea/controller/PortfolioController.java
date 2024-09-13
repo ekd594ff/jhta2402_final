@@ -72,6 +72,13 @@ public class PortfolioController {
         return portfolioService.getRandomPortfolioInfoDtos(count);
     }
 
+    // 평점순으로 받기(평점이 같을 경우 생성일이 더 오래된 것부터 배치)
+    @GetMapping("/list/recommended")
+    public List<Map<String, Object>> getRecommendedPortfolioByAvgRate(@RequestParam int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
+    }
+
     // seller
     @PostMapping
     public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
