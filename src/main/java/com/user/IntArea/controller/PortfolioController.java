@@ -13,16 +13,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/api/portfolio")
 @RequiredArgsConstructor
-@Slf4j
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
@@ -66,6 +63,11 @@ public class PortfolioController {
     }
 
     @GetMapping("/list/random")
+    public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(@RequestParam int count) {
+        return portfolioService.getRandomPortfolioAllInfoDtos(count);
+    }
+
+    @GetMapping("/list/random2")
     public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
     }

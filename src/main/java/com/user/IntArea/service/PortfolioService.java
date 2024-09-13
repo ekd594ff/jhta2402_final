@@ -5,6 +5,9 @@ import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.portfolio.*;
+import com.user.IntArea.dto.quotation.QuotationInfoDto;
+import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
+import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,9 @@ public class PortfolioService {
     private final ImageUtil imageUtil;
     private final ImageRepository imageRepository;
     private final SolutionRepository solutionRepository;
+    private final ImageService imageService;
+    private final QuotationRepository quotationRepository;
+    private final QuotationRequestRepository quotationRequestRepository;
 
     // 포트폴리오에 접근하는 멤버가 그 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
     private void isCompanyManager(Portfolio portfolio) {
@@ -49,6 +55,82 @@ public class PortfolioService {
         return company;
     }
 
+    // Quotation을 QuotationInfoDto로 변환하는 메서드
+    private QuotationInfoDto convertToQuotationInfoDto(Quotation quotation) {
+        List<String> imageUrls = new ArrayList<>();
+        try { // 견적서와 관련된 이미지 로드
+            List<Image> imageDtos = imageService.getImagesFrom(quotation);
+            if (imageDtos != null) {
+                imageUrls = imageDtos.stream()
+                        .map(Image::getUrl)
+                        .collect(Collectors.toList());
+            }
+        } catch (Exception e) { // 예외 발생 시 로그 남기기
+            System.err.println("이미지 로드 실패: " + e.getMessage());
+        }
+        // QuotationInfoDto로 매핑
+        return new QuotationInfoDto(quotation, imageUrls);
+    }
+
+    // QuotationRequest를 dto로 변환하는 매서드
+    private QuotationRequestDto convertToQuotationRequestDto(QuotationRequest quotationRequest) {
+        // Mapping RequestSolution to SolutionDto
+        List<SolutionDto> solutionDtos = quotationRequest.getRequestSolutions().stream()
+                .map(requestSolution -> new SolutionDto(requestSolution.getSolution())) // Assuming SolutionDto has a constructor that takes a Solution entity
+                .collect(Collectors.toList());
+
+        return QuotationRequestDto.builder()
+                .memberId(quotationRequest.getMember().getId())
+                .portfolioId(quotationRequest.getPortfolio().getId())
+                .title(quotationRequest.getTitle())
+                .description(quotationRequest.getDescription())
+                .progress(quotationRequest.getProgress().toString())
+                .solutions(solutionDtos)
+                .build();
+    }
+
+    private PortfolioAllInfoDto getPortfolioAllInfoDtoFrom(Portfolio portfolio) {
+
+        // Portfolio 내의 Solutions와 QuotationRequests가 초기화되지 않았을 경우 로드 (Entity에서 FetchType이 lazy로 설정되어있기 때문에 필요함)
+        if (portfolio.getSolutions().isEmpty()) {
+            portfolio.setSolutions(solutionRepository.findByPortfolioId(portfolio.getId()));
+        }
+        if (portfolio.getQuotationRequests().isEmpty()) {
+            portfolio.setQuotationRequests(quotationRequestRepository.findByPortfolioId(portfolio.getId()));
+        }
+
+        // 견적 정보를 DTO로 변환
+        List<Quotation> quotations = quotationRepository.getAllByPortfolioId(portfolio.getId());
+        List<QuotationInfoDto> quotationInfoDtos = quotations.stream()
+                .map(this::convertToQuotationInfoDto)
+                .collect(Collectors.toList());
+
+        // 이미지 URL 리스트 생성
+        List<Image> images = imageService.getImagesFrom(portfolio);
+        List<String> imageUrls = new ArrayList<>();;
+        for (Image image : images) {
+            imageUrls.add(image.getUrl());
+        }
+
+        // Solution을 dto로 변환
+        List<SolutionDto> solutionDtos = portfolio.getSolutions().stream()
+                .map(SolutionDto::new)  // 엔티티를 DTO로 변환
+                .collect(Collectors.toList());
+
+        // QuotationRequest을 dto로 변환
+        List<QuotationRequestDto> quotationRequestDtos = portfolio.getQuotationRequests().stream()
+                .map(QuotationRequestDto::new)
+                .collect(Collectors.toList());
+
+        return PortfolioAllInfoDto.builder()
+                .portfolio(portfolio)
+                .quotations(quotationInfoDtos)
+                .imageUrls(imageUrls)
+                .quotationRequests(quotationRequestDtos)
+                .solutions(solutionDtos)
+                .build();
+    }
+
     // 일반 권한
 
     // (일반 권한) DB에 존재하는 공개된 포트폴리오 InfoDto 불러오기
@@ -65,7 +147,7 @@ public class PortfolioService {
 
     // (일반 권한) 특정 회사의 오픈된 포트폴리오 InfoDto 불러오기
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(UUID companyId, Pageable pageable) {
-        Page<Portfolio> portfolios = portfolioRepository.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
+        Page<Portfolio> portfolios = portfolioRepository.getOpenPortfoliosOfCompany(companyId, pageable);
         return portfolios.map(PortfolioInfoDto::new);
     }
 
@@ -92,6 +174,19 @@ public class PortfolioService {
     public List<Map<String, Object>> getRandomPortfolioInfoDtos(int count) {
         List<Map<String, Object>> portfolios = portfolioRepository.getRandomPortfolioInfoDtos(count);
         return portfolios;
+    }
+
+    // (일반 권한) 특정한 갯수만큼 램덤한 PortfolioAllInfoDto 불러오기(quotation, 이미지 url 등 포함)
+    public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(int count) {
+        List<Portfolio> selectedPortfolios = portfolioRepository.getRandomPortfolio(count);
+
+        // Portfolio를 DTO로 변환
+        List<PortfolioAllInfoDto> portfolioAllInfoDtos = new ArrayList<>();
+        for (Portfolio portfolio : selectedPortfolios) {
+            PortfolioAllInfoDto portfolioInfoDto = getPortfolioAllInfoDtoFrom(portfolio);
+            portfolioAllInfoDtos.add(portfolioInfoDto);
+        }
+        return portfolioAllInfoDtos;
     }
 
     // seller 권한
@@ -230,12 +325,12 @@ public class PortfolioService {
         portfolioRepository.save(portfolio);
     }
 
-    // (seller 권한) 포트폴리오 활성화-비활성화(일반 고객에게 비공개-회사 관리자만 열람 및 수정 가능) (todo : 엔티티 수정 이후 작성)
+    // (seller 권한) 포트폴리오 활성화-비활성화(일반 고객에게 비공개-회사 관리자만 열람 및 수정 가능)
     public void activatePortfolio(UUID id, boolean isActivated) {
         Company company = getCompanyOfMember();
         Portfolio portfolio = portfolioRepository.findByIdByCompanyManager(id, company.getId());
         isCompanyManager(portfolio);
-//        portfolio.setActivated(!isActivated);
+        portfolio.setActivated(!isActivated);
         portfolioRepository.save(portfolio);
     }
 
