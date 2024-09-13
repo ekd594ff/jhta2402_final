@@ -22,7 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/*" element={<MyPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/company/info" element={<CompanyDetail />} />
           <Route path="/company/create" element={<CreateEditCompany />} />
