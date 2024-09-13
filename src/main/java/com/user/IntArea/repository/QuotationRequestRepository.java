@@ -21,8 +21,8 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
 
     Page<QuotationRequest> findAllByMemberId(UUID memberId, Pageable pageable);
 
-    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds")
-    public abstract Page<QuotationRequest> findAllByPortfolioIds(List<UUID> portfolioIds, Pageable pageable);
+    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds AND qr.progress IN :progresses")
+    Page<QuotationRequest> findAllByPortfolioIdsAndProgress(List<UUID> portfolioIds, List<QuotationProgress> progresses, Pageable pageable);
 
     List<QuotationRequest> getAllByPortfolioId(UUID id);
 
@@ -79,6 +79,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "join fetch q.member m " +
             "join fetch q.portfolio p ")
     Page<QuotationRequest> findAll(Pageable pageable);
+
     @Query("select q from QuotationRequest q where cast(q.id as string ) like %:id% ")
     Page<QuotationRequest> findAllByIdContains(String id, Pageable pageable);
 
