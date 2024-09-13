@@ -123,4 +123,10 @@ public class CompanyController {
         companyService.editCompanyForAdmin(editCompanyDto);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/list/top")
+    public ResponseEntity<List<CompanyWithImageDto>> getCompaniesTop8ByQuotationCount() {
+        List<CompanyWithImageDto> companyWithImageDtoList = companyService.findTop8CompaniesByQuotationCount();
+        return ResponseEntity.ok().body(companyWithImageDtoList);
+    }
 }

@@ -112,5 +112,5 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
 
     Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
-
+    List<Portfolio> findAllByCompanyId(UUID companyId);
 }
