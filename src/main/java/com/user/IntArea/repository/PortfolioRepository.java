@@ -22,6 +22,8 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     @Query("SELECT p from Portfolio p where p.id = :portfolioId and p.isDeleted = false and p.isActivated = true")
     Optional<Portfolio> getOpenPortfolioByPortfolioId(UUID portfolioId);
 
+    Page<Portfolio> findAllByCompanyAndIsDeleted(Company company, boolean isDeleted, Pageable pageable);
+
     Page<Portfolio> findAllByCompany(Company company, Pageable pageable);
 
     @Query("SELECT p from Portfolio p where p.isDeleted = false and p.isActivated = true")
