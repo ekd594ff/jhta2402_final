@@ -62,12 +62,12 @@ public class PortfolioController {
         return portfolioService.getMyPortfolioInfoById(portfolioId);
     }
 
-    @GetMapping("/list/random")
-    public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(@RequestParam int count) {
-        return portfolioService.getRandomPortfolioAllInfoDtos(count);
-    }
+//    @GetMapping("/list/random")
+//    public List<PortfolioAllInfoDto> getRandomPortfolioAllInfoDtos(@RequestParam int count) {
+//        return portfolioService.getRandomPortfolioAllInfoDtos(count);
+//    }
 
-    @GetMapping("/list/random2")
+    @GetMapping("/list/random")
     public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
     }
