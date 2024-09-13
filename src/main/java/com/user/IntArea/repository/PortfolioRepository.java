@@ -58,6 +58,20 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             "ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
     List<Map<String, Object>> getRandomPortfolioInfoDtos(@Param("count") int count);
 
+
+    // 포트폴리오에 대한 리뷰들에 작성된 평점의 평균순으로 나열
+    @Query("SELECT p.title as title, p.id as portfolioId, i.url as thumbnail, c.companyName as companyName, ROUND(AVG(r.rate), 2) as avgRate " +
+            "FROM Portfolio p " +
+            "LEFT JOIN Image i on i.refId = p.id " +
+            "LEFT JOIN Company c on p.company.id =  c.id " +
+            "LEFT JOIN QuotationRequest qr on qr.portfolio.id = p.id " +
+            "LEFT JOIN Quotation q on q.quotationRequest.id =  qr.id " +
+            "LEFT JOIN Review r on r.quotation.id = q.id " +
+            "WHERE p.isDeleted = false AND p.isActivated = true AND qr.progress = 'APPROVED' " +
+            "GROUP BY p.title, p.id, i.url, c.companyName " +
+            "ORDER BY AVG(r.rate) DESC, p.createdAt ASC")
+    List<Map<String, Object>> getRecommendedPortfolioByAvgRate(Pageable pageable);
+
     @Query(value = "SELECT p.id, p.title, c.companyName, p.description, array_agg(i.url ORDER BY i.url) " +
             "FROM Portfolio p " +
             "INNER JOIN Company c ON c.id = p.companyId " +
@@ -97,5 +111,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     Page<Portfolio> getAllValidByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
 
     Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
+
 
 }

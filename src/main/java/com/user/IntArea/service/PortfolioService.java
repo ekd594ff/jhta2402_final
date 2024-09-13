@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -187,6 +185,11 @@ public class PortfolioService {
             portfolioAllInfoDtos.add(portfolioInfoDto);
         }
         return portfolioAllInfoDtos;
+    }
+
+    // (일반 권한) 1순위부터 count 순위까지의 PortfolioRateDtos 불러오기
+    public List<Map<String, Object>> getRecommendedPortfolioByAvgRate(Pageable pageable) {
+        return portfolioRepository.getRecommendedPortfolioByAvgRate(pageable);
     }
 
     // seller 권한
