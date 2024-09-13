@@ -17,8 +17,37 @@ import {
     GridToolbarExport,
     getGridStringOperators
 } from "@mui/x-data-grid";
+import {Button, TextField} from "@mui/material";
+import {Modal, Box, Typography} from '@mui/material';
+import MemberModalContent from "./component/memberModalContent.jsx";
+import CompanyModalContent from "./component/companyModalContent.jsx";
+import PortfolioModalContent from "./component/portfolioModalContent.jsx";
+import QuotationModalContent from "./component/quotationModalContent.jsx";
+import ReportModalContent from "./component/reportModalContent.jsx";
+import QuotationRequestModalContent from "./component/quotationRequestModalContent.jsx";
+import ReviewModalContent from "./component/reviewModalContent.jsx";
 
 
+function route(params, inputValue) {
+    switch (params) {
+        case "member" :
+            return <MemberModalContent {...inputValue}/>;
+        case "company" :
+            return <CompanyModalContent {...inputValue}/>;
+        case "portfolio" :
+            return <PortfolioModalContent {...inputValue}/>;
+        case "review" :
+            return <ReviewModalContent {...inputValue}/>;
+        case "report" :
+            return <ReportModalContent {...inputValue}/>;
+        case "quotation" :
+            return <QuotationModalContent {...inputValue}/>;
+        case "quotationRequest" :
+            return <QuotationRequestModalContent {...inputValue}/>;
+        default :
+            <></>;
+    }
+}
 function NestedList() {
     const [open, setOpen] = React.useState(true);
 
@@ -28,39 +57,55 @@ function NestedList() {
 
     return (
         <List
-            sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+            sx={{height: '100%', width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
             component="nav"
             aria-labelledby="nested-list-subheader"
             subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                    Nested List Items
+                <ListSubheader
+                    component="div"
+                    id="nested-list-subheader"
+                    style={{backgroundColor: '#27AE60', color: '#FFF'}}
+                >
+                    Admin
                 </ListSubheader>
             }
         >
-            <ListItemButton>
-                <Link to={"member"}><ListItemText primary="Member"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"company"}><ListItemText primary="Company"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"portfolio"}><ListItemText primary="Portfolio"/></Link>
-            </ListItemButton>
-            <ListItemButton>
-                <Link to={"review"}><ListItemText primary="Review"/></Link>
-            </ListItemButton>
+            {['Member', 'Company', 'Portfolio', 'Review', 'Report', 'Quotation', 'QuotationRequest'].map((text) => {
+                return (
+                    <Link to={text.charAt(0).toLowerCase() + text.slice(1)}
+                          style={{textDecoration: 'none', color: 'inherit'}} key={text}>
+                        <ListItemButton className={style["list-item"]} >
+                            <ListItemText primary={text}/>
+                        </ListItemButton>
+                    </Link>
+                );
+            })}
         </List>
     );
 }
+const handleApiRequest = async () => {
+    try {
+        const ids = selectedRows;
+        const response = await axios.delete(`/api/${pathname}/admin/soft/${ids}`,
+        );
 
+        console.log('selectedRows', selectedRows);
+        console.log('API Response:', response.data);
+    } catch (error) {
+        console.error('Error sending API request:', error);
+    } finally {
+        console.log('selectedRows', selectedRows);
+    }
+};
 function CustomToolbar(props) {
     return (
         <GridToolbarContainer>
-            <GridToolbarFilterButton />
-            <GridToolbarExport />
+            <GridToolbarFilterButton/>
+            <GridToolbarExport/>
         </GridToolbarContainer>
     );
 }
+
 
 const filterOperators = getGridStringOperators()
     .filter(
@@ -72,6 +117,20 @@ const filterOperators = getGridStringOperators()
             ...operator
         };
     });
+const handleUpdateClick = async (id) => {
+    console.log('id', id);
+    // try {
+    //     const response = await axios.delete(`/api/${pathname}/admin/soft/${id}`,
+    //     );
+    // } catch (error) {
+    //     console.error('Error sending API request:', error);
+    // }
+};
+
+// const selectColumn = {
+//     deleted: {true, false}
+// }
+
 
 function DataTable() {
     const [data, setData] = useState([]);
@@ -79,9 +138,39 @@ function DataTable() {
     const path = useLocation()
     const pathname = path.pathname.split("/admin/")[1];
     const [columns, setColumns] = useState([]);
-    const [filterModel, setFilterModel] = useState({field: "", value:"" });
+    const [filterModel, setFilterModel] = useState({field: "", value: ""});
     const [paginationModel, setPaginationModel] = useState({page: 0, pageSize: 5});
     const [sortModel, setSortModel] = useState({field: "", sort: ""})
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [inputValue, setInputValue] = useState({});
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const handleEdit = ((params) => {
+        console.log(params);
+    });
+
+    const buttonColumns = {
+        field: 'delete',
+        headerName: '수정',
+        width: 150,
+        renderCell: (params) => (
+            <Button
+                variant="contained"
+                color="default"
+                onClick={(event) => {
+                    console.log("params.row", params.row);
+                    event.stopPropagation();
+                    setInputValue(params.row);
+                    handleUpdateClick(params.row.id)
+                    handleOpen();
+                }} // ID를 전달
+            >
+                수정
+            </Button>
+        ),
+    };
     const fetchData = async (pathname, paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
@@ -95,12 +184,18 @@ function DataTable() {
                 const cols = Object.keys(response.data.content[0]).map(key => ({
                     field: key,
                     headerName: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자 대문자
-                    width: 200, // 기본 너비 설정
+                    flex: 1,
                     filterOperators
                 }));
+                console.log(response.data.content);
+                cols.push(buttonColumns);
                 setColumns(cols);
             }
-            setData(response.data.content); // 실제 데이터 구조에 맞게 수정
+            setData(response.data.content);
+            // setData(response.data.content.map(item => ({
+            //     ...item,
+            //     action: '버튼 클릭',
+            // }))); // 실제 데이터 구조에 맞게 수정
             setTotalCount(response.data.page.totalElements); // 전체 데이터 수
         } catch (error) {
             console.error('데이터를 가져오는 데 오류가 발생했습니다:', error);
@@ -108,7 +203,9 @@ function DataTable() {
             // console.log(data);
         }
     };
-    const fetchFilterdData = async (filterModel,sortModel,pathname,paginationModel) => {
+
+
+    const fetchFilterdData = async (filterModel, sortModel, pathname, paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
             const param = {};
@@ -138,16 +235,18 @@ function DataTable() {
                 const cols = Object.keys(response.data.content[0]).map(key => ({
                     field: key,
                     headerName: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자 대문자
-                    width: 200, // 기본 너비 설정
+                    flex: 1, // 기본 너비
                     filterOperators
                 }));
+
+                cols.push(buttonColumns);
                 setColumns(cols);
             }
             setData(response.data.content); // 실제 데이터 구조에 맞게 수정
             setTotalCount(response.data.page.totalElements); // 전체 데이터 수
         } catch (error) {
             console.error('데이터를 가져오는 데 오류가 발생했습니다:', error);
-        }finally {
+        } finally {
             // console.log(data);
         }
     };
@@ -156,10 +255,14 @@ function DataTable() {
         // console.log("filterModel.value.length=", filterModel.value.length);
         // console.log("sortModel.field.length=", sortModel.field.length);
         let sortField;
+        let filterValue;
         if (sortModel) {
             sortField = sortModel.field;
         }
-        if (filterModel.value || sortField) { // filterModel, sortModel 값 확인 후 분기
+        if (filterModel) {
+            filterValue = filterModel.value;
+        }
+        if (filterValue || sortField) { // filterModel, sortModel 값 확인 후 분기
             fetchFilterdData(filterModel, sortModel, pathname, paginationModel); // 매개변수 수정
         } else {
             fetchData(pathname, paginationModel);
@@ -171,40 +274,94 @@ function DataTable() {
         setPaginationModel({page: 0, pageSize: 5})
     }, [pathname, sortModel, filterModel]);
 
+    useEffect(() => {
+        setSortModel({field: "", sort: ""});
+        setFilterModel({field: "", value: ""});
+        setPaginationModel({page: 0, pageSize: 5});
+    }, [pathname]);
     const handleFilterModelChange = (model) => {
         console.log('filterModel', model);
         setFilterModel(model.items[0])
     };
     const handleSortModelChange = (model) => {
-        console.log("sortModel[0]",model[0]);
-        console.log("sortModel",model);
+        console.log("sortModel[0]", model[0]);
+        console.log("sortModel", model);
         setSortModel(model[0]);
     };
     const handlePaginationModelChange = (model) => {
         // console.log("paginationModel", model);
         setPaginationModel(model);
     };
+    const handleRowSelection = (newSelection) => {
+        setSelectedRows(newSelection.join(","));
+    };
+
 
     return (
-        <Paper sx={{height: 400, width: '100%'}}>
-            <DataGrid
-                rows={data}
-                columns={columns}
-                checkboxSelection
-                components={{
-                    Toolbar: CustomToolbar
-                }}
-                pagination
-                filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
-                paginationMode="server"
-                sortingMode="server"
-                // filterModel={filterModel}
-                rowCount={totalCount}
-                onFilterModelChange={handleFilterModelChange}
-                onSortModelChange={handleSortModelChange}
-                onPaginationModelChange={handlePaginationModelChange}
-                paginationModel={paginationModel}
-            />
+        <Paper sx={{height: '100%', width: '100%'}}>
+            <div className={style.buttonContainer}>
+                {/*<Button*/}
+                {/*    onClick={handleApiRequest}*/}
+                {/*    variant="outlined"*/}
+                {/*    style={{backgroundColor: 'default', color: 'default', marginRight: '10px'}} // 오른쪽 여백 추가*/}
+                {/*    size="small"*/}
+                {/*    className={style.customButton}*/}
+                {/*>*/}
+                {/*    추가*/}
+                {/*</Button>*/}
+                <Button
+                    onClick={handleApiRequest}
+                    variant="outlined"
+                    style={{backgroundColor: '#f50057', color: '#fff', marginRight: '10px'}} // 오른쪽 여백 추가
+                    size="small"
+                    className={style.customButton}
+                >
+                    삭제
+                </Button>
+            </div>
+            <div className={style["data-Grid"]} >
+                <DataGrid
+                    rows={data}
+                    columns={columns}
+                    checkboxSelection
+                    components={{
+                        Toolbar: CustomToolbar,
+                        Footer: () => (
+                            <div className={style["footerCell"]}>
+                                Footer Content
+                            </div>
+                        ),
+                    }}
+                    pagination
+                    filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
+                    paginationMode="server"
+                    sortingMode="server"
+                    rowCount={totalCount}
+                    pageSizeOptions={[5, 10, 100]}
+                    onFilterModelChange={handleFilterModelChange}
+                    onSortModelChange={handleSortModelChange}
+                    onPaginationModelChange={handlePaginationModelChange}
+                    onRowSelectionModelChange={handleRowSelection}
+                    autoHeight
+                    paginationModel={paginationModel}
+                />
+            </div>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box className={style["modal-style"]}>
+                    <Typography id="modal-title" variant="h6" component="h2">
+                        수정
+                    </Typography>
+                    {route(pathname, inputValue)}
+                    <Button variant="outlined" onClick={handleClose}>
+                        닫기
+                    </Button>
+                </Box>
+            </Modal>
         </Paper>
     );
 }
@@ -237,8 +394,11 @@ function Admin() {
                 <Routes>
                     <Route path={"company"} element={<DataTable/>}/>
                     <Route path={"portfolio"} element={<DataTable/>}/>
-                    <Route path={"review"} element={<DataTable/>} />
+                    <Route path={"review"} element={<DataTable/>}/>
                     <Route path={"member"} element={<DataTable/>}/>
+                    <Route path={"report"} element={<DataTable/>}/>
+                    <Route path={"quotation"} element={<DataTable/>}/>
+                    <Route path={"quotationRequest"} element={<DataTable/>}/>
                     <Route path={"/"} element={<DataTable/>}/>
                 </Routes>
             </div>

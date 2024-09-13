@@ -9,8 +9,7 @@ import com.user.IntArea.dto.image.ImageDto;
 import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.enums.Platform;
 import com.user.IntArea.entity.enums.Role;
-import com.user.IntArea.repository.ImageRepository;
-import com.user.IntArea.repository.MemberRepository;
+import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final QuotationRequestRepository quotationRequestRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageUtil imageUtil;
     private final ImageRepository imageRepository;
@@ -84,6 +85,7 @@ public class MemberService {
         return memberRepository.findAll(pageable).map(MemberResponseDto::new);
     }
 
+    @Transactional
     public Page<MemberResponseDto> getMemberListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
         if (filterValue.isPresent() && filterColumn.isPresent()) {
             switch (filterColumn.get()) {
@@ -174,5 +176,29 @@ public class MemberService {
             imageRepository.save(imageDto.toImage());
         });
         return imageDtoOptional;
+    }
+
+    @Transactional
+    public void softDeleteMembers(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        memberRepository.softDeleteByIds(ids);
+    }
+
+    @Transactional
+    public void hardDeleteMembers(List<String> idList) {
+        List<UUID> ids = idList.stream().map(UUID::fromString).toList();
+        memberRepository.deleteAllById(ids);
+//        quotationRequestRepository.deleteAllById(ids);
+    }
+
+    @Transactional
+    public void editMemberForAdmin(AdminEditMemberDto adminEditMemberDto) {
+        Optional<Member> member = memberRepository.findById(adminEditMemberDto.getId());
+        if (member.isPresent()) {
+            member.get().setRole(adminEditMemberDto.getRole());
+            member.get().setDeleted(adminEditMemberDto.isDeleted());
+        } else {
+            throw new UsernameNotFoundException("editMember");
+        }
     }
 }

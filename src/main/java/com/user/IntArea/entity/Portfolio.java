@@ -55,16 +55,4 @@ public class Portfolio {
         this.title = title;
         this.description = description;
     }
-
-
-    public List<String> getPortfolioImages() {
-        List<String> images = new ArrayList<>();
-
-        return images;
-    }
-
-    public List<Quotation> getWrittenQuotations() {
-        List<Quotation> quotations = new ArrayList<>();
-        return quotations;
-    }
 }
