@@ -85,20 +85,20 @@ public class PortfolioController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/company/list/company")
-    public Page<PortfolioInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
+    @GetMapping("/list/company")
+    public Page<PortfolioDetailInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getCompanyPortfolioInfoDtosByCompanyManager(pageable);
     }
 
-    @GetMapping("/company/delete/{id}")
+    @PatchMapping("/seller/delete/{id}")
     public void deletePortfolioInfoDtoByCompany(@PathVariable(name = "id") UUID portfolioId) {
         portfolioService.softDeletePortfolio(portfolioId);
     }
 
-    @GetMapping("/company/activate")
-    public void activatePortfolioInfoDtoByCompany(@RequestParam UUID portfolioId, @RequestParam Boolean activated) {
-        portfolioService.activatePortfolio(portfolioId, activated);
+    @PatchMapping("/seller/activate")
+    public void updateActivatePortfolioInfoDtoByCompany(@RequestBody PortfolioIsActivatedRequestDto dto) {
+        portfolioService.updateActivatePortfolio(dto);
     }
 
     /*@PostMapping("/draft") // 초안 임시저장 기능(서비스 매서드 미구현)
@@ -114,9 +114,9 @@ public class PortfolioController {
         return portfolioService.getPortfolioInfoByIdByAdmin(portfolioId);
     }
 
-    @GetMapping("/admin/activate/{id}")
-    public void activatePortfolioByAdmin(@PathVariable UUID portfolioId, @RequestParam Boolean activated) {
-        portfolioService.activatePortfolio(portfolioId, activated);
+    @PatchMapping("/admin/activate")
+    public void updateActivatePortfolioByAdmin(PortfolioIsActivatedRequestDto dto) {
+        portfolioService.updateActivatePortfolio(dto);
     }
 
     @GetMapping("/admin/list")

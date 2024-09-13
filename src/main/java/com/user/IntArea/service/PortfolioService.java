@@ -310,27 +310,44 @@ public class PortfolioService {
     }
 
     // (seller 권한) 회사 관리자가 관리하는 회사의 모든 포트폴리오 InfoDto 불러오기
-    public Page<PortfolioInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(Pageable pageable) throws NoSuchElementException {
+    public Page<PortfolioDetailInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(Pageable pageable) throws NoSuchElementException {
         Company company = getCompanyOfMember();
-        Page<Portfolio> portfolios = portfolioRepository.findAllByCompany(company, pageable);
-        return portfolios.map(PortfolioInfoDto::new);
+        Page<Portfolio> portfolios = portfolioRepository.findAllByCompanyAndIsDeleted(company, false, pageable);
+
+        return portfolios.map((portfolio) -> {
+            List<String> imageUrls = imageRepository.findAllByRefId(portfolio.getId()).stream().map(Image::getUrl).toList();
+
+            return new PortfolioDetailInfoDto(portfolio, imageUrls);
+        });
     }
 
     // (seller 권한) 포트폴리오 삭제(회사 관리자만 과거의 작성기록으로서 열람 가능, 수정 불가)
     public void softDeletePortfolio(UUID id) {
         Company company = getCompanyOfMember();
-        Portfolio portfolio = portfolioRepository.findByIdByCompanyManager(id, company.getId());
-        isCompanyManager(portfolio);
+        Portfolio portfolio = portfolioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("포트폴리오가 없습니다."));
+
+        if (!portfolio.getCompany().equals(company)) {
+            throw new NoSuchElementException("본인 회사가 아닙니다.");
+        }
+
         portfolio.setDeleted(true);
         portfolioRepository.save(portfolio);
     }
 
     // (seller 권한) 포트폴리오 활성화-비활성화(일반 고객에게 비공개-회사 관리자만 열람 및 수정 가능)
-    public void activatePortfolio(UUID id, boolean isActivated) {
+    public void updateActivatePortfolio(PortfolioIsActivatedRequestDto dto) {
         Company company = getCompanyOfMember();
-        Portfolio portfolio = portfolioRepository.findByIdByCompanyManager(id, company.getId());
-        isCompanyManager(portfolio);
-        portfolio.setActivated(!isActivated);
+
+        Portfolio portfolio = portfolioRepository.findById(dto.getPortfolioId())
+                .orElseThrow(() -> new NoSuchElementException("포트폴리오가 없습니다."));
+
+        if (!portfolio.getCompany().equals(company)) {
+            throw new NoSuchElementException("본인 소유 회사가 아닙니다.");
+        }
+
+        portfolio.setActivated(dto.isActivated());
+  
         portfolioRepository.save(portfolio);
     }
 
