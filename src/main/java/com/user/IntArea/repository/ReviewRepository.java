@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
+
+
+    Optional<Review> findByQuotationId(UUID quotationId);
 
     @Query("SELECT r FROM Review r " +
             "INNER JOIN Quotation q ON q.id = r.quotation.id " +

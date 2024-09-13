@@ -1,5 +1,6 @@
 package com.user.IntArea.entity;
 
+import com.user.IntArea.dto.review.CreateReviewDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -46,5 +47,14 @@ public class Review {
     public Review(Quotation quotation, Member member) {
         this.quotation = quotation;
         this.member = member;
+    }
+
+    @Builder
+    public Review(Member member, Quotation quotation, CreateReviewDto createReviewDto) {
+        this.quotation = quotation;
+        this.member = member;
+        this.title = createReviewDto.getTitle();
+        this.description = createReviewDto.getDescription();
+        this.rate = createReviewDto.getRate();
     }
 }
