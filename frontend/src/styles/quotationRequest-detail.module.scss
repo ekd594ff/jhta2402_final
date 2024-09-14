@@ -1,0 +1,38 @@
+@use "variables";
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+
+    & > .quotationRequest-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    & > .quotation-card {
+
+      & > .quotation-info {
+
+        & > .image {
+          width: 640px;
+          height: 640px;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}

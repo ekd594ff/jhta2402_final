@@ -3,23 +3,25 @@ import axios from "axios";
 import {
     Typography,
     Button,
-    Snackbar, Grid2, Card, Box, CardContent,
+    Snackbar, Grid2, Card, CardContent, Alert,
 } from "@mui/material";
 import style from "../../styles/quotationRequest-list.module.scss";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
-import {useNavigate} from "react-router-dom";
-import {CheckCircle, HourglassEmpty} from "@mui/icons-material";
+import {useNavigate, useParams} from "react-router-dom";
+import {CheckCircle, Pending, Person} from "@mui/icons-material";
+import Avatar from "@mui/material/Avatar";
 
 const QuotationRequestList = () => {
 
+    const path = window.location.pathname;
     const navigate = useNavigate();
 
     const [quotationRequests, setQuotationRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [pageInfo, setPageInfo] = useState({
-        progress: "PENDING",
+        progress: "PENDING", // PENDING, APPROVED, ALL
         page: 0,
         totalPage: 0,
         size: 6,
@@ -32,11 +34,15 @@ const QuotationRequestList = () => {
             setLoading(true);
             setError(null);
 
-            try {
-                const response = await axios.get(
-                    `/api/quotationRequest/companyList?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`
-                );
+            let url;
+            if (path.endsWith("member")) {
+                url = `/api/quotationRequest/list?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`;
+            } else if (path.endsWith("company")) {
+                url = `/api/quotationRequest/companyList?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`;
+            }
 
+            try {
+                const response = await axios.get(url);
                 console.log(response.data);
                 (pageInfo.page === 0)
                     ? setQuotationRequests(response.data.content)
@@ -62,14 +68,13 @@ const QuotationRequestList = () => {
     };
 
     const updateProgress = async (id) => {
+        if (!confirm("해당 거래를 취소하시겠습니까?")) return;
+
         try {
             await axios.put(`/api/quotationRequest/sellerCancel/${id}`);
             setSnackbarMessage("진행 상태가 업데이트되었습니다.");
             setSnackbarOpen(true);
-            // 요청 목록을 다시 불러와서 최신 상태로 업데이트
-            setQuotationRequests((prevRequests) =>
-                prevRequests.filter((request) => request.id !== id)
-            );
+            setPageInfo({...pageInfo, progress: "ALL", page: 0})
         } catch (err) {
             console.error(err);
             setSnackbarMessage("진행 상태 업데이트 실패.");
@@ -85,7 +90,7 @@ const QuotationRequestList = () => {
 
     const progressIcon = (progress) => {
         if (progress === "PENDING") {
-            return <div className={style['text']}>진행 중<HourglassEmpty/></div>;
+            return <Pending/>;
         } else if (progress === "APPROVED") {
             return <CheckCircle/>;
         } else if (progress === "USER_CANCELLED") {
@@ -141,32 +146,40 @@ const QuotationRequestList = () => {
                                 <Card variant="outlined" className={style['qr-card']}>
                                     <CardContent className={style['qr-card-content']}>
                                         <div className={style['image-div']}>
-                                            <div className={style['member-div']}>
-                                                <img className={style['image']}
-                                                     src={request.member.memberUrl || "default"}/>
-                                                <div>{request.member.username}</div>
-                                            </div>
+                                            {path.endsWith("company") &&
+                                                <div className={style['member-div']}>
+                                                    {(request.member.memberUrl)
+                                                        ? <Avatar alt="member profile"
+                                                                  src={request.member.memberUrl}/>
+                                                        : <Avatar alt="member profile">
+                                                            <Person/>
+                                                        </Avatar>}
+                                                    <div>{request.member.username}</div>
+                                                </div>
+                                            }
                                             <Typography variant="subtitle1" className={style[request.progress]}>
-                                            {progressIcon(request.progress)}
-                                            </Typography>
-                                        </div>
-                                        <div className={style['progress-div']}>
-                                            <Typography variant="body1" className={style['updatedAt']}>
-                                                {request.updatedAt}
+                                                {progressIcon(request.progress)}
                                             </Typography>
                                         </div>
                                         <div className={style['info-div']}>
-                                            <Typography>{request.title}</Typography>
-                                            <Typography>{request.description}</Typography>
-                                            <Typography>{request.description}</Typography>
+                                            <Typography variant="subtitle2">{request.title}</Typography>
+                                            <Typography variant="body2">{request.description}</Typography>
                                         </div>
-                                        <div className={style['button-div']}>
-                                            <Button className={style['button']}>
-                                                거래 취소
-                                            </Button>
-                                            <Button className={style['button']}>
-                                                상세 정보
-                                            </Button>
+                                        <div className={style['bottom-div']}>
+                                            <div className={style['date-div']}>
+                                                {request.updatedAt}
+                                            </div>
+                                            <div className={style['button-div']}>
+                                                {request.progress === "PENDING" &&
+                                                    <Button className={style['button']}
+                                                            onClick={() => updateProgress(request.id)}>
+                                                        거래 취소
+                                                    </Button>}
+                                                <Button className={style['button']}
+                                                        onClick={() => navigate(`/quotationRequest/${request.id}`)}>
+                                                    상세 정보
+                                                </Button>
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -174,23 +187,6 @@ const QuotationRequestList = () => {
                         )}
                     </Grid2>
 
-                    {/*<TableContainer component={Paper}>*/}
-                    {/*    <Table aria-label="collapsible table">*/}
-                    {/*        <TableHead>*/}
-                    {/*            <TableRow>*/}
-                    {/*                <TableCell/>*/}
-                    {/*                <TableCell align="center">제목</TableCell>*/}
-                    {/*                <TableCell align="center">내용</TableCell>*/}
-                    {/*                <TableCell align="center">생성일자</TableCell>*/}
-                    {/*                <TableCell align="center">수정일자</TableCell>*/}
-                    {/*                <TableCell align="center">수정</TableCell>*/}
-                    {/*            </TableRow>*/}
-                    {/*        </TableHead>*/}
-                    {/*        <TableBody>*/}
-                    {/*            */}
-                    {/*        </TableBody>*/}
-                    {/*    </Table>*/}
-                    {/*</TableContainer>*/}
                     {(pageInfo.page + 1 < pageInfo.totalPage) && (
                         <Button onClick={() => setPageInfo({...pageInfo, page: pageInfo.page + 1})}
                                 disabled={loading}>
@@ -198,11 +194,22 @@ const QuotationRequestList = () => {
                         </Button>
                     )}
                     <Snackbar
+                        anchorOrigin={{vertical: "top", horizontal: "center"}}
                         open={snackbarOpen}
                         autoHideDuration={3000}
                         onClose={handleSnackbarClose}
                         message={snackbarMessage}
-                    />
+                        sx={{marginTop: "40px"}}>
+                        <Alert
+                            severity="success"
+                            variant="outlined"
+                            sx={{
+                                width: '100%',
+                                bgcolor: 'background.paper',
+                            }}>
+                            {snackbarMessage}
+                        </Alert>
+                    </Snackbar>
                 </div>
             </main>
             <Footer/>

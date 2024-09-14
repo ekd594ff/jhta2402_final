@@ -81,10 +81,9 @@ public class QuotationController {
     }
 
     // (seller) 작성한 quotation 취소 처리
-    @GetMapping("/company/cancel/quotation") // ● Postman Pass
-    public void cancelQuotationBySeller(@RequestParam UUID quotationId) {
-        Quotation quotation = quotationService.getById(quotationId);
-        quotationService.cancelQuotationBySeller(quotation);
+    @PatchMapping("/company/cancel/{id}") // ● Postman Pass
+    public void cancelQuotationBySeller(@PathVariable UUID id) {
+        quotationService.cancelQuotationBySeller(id);
     }
     @GetMapping("/admin/list")
     public ResponseEntity<Page<QuotationResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
