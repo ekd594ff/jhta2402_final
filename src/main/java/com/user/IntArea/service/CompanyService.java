@@ -14,7 +14,9 @@ import com.user.IntArea.repository.CompanyRepository;
 import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
@@ -206,4 +209,19 @@ public class CompanyService {
             throw new RuntimeException("editCompany");
         }
     }
+
+    @Transactional
+    public List<CompanyWithImageDto> findTop8CompaniesByQuotationCount() {
+        Pageable pageable = PageRequest.ofSize(8);
+        List<Company> companyList = companyRepository.findTop8CompaniesByQuotationCount(pageable);
+        log.info("companyList={}", companyList); //확인
+        return null;
+//        return companyRepository.findTop8CompaniesByQuotationCount(pageable).stream()
+//                .map(company -> {
+//                    Optional<Image> optionalImage = imageRepository.findById(company.getId());
+//                    return optionalImage.map(image -> new CompanyWithImageDto(company,image))
+//                            .orElse(new CompanyWithImageDto(company));
+//                }).toList();
+    }
+
 }

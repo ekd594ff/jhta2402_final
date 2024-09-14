@@ -53,8 +53,6 @@ public class QuotationRequestController {
     }
 
 
-
-
     @GetMapping("/list/{memberId}")
     public ResponseEntity<Page<QuotationRequestListDto>> getQuotationRequestByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -62,10 +60,10 @@ public class QuotationRequestController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping("/companyList/{companyId}")
-    public ResponseEntity<Page<QuotationRequestCompanyDto>> getQuotationRequestByCompanyId(@PathVariable UUID companyId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<QuotationRequestCompanyDto> responseDto = quotationRequestService.getQuotationRequestsByCompanyId(companyId, pageable);
+    @GetMapping("/companyList")
+    public ResponseEntity<Page<QuotationRequestCompanyDto>> getQuotationRequestByCompanyId(@RequestParam String progress, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
+        Page<QuotationRequestCompanyDto> responseDto = quotationRequestService.getQuotationRequestsByCompanyId(progress, pageable);
         return ResponseEntity.ok().body(responseDto);
     }
 
