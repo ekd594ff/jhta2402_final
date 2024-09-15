@@ -1,7 +1,10 @@
 package com.user.IntArea.dto.quotationRequest;
 
 import com.user.IntArea.dto.member.QuotationRequestMemberDto;
+import com.user.IntArea.dto.portfolio.PortfolioQuotationRequestDto;
 import com.user.IntArea.dto.solution.SolutionDto;
+import com.user.IntArea.entity.Member;
+import com.user.IntArea.entity.QuotationRequest;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,18 +13,37 @@ import java.util.UUID;
 
 @Data
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuotationRequestCompanyDto {
     private UUID id;
     private QuotationRequestMemberDto member;
-    private UUID portfolioId;
+    private PortfolioQuotationRequestDto portfolio;
     private String title;
     private String description;
-    private List<SolutionDto> solutions;
     private String progress;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private List<SolutionDto> solutions;
     private UUID companyId;
+
+    @Builder
+    public QuotationRequestCompanyDto(
+            QuotationRequest quotationRequest,
+            String memberUrl,
+            String portfolioUrl,
+            List<SolutionDto> solutions,
+            UUID companyId
+    ) {
+        this.id = quotationRequest.getId();
+        this.member = new QuotationRequestMemberDto(quotationRequest.getMember(), memberUrl);
+        this.title = quotationRequest.getTitle();
+        this.description = quotationRequest.getDescription();
+        this.progress = quotationRequest.getProgress().toString();
+        this.createdAt = quotationRequest.getCreatedAt();
+        this.updatedAt = quotationRequest.getUpdatedAt();
+        this.portfolio = new PortfolioQuotationRequestDto(quotationRequest.getPortfolio(), portfolioUrl);
+        this.solutions = solutions;
+        this.companyId = companyId;
+    }
 }
