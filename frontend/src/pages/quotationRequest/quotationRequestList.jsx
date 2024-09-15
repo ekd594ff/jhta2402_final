@@ -3,13 +3,13 @@ import axios from "axios";
 import {
     Typography,
     Button,
-    Snackbar, Grid2, Card, CardContent, Alert,
+    Snackbar, Grid2, Card, CardContent, Alert, Box,
 } from "@mui/material";
 import style from "../../styles/quotationRequest-list.module.scss";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
 import {useNavigate, useParams} from "react-router-dom";
-import {CheckCircle, Pending, Person} from "@mui/icons-material";
+import {CheckCircle, Image, Pending, Person} from "@mui/icons-material";
 import Avatar from "@mui/material/Avatar";
 
 const QuotationRequestList = () => {
@@ -141,29 +141,58 @@ const QuotationRequestList = () => {
                         </Grid2>
                     </Grid2>
                     <Grid2 container spacing={2} className={style['qr-card-container']}>
+                        {quotationRequests.length === 0 &&
+                            <div className={style['no-content-div']}>해당 조건의 견적신청서가 없습니다.</div>}
                         {quotationRequests.map(request =>
                             <Grid2 key={request.id} size={6} className={style['qr-card-grid']}>
                                 <Card variant="outlined" className={style['qr-card']}>
                                     <CardContent className={style['qr-card-content']}>
                                         <div className={style['image-div']}>
-                                            {path.endsWith("company") &&
-                                                <div className={style['member-div']}>
-                                                    {(request.member.memberUrl)
-                                                        ? <Avatar alt="member profile"
-                                                                  src={request.member.memberUrl}/>
-                                                        : <Avatar alt="member profile">
-                                                            <Person/>
-                                                        </Avatar>}
-                                                    <div>{request.member.username}</div>
-                                                </div>
-                                            }
+                                            <div className={style['portfolio-div']}>
+                                                {request.portfolio.url
+                                                    ? <Box component="img" src={request.portfolio.url}
+                                                           sx={{
+                                                               width: "64px", height: "'64px",
+                                                               objectFit: "cover", borderRadius: "50%"
+                                                           }}/>
+                                                    : <Image/>
+                                                }
+                                                <Typography>
+                                                    {request.portfolio.title}
+                                                </Typography>
+                                            </div>
                                             <Typography variant="subtitle1" className={style[request.progress]}>
                                                 {progressIcon(request.progress)}
                                             </Typography>
                                         </div>
+                                        {path.endsWith("company") &&
+                                            <div className={style['member-div']}>
+                                                <div className={style['member-title-div']}>
+                                                    <Typography className={style['title']}
+                                                                variant="h6"
+                                                                sx={{fontSize: "18px"}}>{request.title}</Typography>
+                                                    <div className={style['member-info']}>
+                                                        {(request.member.memberUrl)
+                                                            ? <Avatar alt="member profile"
+                                                                      sx={{height: "32px", width: "32px"}}
+                                                                      src={request.member.memberUrl}/>
+                                                            : <Avatar alt="member profile"
+                                                                      sx={{height: "32px", width: "32px"}}>
+                                                                <Person/>
+                                                            </Avatar>}
+                                                        <div className={style['member-username']}>
+                                                            {request.member.username}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className={style['member-content-div']}>
+                                                    <Typography variant="body2">
+                                                        {request.description}
+                                                    </Typography>
+                                                </div>
+                                            </div>
+                                        }
                                         <div className={style['info-div']}>
-                                            <Typography variant="subtitle2">{request.title}</Typography>
-                                            <Typography variant="body2">{request.description}</Typography>
                                         </div>
                                         <div className={style['bottom-div']}>
                                             <div className={style['date-div']}>

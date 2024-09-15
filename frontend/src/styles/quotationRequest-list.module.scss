@@ -36,6 +36,14 @@
 
     & > .qr-card-container {
 
+      & > .no-content-div {
+        margin-top: 16px;
+        width: 100%;
+        text-align: center;
+        color: gray;
+        font-weight: 400;
+      }
+
       & > .qr-card-grid {
 
         & > .qr-card {
@@ -43,13 +51,14 @@
           & > .qr-card-content {
             margin: auto;
 
+
             & > .image-div {
               display: flex;
               justify-content: space-between;
               align-items: center;
               margin-bottom: 16px;
 
-              & > .member-div {
+              & > .portfolio-div {
                 display: flex;
                 align-items: center;
                 gap: 16px;
@@ -78,6 +87,25 @@
               & > .ADMIN_CANCELLED {
                 font-size: 14px;
                 color: orange;
+              }
+            }
+
+            & > .member-div {
+
+              & > .member-title-div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                & > .member-info {
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                }
+              }
+
+              & > .member-content-div {
+
               }
             }
 

@@ -6,6 +6,7 @@ import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 import {Card, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
+import QuotationCard from "../../components/quotation/quotationCard.jsx";
 
 function QuotationRequestDetail() {
 
@@ -50,9 +51,9 @@ function QuotationRequestDetail() {
             <Header/>
             <main className={style['main']}>
                 <div className={style['container']}>
-                    <h2>견적신청서</h2>
-                    <Card className={style['quotationRequest-card']}>
-                        <Typography>
+                    <Card className={style['quotationRequest-card']}
+                          sx={{margin: "16px 0", padding: "16px", gap: "16px"}}>
+                        <Typography variant="h6" sx={{margin: "16px", textAlign: "center"}}>
                             {quotationRequest.title}
                         </Typography>
                         <Typography>
@@ -75,33 +76,36 @@ function QuotationRequestDetail() {
                             </div>
                         )}
                     </Card>
-                    <h2>견적서</h2>
-                    <div>
-                        <Button onClick={() => navigate("/quotation")}>
-                            견적서 작성
+                    <div className={style['create-button-div']}>
+                        <h4>완료된 견적서</h4>
+                        <></>
+                    </div>
+                    {quotationRequest.quotations
+                        .filter((quotation) => quotation.progress === "APPROVED")
+                        .map(quotation => <QuotationCard quotation={quotation}/>
+                        )}
+                    <div className={style['create-button-div']}>
+                        <h4>진행중인 견적서</h4>
+                        <Button variant="contained" className={style['create-button']}
+                                onClick={() => navigate("/quotation")}>
+                            새 견적서 작성
                         </Button>
                     </div>
-                    <Card className={style['quotation-card']}>
-                        {quotationRequest.quotations.map(quotation =>
-                            <div className={style['quotation-info']} key={quotation.id}>
-                                {quotation.imageUrls.map(url =>
-                                    <img className={style['image']} src={url} alt="quotation image" key={url}/>
-                                )}
-                                {quotation.totalTransactionAmount}
-                                {quotation.progress}
-                                {quotation.progress === "PENDING" &&
-                                    <div>
-                                        <Button onClick={() => navigate("/quotation")}>
-                                            견적서 수정
-                                        </Button>
-                                        <Button onClick={() => cancelQuotation(quotation.id)}>
-                                            견적서 취소
-                                        </Button>
-                                    </div>
-                                }
-                            </div>
+                    {quotationRequest.quotations
+                        .filter((quotation) => quotation.progress === "PENDING")
+                        .map(quotation => <QuotationCard quotation={quotation}/>
                         )}
-                    </Card>
+                    <div className={style['create-button-div']}>
+                        <h4>취소된 견적서</h4>
+                        <></>
+                    </div>
+                    {quotationRequest.quotations
+                        .filter((quotation) =>
+                            quotation.progress === "USER_CANCELLED" ||
+                            quotation.progress === "SELLER_CANCELLED" ||
+                            quotation.progress === "ADMIN_CANCELLED")
+                        .map(quotation => <QuotationCard quotation={quotation}/>
+                        )}
                 </div>
             </main>
             <Footer/>

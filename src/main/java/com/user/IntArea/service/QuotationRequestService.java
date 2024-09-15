@@ -155,11 +155,10 @@ public class QuotationRequestService {
 
         Page<QuotationRequest> requests = quotationRequestRepository.findAllByMemberIdAndProgresses(memberId, progresses, pageable);
         return requests.map(request -> QuotationRequestListDto.builder()
-                .id(request.getId())
+                .quotationRequest(request)
                 .memberId(request.getMember().getId())
-                .portfolioId(request.getPortfolio().getId())
-                .title(request.getTitle())
-                .description(request.getDescription())
+                .portfolio(request.getPortfolio())
+                .portfolioUrl(imageRepository.findFirstByRefId(request.getPortfolio().getId()).orElse(new Image()).getUrl())
                 .solutions(request.getRequestSolutions().stream()
                         .map(rs -> SolutionDto.builder()
                                 .id(rs.getSolution().getId())
@@ -169,7 +168,6 @@ public class QuotationRequestService {
                                 .createdAt(rs.getSolution().getCreatedAt())
                                 .build())
                         .collect(Collectors.toList()))
-                .progress(request.getProgress().name())
                 .build());
     }
 
@@ -197,11 +195,9 @@ public class QuotationRequestService {
             String memberUrl = imageRepository.findByRefId(request.getMember().getId()).orElseGet(Image::new).getUrl();
 
             return QuotationRequestCompanyDto.builder()
-                    .id(request.getId())
-                    .member(new QuotationRequestMemberDto(request.getMember(), memberUrl))
-                    .portfolioId(request.getPortfolio().getId())
-                    .title(request.getTitle())
-                    .description(request.getDescription())
+                    .quotationRequest(request)
+                    .memberUrl(memberUrl)
+                    .portfolioUrl(imageRepository.findFirstByRefId(request.getPortfolio().getId()).orElse(new Image()).getUrl())
                     .solutions(request.getRequestSolutions().stream()
                             .map(rs -> SolutionDto.builder()
                                     .id(rs.getSolution().getId())
@@ -211,9 +207,6 @@ public class QuotationRequestService {
                                     .createdAt(rs.getSolution().getCreatedAt())
                                     .build())
                             .collect(Collectors.toList()))
-                    .progress(request.getProgress().name())
-                    .createdAt(request.getCreatedAt())
-                    .updatedAt(request.getUpdatedAt())
                     .companyId(company.getId())
                     .build();
         });
