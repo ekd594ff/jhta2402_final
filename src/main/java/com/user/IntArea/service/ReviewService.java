@@ -31,7 +31,6 @@ public class ReviewService {
 
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
-    private final QuotationRequestRepository quotationRequestRepository;
     private final QuotationRepository quotationRepository;
 
 
@@ -60,16 +59,19 @@ public class ReviewService {
         }
     }
 
-    // 현재 로그인한 멤버가 해당 리뷰에 대한 수정 권한자인지 확인
+    // (APPROVED QuotationRequest를 가진 사용자 권한) 현재 로그인한 멤버가 해당 리뷰에 대한 수정 권한자인지 확인
     private void checkLoggedMemberAndGetReviewFor(Review review) {
         Member member = loggedMember();
         Quotation quotation = review.getQuotation();
         QuotationRequest quotationRequest = quotation.getQuotationRequest();
         if(quotationRequest == null) {
-            throw new NoSuchElementException("작성된 견적 요청서가 없습니다");
+            throw new NoSuchElementException("알 수 없는 오류. 작성된 견적 요청서가 없습니다");
         }
         if(!member.equals(quotationRequest.getMember())) {
             throw new NoSuchElementException("리뷰 작성 권한이 없습니다.");
+        }
+        if(!member.getId().equals(review.getMember().getId())) {
+            throw new NoSuchElementException("리뷰가 관리자에 의해 조치되어 수정이 불가합니다.");
         }
         if(!quotationRequest.getProgress().equals(QuotationProgress.APPROVED)) {
             throw new NoSuchElementException("거래가 승인되어야 리뷰 작성이 가능합니다");
@@ -79,11 +81,11 @@ public class ReviewService {
     // (APPROVED QuotationRequest를 가진 사용자 권한) 사용자의 리뷰 작성
     @Transactional
     public void create(CreateReviewDto createReviewDto, UUID quotationId) {
-        // 권한 확인
-        Optional<Quotation> quotation = quotationRepository.findById(quotationId);
+        Optional<Quotation> quotation = quotationRepository.getByQuotationId(quotationId);
         if(quotation.isEmpty()) {
             throw new NoSuchElementException("알 수 없는 오류. 견적서가 존재하지 않습니다.");
         }
+        // 권한 확인
         checkIfLoggedMemberCanWriteReviewFor(quotation.get());
         Review review = Review.builder()
                 .createReviewDto(createReviewDto)
@@ -95,13 +97,18 @@ public class ReviewService {
 
     @Transactional
     public void updateReviewByWriter(UpdateReviewDto updateReviewDto) {
-        // 수정권한 확인
-        Optional<Review> reviewOptional = reviewRepository.findById(updateReviewDto.getReviewId());
+        Optional<Review> reviewOptional = reviewRepository.getByReviewId(updateReviewDto.getReviewId());
         if (reviewOptional.isPresent()) {
+            // 수정권한 확인
             checkLoggedMemberAndGetReviewFor(reviewOptional.get());
             Review review = reviewOptional.get();
+            if(updateReviewDto.getTitle().isBlank() || updateReviewDto.getDescription().isBlank()) {
+                throw new NoSuchElementException("제목과 내용에 모두 글을 작성해주세요.");
+            }
             review.setTitle(updateReviewDto.getTitle());
             review.setDescription(updateReviewDto.getDescription());
+            reviewRepository.save(review);
+            return;
         }
         throw new NoSuchElementException("알 수 없는 오류. 리뷰가 존재하지 않습니다.");
     }

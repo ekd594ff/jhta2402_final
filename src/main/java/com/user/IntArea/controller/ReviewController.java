@@ -2,10 +2,7 @@ package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.portfolio.EditPortfolioDto;
-import com.user.IntArea.dto.review.CreateReviewDto;
-import com.user.IntArea.dto.review.EditReviewDto;
-import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
-import com.user.IntArea.dto.review.ReviewPortfolioDto;
+import com.user.IntArea.dto.review.*;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +26,23 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/{quotationId}")
-    public ResponseEntity<?> createReview(CreateReviewDto createReviewDto, @RequestParam UUID quotationId) {
+    // 일반 권한
+
+    // (승인된 quotationRequest 작성자 권한) 리뷰 작성(새로 만들기)
+    @PostMapping("/{quotationId}") // ● postman pass
+    public ResponseEntity<?> createReview(@ModelAttribute CreateReviewDto createReviewDto, @PathVariable UUID quotationId) {
         reviewService.create(createReviewDto, quotationId);
         return ResponseEntity.ok().build();
     }
 
+    // (승인된 quotationRequest 작성자 권한) 작성된 리뷰 수정하기
+    @PostMapping("/update") // ● postman pass
+    public ResponseEntity<?> updateReviewByWriter(UpdateReviewDto updateReviewDto) {
+        reviewService.updateReviewByWriter(updateReviewDto);
+        return ResponseEntity.ok().build();
+    }
+
+    // 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
     @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<ReviewPortfolioDetailDto>> getReviewByPortfolioId(
             @PathVariable UUID id, @RequestParam int page, @RequestParam int size) {
