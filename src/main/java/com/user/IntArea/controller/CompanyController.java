@@ -1,7 +1,8 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.common.jwt.TokenProvider;
+import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.company.*;
-import com.user.IntArea.entity.Company;
 import com.user.IntArea.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -24,13 +30,21 @@ import java.util.UUID;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final TokenProvider tokenProvider;
+    private final SecurityUtil securityUtil;
 
     @PostMapping
     public ResponseEntity<?> create(CompanyRequestDto companyRequestDto) {
 
         companyService.create(companyRequestDto);
 
-        return ResponseEntity.ok().build();
+        // ROLE_SELLER 로 쿠키 업데이트
+        Authentication authentication = securityUtil.updateAuthenticationRole();
+        ResponseCookie accessToken = tokenProvider.getAccessToken(authentication);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, accessToken.toString())
+                .build();
     }
 
     @PostMapping("/edit")

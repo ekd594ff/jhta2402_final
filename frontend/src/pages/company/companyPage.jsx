@@ -175,7 +175,7 @@ function CompanyDetail() {
                     <div className={style['button-div']}>
                         <Button variant="text"
                                 className={style['button']}
-                                onClick={() => navigate("/quotationRequest/seller")}>
+                                onClick={() => navigate("/quotationRequest/company")}>
                             더보기
                         </Button>
                     </div>

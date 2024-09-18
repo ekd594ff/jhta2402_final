@@ -24,6 +24,9 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
 
     Page<QuotationRequest> findAllByMemberId(UUID memberId, Pageable pageable);
 
+    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.member.id = :memberId AND qr.progress IN :progresses")
+    Page<QuotationRequest> findAllByMemberIdAndProgresses(UUID memberId, List<QuotationProgress> progresses, Pageable pageable);
+
     @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds AND qr.progress IN :progresses")
     Page<QuotationRequest> findAllByPortfolioIdsAndProgress(List<UUID> portfolioIds, List<QuotationProgress> progresses, Pageable pageable);
 

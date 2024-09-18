@@ -1,23 +1,13 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestCountDto;
-import com.user.IntArea.dto.quotation.QuotationResponseDto;
-import com.user.IntArea.dto.quotationRequest.EditQuotationRequestDto;
-import com.user.IntArea.dto.quotationRequest.QuotationAdminRequestDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestListDto;
+import com.user.IntArea.dto.quotationRequest.*;
 import com.user.IntArea.service.QuotationRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +36,11 @@ public class QuotationRequestController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<QuotationRequestDetailDto> getQuotationRequestDetail(@PathVariable UUID id) {
+        return ResponseEntity.ok(quotationRequestService.getQuotationRequestDetail(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<QuotationRequestDto> updateQuotationRequest(@PathVariable UUID id, @RequestBody QuotationRequestDto requestDto) {
         QuotationRequestDto responseDto = quotationRequestService.updateQuotationRequest(id, requestDto);
@@ -53,10 +48,10 @@ public class QuotationRequestController {
     }
 
 
-    @GetMapping("/list/{memberId}")
-    public ResponseEntity<Page<QuotationRequestListDto>> getQuotationRequestByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<QuotationRequestListDto> responseDto = quotationRequestService.getQuotationRequestsByMemberId(memberId, pageable);
+    @GetMapping("/list")
+    public ResponseEntity<Page<QuotationRequestListDto>> getQuotationRequestByMemberId(@RequestParam String progress, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
+        Page<QuotationRequestListDto> responseDto = quotationRequestService.getQuotationRequestsByMemberId(progress, pageable);
         return ResponseEntity.ok().body(responseDto);
     }
 

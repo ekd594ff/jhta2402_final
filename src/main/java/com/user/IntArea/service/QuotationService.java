@@ -240,7 +240,10 @@ public class QuotationService {
     }
 
     // (seller) 선택한 견적서 취소처리
-    public void cancelQuotationBySeller(Quotation quotation) {
+    public void cancelQuotationBySeller(UUID id) {
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 견적서가 없습니다."));
+
         // 작성권한자 확인
         checkIsCompanyManagerOf(quotation);
 
@@ -280,7 +283,7 @@ public class QuotationService {
             throw new NoSuchElementException("알 수 없는 오류. 해당 견적요청서에 대해 작성된 대기중 견적서가 2개 이상입니다.");
         }
         if (formerQuotationList.size() == 1) {
-            cancelQuotationBySeller(formerQuotationList.get(0));
+            cancelQuotationBySeller(formerQuotationList.get(0).getId());
             quotationRepository.save(formerQuotationList.get(0));
         }
 

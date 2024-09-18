@@ -56,6 +56,8 @@ public class CompanyService {
         Company saveCompany = companyRequestDto.toEntity(member);
 
         UUID refId = companyRepository.save(saveCompany).getId();
+        member.setRole(Role.ROLE_SELLER);
+        memberRepository.save(member);
 
         if (!companyRequestDto.getImage().isEmpty()) {
             ImageDto imageDto = imageUtil.uploadS3(companyRequestDto.getImage(), refId, 0)
