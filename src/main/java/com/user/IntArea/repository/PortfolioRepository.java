@@ -2,6 +2,9 @@ package com.user.IntArea.repository;
 
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Portfolio;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -84,6 +87,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             nativeQuery = true
     )
     Page<Object[]> searchPortfolios(String searchWord, Pageable pageable);
+
 
     Page<Portfolio> findAllByTitleContains(String title, Pageable pageable);
 
