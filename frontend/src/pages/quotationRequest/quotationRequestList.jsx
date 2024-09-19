@@ -44,7 +44,6 @@ const QuotationRequestList = () => {
 
             try {
                 const response = await axios.get(url);
-                console.log(response.data);
                 (pageInfo.page === 0)
                     ? setQuotationRequests(response.data.content)
                     : setQuotationRequests((prevRequests) => [
@@ -148,8 +147,9 @@ const QuotationRequestList = () => {
                     <Grid2 container spacing={2} className={style['qr-card-container']}>
                         {quotationRequests.length === 0 &&
                             <div className={style['no-content-div']}>해당 조건의 견적신청서가 없습니다.</div>}
-                        {quotationRequests.map(request =>
-                            <Grid2 key={request.id} size={6} className={style['qr-card-grid']}>
+                        {quotationRequests.map((request, index) =>
+                            <Grid2 key={`${index}_${request.id}`} size={6}
+                                   className={style['qr-card-grid']}>
                                 <Card variant="outlined" className={style['qr-card']}>
                                     <CardContent className={style['qr-card-content']}>
                                         <div className={style['image-div']}>
@@ -224,7 +224,7 @@ const QuotationRequestList = () => {
                     {(pageInfo.page + 1 < pageInfo.totalPage) && (
                         <Button onClick={() => setPageInfo({...pageInfo, page: pageInfo.page + 1})}
                                 disabled={loading}
-                                sx={{margin: "16px 0"}}>
+                                sx={{margin: "16px 0", color: "#FA4D56"}}>
                             {loading ? "Loading..." : "더보기"}
                         </Button>
                     )}

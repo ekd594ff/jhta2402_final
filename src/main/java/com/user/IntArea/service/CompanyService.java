@@ -90,7 +90,18 @@ public class CompanyService {
         }
     }
 
-    public CompanyPortfolioDetailDto getCompanyById() {
+    public CompanyPortfolioDetailDto getCompanyById(UUID id) {
+
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
+
+        String imageUrl = imageRepository.findByRefId(id)
+                .orElseGet(Image::new).getUrl();
+
+        return new CompanyPortfolioDetailDto(company, imageUrl);
+    }
+
+    public CompanyPortfolioDetailDto getCompanyInfo() {
 
         Company company = getCompanyOfMember();
 

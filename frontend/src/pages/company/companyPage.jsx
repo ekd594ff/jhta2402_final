@@ -4,7 +4,7 @@ import Footer from "../../components/common/footer.jsx";
 import style from "../../styles/company-detail.module.scss";
 import axios from "axios";
 import {checkSeller} from "../../utils/loginUtil.jsx";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import {
     Alert, Box,
@@ -20,6 +20,7 @@ import Button from "@mui/material/Button";
 
 function CompanyDetail() {
 
+    const {id} = useParams();
     const navigate = useNavigate();
 
     const [companyInfo, setCompanyInfo] = useState({
@@ -41,33 +42,57 @@ function CompanyDetail() {
         totalPage: 0,
     });
 
+    // member api
+    const getCompanyById = async () => await axios.get(`/api/company/info/${id}`, {withCredentials: true});
+
+    // company api
     const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
     const getRequestCount = async () => await axios.get("/api/quotationRequest/company/count", {withCredentials: true});
 
+    const apis = (!!id)
+        ? [getCompanyById()]
+        : [getCompanyInfo(), getRequestCount(), checkSeller()];
+
     useEffect(() => {
-        Promise.all([getCompanyInfo(), getRequestCount(), checkSeller()])
-            .then(([res, countRes, portfolioRes, _]) => {
+        Promise.all(apis)
+            .then(([res, countRes, _]) => {
                 if (res.data.deleted) {
                     alert("삭제된 회사입니다.");
                     navigate(-1);
                 }
 
-                setCompanyInfo({
-                    companyId: res.data.companyId,
-                    imageUrl: res.data.url,
-                    companyName: res.data.companyName,
-                    description: res.data.description,
-                    phone: res.data.phone,
-                    address: `${res.data.address} ${res.data.detailAddress}`,
-                    applied: res.data.applied,
-                    requestPendingCount: countRes.data.pendingCount,
-                    requestApprovedCount: countRes.data.approvedCount,
-                });
+                if (!id) {
+                    setCompanyInfo({
+                        companyId: res.data.companyId,
+                        imageUrl: res.data.url,
+                        companyName: res.data.companyName,
+                        description: res.data.description,
+                        phone: res.data.phone,
+                        address: `${res.data.address} ${res.data.detailAddress}`,
+                        applied: res.data.applied,
+                        requestPendingCount: countRes.data.pendingCount,
+                        requestApprovedCount: countRes.data.approvedCount,
+                    });
+                } else {
+                    setCompanyInfo({
+                        companyId: res.data.companyId,
+                        imageUrl: res.data.url,
+                        companyName: res.data.companyName,
+                        description: res.data.description,
+                        phone: res.data.phone,
+                        address: `${res.data.address} ${res.data.detailAddress}`,
+                        applied: res.data.applied,
+                    });
+                }
             })
     }, []);
 
+    const portfolioUrl = (!!id)
+        ? `/api/portfolio/list/company/${id}?page=${pageInfo.page}&size=${pageInfo.size}`
+        : `/api/portfolio/list/company?page=${pageInfo.page}&size=${pageInfo.size}`;
+
     useEffect(() => {
-        axios.get(`/api/portfolio/list/company?page=${pageInfo.page}&size=${pageInfo.size}`,
+        axios.get(portfolioUrl,
             {withCredentials: true})
             .then((res) => {
                 setPortfolioList([...portfolioList, ...res.data.content]);
@@ -153,41 +178,51 @@ function CompanyDetail() {
                             </Table>
                         </TableContainer>
                     </div>
-                    <div className={style['button-div']}>
-                        <Button variant="text"
-                                className={style['button']}
-                                onClick={() => navigate("/company/edit")}>수정하기</Button>
-                    </div>
+                    {(!id) &&
+                        <div className={style['button-div']}>
+                            <Button variant="text"
+                                    className={style['button']}
+                                    onClick={() => navigate("/company/edit")}>수정하기</Button>
+                        </div>
+                    }
 
-                    <h2 className={style['sub-title']}>견적신청서</h2>
-                    <Card className={style['request-card']}>
-                        <CardContent className={style['card-content']}>
-                            <div className={style['card-div']}>
-                                <div className={style['title']}>진행중인 인테리어</div>
-                                <div className={style['count']}>{companyInfo.requestPendingCount}</div>
+                    {(!id) &&
+                        <>
+                            <h2 className={style['sub-title']}>견적신청서</h2>
+                            <Card className={style['request-card']}>
+                                <CardContent className={style['card-content']}>
+                                    <div className={style['card-div']}>
+                                        <div className={style['title']}>진행중인 인테리어</div>
+                                        <div className={style['count']}>{companyInfo.requestPendingCount}</div>
+                                    </div>
+                                    <div className={style['card-div']}>
+                                        <div className={style['title']}>완료된 인테리어</div>
+                                        <div className={style['count']}>{companyInfo.requestApprovedCount}</div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <div className={style['button-div']}>
+                                <Button variant="text"
+                                        className={style['button']}
+                                        onClick={() => navigate("/quotationRequest/company")}>
+                                    더보기
+                                </Button>
                             </div>
-                            <div className={style['card-div']}>
-                                <div className={style['title']}>완료된 인테리어</div>
-                                <div className={style['count']}>{companyInfo.requestApprovedCount}</div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <div className={style['button-div']}>
-                        <Button variant="text"
-                                className={style['button']}
-                                onClick={() => navigate("/quotationRequest/company")}>
-                            더보기
-                        </Button>
-                    </div>
+                        </>
+                    }
 
-                    <h2 className={style['sub-title']}>포트폴리오 관리</h2>
-                    <div className={style['button-top-div']}>
-                        <Button variant="text"
-                                className={style['button']}
-                                onClick={() => navigate("/portfolio/registration")}>
-                            포트폴리오 생성
-                        </Button>
-                    </div>
+                    <h2 className={style['sub-title']}>
+                        {(!id) ? "포트폴리오 관리" : "포트폴리오 목록"}
+                    </h2>
+                    {(!id) &&
+                        <div className={style['button-top-div']}>
+                            <Button variant="text"
+                                    className={style['button']}
+                                    onClick={() => navigate("/portfolio/registration")}>
+                                포트폴리오 생성
+                            </Button>
+                        </div>
+                    }
                     <ImageList>
                         {portfolioList.map((portfolio) => (
                             <ImageListItem sx={{margin: '0 8px', minWidth: '160px'}} key={portfolio.id}>
@@ -200,7 +235,7 @@ function CompanyDetail() {
                                             {portfolio.title}
                                         </Typography>
                                     }
-                                    subtitle={
+                                    subtitle={(!id) &&
                                         <Box sx={{
                                             display: 'flex',
                                             justifyContent: 'space-between',

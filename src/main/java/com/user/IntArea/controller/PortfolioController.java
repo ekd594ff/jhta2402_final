@@ -33,7 +33,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/list/company/{id}")
-    public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
+    public Page<PortfolioDetailInfoDto> getOpenPortfolioInfoDtosOfCompany(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
     }
