@@ -21,7 +21,13 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
         // 기본 쿼리
         StringBuilder query = new StringBuilder();
         query.append("SELECT p.id AS id, p.title AS title, c.companyName AS companyName, p.description AS description, ")
-                .append("array_agg(i.url ORDER BY i.url) AS imageUrls, ")
+                .append("(SELECT array_agg(url ORDER BY url) FROM ( ")
+                .append("  SELECT DISTINCT i.url ")
+                .append("  FROM image i ")
+                .append("  WHERE i.refId = p.id ")
+                .append("  ORDER BY i.url ")
+                .append("  LIMIT 8 ")
+                .append(") AS limited_images) AS imageUrls, ")
                 .append("ROUND(AVG(re.rate)::numeric, 2) AS rate ")
                 .append("FROM portfolio p ")
                 .append("JOIN company c ON c.id = p.companyid ")
