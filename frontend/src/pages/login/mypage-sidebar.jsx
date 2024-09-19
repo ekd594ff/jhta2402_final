@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [memberId, setMemberId] = useState("");
     const [userData, setUserData] = useState({ username: "", profileImage: "default-profile-image-url.jpg" });
-    // const [page, setPage] = useState(0);
 
     useEffect(() => {
         const fetchMemberId = async () => {
@@ -26,11 +25,7 @@ const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
         fetchMemberId();
     }, []);
 
-    const handleNavigation = (path) => {
-        if (path === "/quotationRequest/member") {
-            onSelectQuotationRequests(); // 수정된 부분
-        }
-    };
+    
 
     return (
         <div
@@ -66,7 +61,7 @@ const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
                     <ListItemText primary="내 프로필" />
                 </ListItem>
                 <Divider />
-                <ListItem button style={{marginTop: "10px" }} onClick={onSelectQuotationRequests}>
+                <ListItem button style={{marginTop: "10px"}} onClick={onSelectQuotationRequests}>
                     <ListItemText primary="내 신청서" />
                 </ListItem>            
             </List>
