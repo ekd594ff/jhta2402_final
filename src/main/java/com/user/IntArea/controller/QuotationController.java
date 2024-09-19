@@ -1,5 +1,6 @@
 package com.user.IntArea.controller;
 
+import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.quotation.EditQuotationDto;
 import com.user.IntArea.dto.quotation.QuotationCreateDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
@@ -8,9 +9,14 @@ import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.service.QuotationRequestService;
 import com.user.IntArea.dto.quotation.QuotationResponseDto;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.service.QuotationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,9 +42,9 @@ public class QuotationController {
 
     // 일반 권한
 
-    // (quotation 받은 고객 권한) 받은 특정한 quotation 거부 (고객이 quotation만 취소) // ● Postman Pass
-    @GetMapping("/reject")
-    public void cancelQuotation(@RequestParam UUID quotationId) {
+    // (일반) 받은 특정한 quotation 거부 (고객이 quotation만 취소) // ● Postman Pass
+    @PatchMapping("/cancel/{id}")
+    public void cancelQuotation(@PathVariable(name = "id") UUID quotationId) {
         Quotation quotation = quotationService.getById(quotationId);
         quotationService.cancelQuotationByCustomer(quotation);
     }
@@ -196,6 +202,7 @@ public class QuotationController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return quotationService.getAllQuotationsOfCompanySortedByProgressByAdmin(companyId, progress, pageable);
     }
+
     //
     @PatchMapping("/admin")
     public ResponseEntity<?> editQuotation(@RequestBody EditQuotationDto editQuotationDto) {

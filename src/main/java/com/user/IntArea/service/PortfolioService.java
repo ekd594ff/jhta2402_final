@@ -109,7 +109,8 @@ public class PortfolioService {
 
         // 이미지 URL 리스트 생성
         List<Image> images = imageService.getImagesFrom(portfolio);
-        List<String> imageUrls = new ArrayList<>();;
+        List<String> imageUrls = new ArrayList<>();
+        ;
         for (Image image : images) {
             imageUrls.add(image.getUrl());
         }
@@ -148,9 +149,17 @@ public class PortfolioService {
     }
 
     // (일반 권한) 특정 회사의 오픈된 포트폴리오 InfoDto 불러오기
-    public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(UUID companyId, Pageable pageable) {
-        Page<Portfolio> portfolios = portfolioRepository.getOpenPortfoliosOfCompany(companyId, pageable);
-        return portfolios.map(PortfolioInfoDto::new);
+    public Page<PortfolioDetailInfoDto> getOpenPortfolioInfoDtosOfCompany(UUID companyId, Pageable pageable) {
+
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
+        Page<Portfolio> portfolios = portfolioRepository.findAllByCompanyAndIsDeletedAndIsActivated(company, false, true, pageable);
+
+        return portfolios.map((portfolio) -> {
+            List<String> imageUrls = imageRepository.findAllByRefId(portfolio.getId()).stream().map(Image::getUrl).toList();
+
+            return new PortfolioDetailInfoDto(portfolio, imageUrls);
+        });
     }
 
 
@@ -379,7 +388,7 @@ public class PortfolioService {
         }
 
         portfolio.setActivated(dto.isActivated());
-  
+
         portfolioRepository.save(portfolio);
     }
 
@@ -452,34 +461,34 @@ public class PortfolioService {
     }
 
     // (admin 권한)  포트폴리오 리스트 출력
-    public Page<PortfolioInfoDto> getSearchPortfolio(Optional<String> filterColumn, Optional<String> filterValue,Pageable pageable) {
+    public Page<PortfolioInfoDto> getSearchPortfolio(Optional<String> filterColumn, Optional<String> filterValue, Pageable pageable) {
         if (filterValue.isPresent() && filterColumn.isPresent()) {
             switch (filterColumn.get()) {
                 case "title" -> {
-                    return portfolioRepository.findAllByTitleContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                    return portfolioRepository.findAllByTitleContains(filterValue.get(), pageable).map(PortfolioInfoDto::new);
                 }
                 case "description" -> {
-                    return portfolioRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                    return portfolioRepository.findAllByDescriptionContains(filterValue.get(), pageable).map(PortfolioInfoDto::new);
                 }
                 case "companyName" -> {
-                    return portfolioRepository.findAllByCompanyNameContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                    return portfolioRepository.findAllByCompanyNameContains(filterValue.get(), pageable).map(PortfolioInfoDto::new);
                 }
                 case "updatedAt" -> {
-                    return portfolioRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(PortfolioInfoDto ::new);
+                    return portfolioRepository.findAllByUpdatedAtContains(filterValue.get(), pageable).map(PortfolioInfoDto::new);
                 }
                 case "createdAt" -> {
                     return portfolioRepository.findAllByCreatedAtContains(filterColumn.get(), pageable).map(PortfolioInfoDto::new);
                 }
                 case "deleted" -> {
                     if (filterValue.get().equals("true")) {
-                        return portfolioRepository.findAllByDeletedIs(true, pageable).map(PortfolioInfoDto ::new);
+                        return portfolioRepository.findAllByDeletedIs(true, pageable).map(PortfolioInfoDto::new);
                     } else {
-                        return portfolioRepository.findAllByDeletedIs(false, pageable).map(PortfolioInfoDto ::new);
+                        return portfolioRepository.findAllByDeletedIs(false, pageable).map(PortfolioInfoDto::new);
                     }
                 }
             }
         } else {
-            return portfolioRepository.findAll(pageable).map(PortfolioInfoDto ::new);
+            return portfolioRepository.findAll(pageable).map(PortfolioInfoDto::new);
         }
         throw new RuntimeException("getSearchPortfolio");
     }
