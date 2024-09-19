@@ -5,6 +5,7 @@ import com.user.IntArea.dto.member.MemberDto;
 import com.user.IntArea.dto.quotation.*;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
+import com.user.IntArea.entity.enums.Role;
 import com.user.IntArea.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,20 +37,28 @@ public class QuotationService {
         if (portfolio == null) {
             throw new NoSuchElementException("알 수 없는 오류. 포트폴리오가 존재하지 않습니다.");
         }
-        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
         String email = memberDto.getEmail();
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(""));
-        Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException(""));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일 정보가 없습니다."));
+        Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException("판매자 권한이 없습니다."));
         if (!company.equals(portfolio.getCompany())) {
             throw new NoSuchElementException("권한이 없습니다.");
         }
     }
 
+    //
+    private Member getLoggedMember() {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
+        String email = memberDto.getEmail();
+        return memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일 정보가 없습니다."));
+    }
+
+
     // 현재 로그인한 멤버가 관리하는 회사 확인
     private Company getCompanyOfMember() {
-        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
         String email = memberDto.getEmail();
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(""));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일 정보가 없습니다."));
         Company company = companyRepository.getCompanyByMember(member).orElseThrow(() -> new NoSuchElementException("판매자 권한이 없습니다."));
         return company;
     }
@@ -76,9 +85,9 @@ public class QuotationService {
     private QuotationInfoDto convertToQuotationInfoDto(Quotation quotation) {
         List<String> imageUrls = new ArrayList<>();
         try { // 견적서와 관련된 이미지 로드
-            List<Image> imageDtos = imageService.getImagesFrom(quotation);
-            if (imageDtos != null) {
-                imageUrls = imageDtos.stream()
+            List<Image> images = imageService.getImagesFrom(quotation);
+            if (images != null) {
+                imageUrls = images.stream()
                         .map(Image::getUrl)
                         .collect(Collectors.toList());
             }
@@ -107,6 +116,8 @@ public class QuotationService {
         }
     }
 
+    // 일반 권한
+
     // (일반) 특정 견적서 출력
     public Quotation getById(UUID quotationId) {
         Optional<Quotation> quotation = quotationRepository.findById(quotationId);
@@ -127,6 +138,19 @@ public class QuotationService {
 
         // Quotation을 QuotationInfoDto로 변환하여 반환
         return quotationsForMember.map(this::convertToQuotationInfoDto);
+    }
+
+    // (견적서를 받은 사용자 권한) 사용자가 판매자로부터 받은 하나의 견적서 정보 열람
+    public QuotationInfoDto getQuotationInfoDtoByMember(UUID quotationId) {
+        Member member = getLoggedMember();
+        Quotation quotation = quotationRepository.findById(quotationId)
+                .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
+        if(!quotation.getQuotationRequest().getMember().equals(member)){
+            throw new NoSuchElementException("열람 권한이 없습니다.");
+        }
+        List<Image> images = imageService.getImagesFrom(quotation);
+        List<String> imageUrls = images.stream().map(Image::getUrl).collect(Collectors.toList());
+        return new QuotationInfoDto(quotation, imageUrls);
     }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 여러 판매자들로부터 받은 모든 견적서 출력 (progress에 따라 소팅)
@@ -326,6 +350,18 @@ public class QuotationService {
         quotationRequestRepository.save(quotationRequest);
     }
 
+    // (seller) 작성한 견적서 1개의 정보 열람
+    public QuotationInfoDto getQuotationInfoDtoByCompany(UUID quotationId) {
+        Company company = getCompanyOfMember();
+        Quotation quotation = quotationRepository.findById(quotationId)
+                .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
+        if(!quotation.getQuotationRequest().getPortfolio().getCompany().equals(company)){
+            throw new NoSuchElementException("열람 권한이 없습니다.");
+        }
+        List<Image> images = imageService.getImagesFrom(quotation);
+        List<String> imageUrls = images.stream().map(Image::getUrl).collect(Collectors.toList());
+        return new QuotationInfoDto(quotation, imageUrls);
+    }
 
     // (seller) 회사가 작성한 모든 견적서 출력
     public Page<QuotationInfoDto> getAllQuotationsOfCompany(Pageable pageable) {
@@ -353,6 +389,19 @@ public class QuotationService {
 
 
     // admin
+
+    // (admin) 특정한 하나의 견적서 정보 출력
+    public QuotationInfoDto getQuotationInfoDtoByAdmin(UUID quotationId) {
+        Member member = getLoggedMember();
+        Quotation quotation = quotationRepository.findById(quotationId)
+                .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
+        if(!member.getRole().equals(Role.ROLE_ADMIN)){
+            throw new NoSuchElementException("열람 권한이 없습니다.");
+        }
+        List<Image> images = imageService.getImagesFrom(quotation);
+        List<String> imageUrls = images.stream().map(Image::getUrl).collect(Collectors.toList());
+        return new QuotationInfoDto(quotation, imageUrls);
+    }
 
     // (admin) 특정 회사가 작성한 모든 견적서 출력
     public Page<QuotationInfoDto> getAllQuotationsOfCompanyByAdmin(UUID companyId, Pageable pageable) {
@@ -435,4 +484,6 @@ public class QuotationService {
             throw new NoSuchElementException("editQuotationForAdmin");
         }
     }
+
+
 }
