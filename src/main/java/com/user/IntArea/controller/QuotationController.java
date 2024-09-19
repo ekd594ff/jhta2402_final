@@ -10,7 +10,6 @@ import com.user.IntArea.service.QuotationRequestService;
 import com.user.IntArea.dto.quotation.QuotationResponseDto;
 import com.user.IntArea.service.QuotationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/quotation")
 @RequiredArgsConstructor
-@Slf4j
 public class QuotationController {
 
     private final QuotationService quotationService;
@@ -126,13 +124,6 @@ public class QuotationController {
                                                                       @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                       @RequestParam(required = false) String filterColumn,
                                                                       @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-        System.out.println(filterColumn);
-        System.out.println(filterValue);
-
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());

@@ -5,7 +5,6 @@ import com.user.IntArea.service.MemberService;
 import com.user.IntArea.common.jwt.TokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
-@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -79,14 +77,12 @@ public class MemberController {
 
     @PatchMapping()
     public ResponseEntity<?> updateMember(@Valid @RequestBody UpdateMemberDto updateMemberDto) {
-        log.info("memberResponseDTO={}", updateMemberDto);
         memberService.update(updateMemberDto);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/profile")
     public ResponseEntity<?> updateProfile(@Valid UpdateProfileDto updateProfileDto) {
-        log.info("Updating profile for member: {}", updateProfileDto.getUsername());
         memberService.updateProfile(updateProfileDto);
         return ResponseEntity.ok().build();
     }
@@ -120,13 +116,6 @@ public class MemberController {
                                                                    @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                    @RequestParam(required = false) String filterColumn,
                                                                    @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-        System.out.println(filterColumn);
-        System.out.println(filterValue);
-
         if (sortField.equals("deleted")) {
             sortField = "isDeleted";
         }
@@ -161,7 +150,6 @@ public class MemberController {
 
     @PatchMapping("/admin")
     public ResponseEntity<?> editMember(@RequestBody AdminEditMemberDto adminEditMemberDto) {
-        log.info("adminEditMemberDto = {}",adminEditMemberDto);
         memberService.editMemberForAdmin(adminEditMemberDto);
         return ResponseEntity.ok().build();
     }
