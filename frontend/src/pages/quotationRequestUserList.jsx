@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-  Snackbar,
-} from "@mui/material";
+  Typography, List, ListItem, ListItemText, Button, Snackbar, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 const QuotationRequestUserList = () => {
@@ -87,8 +81,8 @@ const QuotationRequestUserList = () => {
   }
 
   return (
-    <div>
-      <Typography variant="h6" style={{ margin: "20px 0" }}>
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+      <Typography variant="h6" style={{ marginTop: "60px" }}>
         견적 요청 목록
       </Typography>
       <List>
@@ -141,7 +135,7 @@ const QuotationRequestUserList = () => {
         onClose={handleSnackbarClose}
         message={snackbarMessage}
       />
-    </div>
+    </Box>
   );
 };
 

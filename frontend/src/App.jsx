@@ -13,6 +13,7 @@ import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
 import CompanyDetail from "./pages/login/companyPage.jsx";
 import QuotationRequestList from "./pages/quotationRequest/quotationRequestList.jsx";
+import QuotationRequestUserList from "./pages/quotationRequestUserList.jsx";
 
 function App() {
     return (
@@ -21,7 +22,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Index/>}/>
                     <Route path="/signup" element={<Signup/>}/>
-                    <Route path="/mypage" element={<MyPage/>}/>
+                    <Route path="/mypage/*" element={<MyPage/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/company/info" element={<CompanyDetail/>}/>
                     <Route path="/company/create" element={<CreateEditCompany/>}/>
@@ -32,7 +33,7 @@ function App() {
                     <Route path="/portfolio/edit/:id" element={<Registration/>}/>
                     <Route path="/search/detailed" element={<SearchList/>}/>
                     <Route path="/quotationRequest" element={<QuotationRequest/>}/>
-                    <Route path="/quotationRequest/member" element={<QuotationRequestList/>}/>
+                    <Route path="/quotationRequest/member" element={<QuotationRequestUserList/>}/>
                     <Route path="/quotationRequest/seller" element={<QuotationRequestList/>}/>
                 </Routes>
             </BrowserRouter>

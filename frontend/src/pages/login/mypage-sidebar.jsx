@@ -3,11 +3,11 @@ import { List, ListItem, ListItemText, Divider, Avatar, Typography } from "@mui/
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Sidebar = () => {
-    const navigate = useNavigate();
+const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
+    // const navigate = useNavigate();
     const [memberId, setMemberId] = useState("");
     const [userData, setUserData] = useState({ username: "", profileImage: "default-profile-image-url.jpg" });
-    const [page, setPage] = useState(0);
+    // const [page, setPage] = useState(0);
 
     useEffect(() => {
         const fetchMemberId = async () => {
@@ -26,22 +26,10 @@ const Sidebar = () => {
         fetchMemberId();
     }, []);
 
-    useEffect(() => {
-        if (memberId) {
-            const fetchQuotationRequests = async () => {
-                try {
-                    const response = await fetch(`/api/quotationRequest/list/${memberId}?page=${page}&pageSize=10`);
-                    const data = await response.json();
-                } catch (error) {
-                    console.error("신청서를 불러오는데 실패했습니다.", error);
-                }
-            };
-            fetchQuotationRequests();
-        }
-    }, [memberId, page]);
-
     const handleNavigation = (path) => {
-        navigate(path);
+        if (path === "/quotationRequest/member") {
+            onSelect();
+        }
     };
 
     return (
@@ -74,13 +62,14 @@ const Sidebar = () => {
                 <Typography variant="h6" style={{flexGrow: 1, textAlign: "center" }}>{userData.username}</Typography>
             </div>
             <List style={{marginTop: "40px" }}>
-                <ListItem button onClick={() => handleNavigation("/mypage")}>
+                <ListItem button onClick={onSelectProfile}>
                     <ListItemText primary="내 프로필" />
                 </ListItem>
                 <Divider />
-                <ListItem button style={{marginTop: "10px" }} onClick={() => handleNavigation(`/qr/userList/${memberId}`)}>
+                <ListItem button style={{marginTop: "10px" }} onClick={onSelectQuotationRequests}>
                     <ListItemText primary="내 신청서" />
-                </ListItem>            </List>
+                </ListItem>            
+            </List>
             <Divider />
         </div>
     );
