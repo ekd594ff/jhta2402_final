@@ -95,7 +95,7 @@ function CreateEditCompany() {
             {withCredentials: true})
             .then((res) => {
                 alert((isEdit) ? "수정되었습니다." : "생성되었습니다.");
-                navigate("/");
+                navigate("/company/info");
             }).catch(() => {
             alert("문제가 발생했습니다.");
         })

@@ -2,6 +2,7 @@ package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.portfolio.EditPortfolioDto;
+import com.user.IntArea.dto.review.CreateReviewDto;
 import com.user.IntArea.dto.review.EditReviewDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
 import com.user.IntArea.dto.review.ReviewPortfolioDto;
@@ -27,6 +28,12 @@ import java.util.UUID;
 public class ReviewController {
 
     private final ReviewService reviewService;
+
+    @PostMapping("/{quotationId}")
+    public ResponseEntity<?> createReview(CreateReviewDto createReviewDto, @RequestParam UUID quotationId) {
+        reviewService.create(createReviewDto, quotationId);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<ReviewPortfolioDetailDto>> getReviewByPortfolioId(
