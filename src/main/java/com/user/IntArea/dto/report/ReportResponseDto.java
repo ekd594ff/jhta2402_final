@@ -27,7 +27,7 @@ public class ReportResponseDto {
 
     public ReportResponseDto(Tuple tuple) {
         this.id = (UUID) tuple.get("id");
-        this.refTitle = tuple.get("refTitle").toString();
+        this.refTitle = tuple.get("refTitle").toString() != null ? tuple.get("refTitle").toString() : "제목 없음"; // Null 체크 추가
         this.username = tuple.get("username").toString();
         this.sort = ReportSort.valueOf(tuple.get("sort").toString());
         this.title = tuple.get("title").toString();

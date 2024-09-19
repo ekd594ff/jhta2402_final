@@ -13,8 +13,8 @@ import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
 import CompanyDetail from "./pages/company/companyPage.jsx";
 import QuotationRequestList from "./pages/quotationRequest/quotationRequestList.jsx";
-import QuotationRequestUserList from "./pages/quotationRequestUserList.jsx";
 import QuotationRequestDetail from "./pages/quotationRequest/quotationRequestDetail.jsx";
+import ReportUserList from "./pages/reportUserList.jsx";
 
 function App() {
     return (
@@ -37,6 +37,7 @@ function App() {
                     <Route path="/quotationRequest/member" element={<QuotationRequestList/>}/>
                     <Route path="/quotationRequest/company" element={<QuotationRequestList/>}/>
                     <Route path="/quotationRequest/:id" element={<QuotationRequestDetail/>}/>
+                    <Route path="/reportUserList/:id" element={<ReportUserList />} />
                 </Routes>
             </BrowserRouter>
         </div>
