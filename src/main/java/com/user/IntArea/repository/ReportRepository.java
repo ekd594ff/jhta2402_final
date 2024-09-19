@@ -1,5 +1,6 @@
 package com.user.IntArea.repository;
 
+import com.user.IntArea.dto.report.ReportDto;
 import com.user.IntArea.dto.report.ReportResponseDto;
 import com.user.IntArea.entity.Report;
 import jakarta.persistence.Tuple;
@@ -33,6 +34,11 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             "LEFT JOIN Review r2 ON cast(r.sort AS String ) = 'REVIEW' AND r2.id = r.refId " +
             "WHERE 1=1 and cast(r.sort AS String )  IN ('PORTFOLIO', 'REVIEW')")
     Page<Tuple> findAllReportDto(Pageable pageable);
+
+    @Query("SELECT new com.user.IntArea.dto.report.ReportDto(r.id, r.refId, r.memberId, r.sort, r.title, r.description) " +
+            "FROM Report r JOIN Member m ON r.memberId = m.id " +
+            "WHERE r.memberId = :memberId")
+    Page<ReportDto> findAllByMemberId(UUID memberId, Pageable pageable);
 
     @Query("SELECT r.id AS id, " +
             "CASE " +

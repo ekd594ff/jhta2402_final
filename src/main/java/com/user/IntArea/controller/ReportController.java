@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/report")
@@ -40,6 +41,14 @@ public class ReportController {
     public ResponseEntity<ReportDto> createPortfolioReport(@RequestBody ReportDto reportDto) {
         ReportDto createdReport = reportService.createPortfolioReport(reportDto);
         return ResponseEntity.ok(createdReport);
+    }
+
+    @GetMapping("/memberList/{memberId}")
+    public ResponseEntity<Page<ReportDto>> getReportsByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name= "pageSize") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReportDto> reportDtos = reportService.findReportByMemberId(memberId, pageable);
+        return ResponseEntity.ok().body(reportDtos);
     }
 
     @GetMapping("/admin/list")
