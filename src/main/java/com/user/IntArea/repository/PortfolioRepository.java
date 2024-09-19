@@ -131,21 +131,4 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
 
     List<Portfolio> findAllByCompanyId(UUID companyId);
 
-//    @Query("select p.id, p.title, p.description, COALESCE(ROUND(AVG(re.rate)::numeric, 2),0) AS rate " + // 이 부분 수정
-//            "from portfolio p " +
-//            "LEFT JOIN " +
-//            "    company c ON c.id = p.companyid " +
-//            "LEFT JOIN " +
-//            "    image i ON i.refId = p.id " +
-//            "LEFT JOIN " +
-//            "    quotationrequest qr ON p.id = qr.portfolioid " +
-//            "LEFT JOIN " +
-//            "    quotation q ON qr.id = q.quotationrequestid " +
-//            "LEFT JOIN " +
-//            "    review re ON q.id = re.quotationid " +
-//            "GROUP BY " +
-//            "    p.id " +
-//            "order by rate desc " +
-//            "limit 8 ")
-//    List<Tuple> getTop8RecommendedPortfolioByAvgRate();
 }
