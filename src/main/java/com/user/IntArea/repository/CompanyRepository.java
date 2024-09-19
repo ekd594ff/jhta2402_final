@@ -43,9 +43,9 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
             "WHERE 1 = 1 " +
             "AND c.isApplied = true " +
             "AND c.isDeleted = false " +
-            "AND q.progress = 'APPROVED' " +
+            "AND (q.progress = 'APPROVED' OR q.progress IS NULL) " +
             "GROUP BY c.id " +
-            "ORDER BY COUNT(qr.progress) DESC ")
+            "ORDER BY COUNT(q.progress) DESC ")
     List<Company> findTop8CompaniesByQuotationCount(Pageable pageable);
 
     @Modifying

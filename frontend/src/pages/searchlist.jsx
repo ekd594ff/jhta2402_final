@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Chip, Divider} from '@mui/material';
 import {useLocation} from 'react-router-dom';
-
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Header from '../components/common/header';
 import Footer from "../components/common/footer.jsx";
 import SearchListItem from "../components/searchlist/search-list-item.jsx";
@@ -17,26 +17,28 @@ function SearchList() {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [sortField, setSortField] = useState('createdAt');
+  const [sortDirection, setSortDirection] = useState('desc');
 
-  const fetchResults = (pageToFetch = 0, reset = false) => {
-    setLoading(true);
-    setError(null);
-    axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=4`)
-        .then(result => {
-          setResults(prevResults => reset ? result.data.content : [...prevResults, ...result.data.content]);
-          setHasMore(result.data.page.totalElements > (reset ? result.data.content.length : results.length + result.data.content.length));
-        })
-        .catch(() => setError('검색 결과를 가져오는 데 실패했습니다.'))
-        .finally(() => {
-          setLoading(false);
-          setPrevQuery(query);
-        });
-  };
+    const fetchResults = (pageToFetch = 0, reset = false, sortField = 'createdAt', sortDirection = 'desc') => {
+        setLoading(true);
+        setError(null);
+        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=4&sortField=${sortField}&=sortDirection=${sortDirection}`)
+            .then(result => {
+                setResults(prevResults => reset ? result.data.content : [...prevResults, ...result.data.content]);
+                setHasMore(result.data.page.totalElements > (reset ? result.data.content.length : results.length + result.data.content.length));
+            })
+            .catch(() => setError('검색 결과를 가져오는 데 실패했습니다.'))
+            .finally(() => {
+                setLoading(false);
+                setPrevQuery(query);
+            });
+    };
 
   useEffect(() => {
     if (prevQuery !== query) {
       setPage(0);
-      fetchResults(0, true);
+      fetchResults(0, true,sortField,sortDirection);
     }
   }, [query, prevQuery]);
 
@@ -46,18 +48,61 @@ function SearchList() {
     }
   }, [page]);
 
+    useEffect(() => {
+        fetchResults(page, true, sortField, sortDirection);
+    }, [sortField,sortDirection]);
   const loadMoreResults = () => {
     if (hasMore && !loading) {
       setPage(prevPage => prevPage + 1);
     }
   };
 
+  const handleSortFieldChange = (event) => {
+      setSortField(event.target.value);
+      console.log('sortField',event.target.value);
+      // onSortChange(event.target.value);
+  };
+
+  const handleSortDirectionChange = (event) => {
+      setSortDirection(event.target.value);
+      console.log('sortDirection',event.target.value);
+      // onSortChange(event.target.value);
+  };
   return (
       <>
         <Header/>
         <main className={style['searchList']}>
           <div className={style['container']}>
-            <div className={style['search-title']}><span>{`'${query}'`}</span>{`에 대한 검색결과`}</div>
+            <div className={style['search-title']}>
+                <div><span>{`'${query}'`}</span>{`에 대한 검색결과`}</div>
+                <div className={style['search-menu']}>
+                <FormControl variant="outlined" size="small" className={style['select']}>
+                    <InputLabel>정렬</InputLabel>
+                    <Select
+                        value={sortField}
+                        onChange={handleSortFieldChange}
+                        label="정렬"
+                    >
+                        <MenuItem value="createdAt"><em>날짜순</em></MenuItem>
+                        <MenuItem value="companyName">이름순</MenuItem>
+                        <MenuItem value="rate">인기순</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl variant="outlined" size="small" className={style['select']}>
+                    <InputLabel>순서</InputLabel>
+                    <Select
+                        value={sortDirection}
+                        onChange={handleSortDirectionChange}
+                        label="정렬"
+                    >
+                        <MenuItem value="asc"><em>오름차순</em></MenuItem>
+                        <MenuItem value="desc">내림차순</MenuItem>
+                    </Select>
+                </FormControl>
+                </div>
+            </div>
+
+
             {!loading && !results.length ?
                 <div className={style['empty']}>
                   <span>검색 결과가 존재하지 않습니다</span>

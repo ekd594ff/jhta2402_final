@@ -37,8 +37,15 @@
       font-size: 18px;
       display: flex;
       gap: 8px;
+      justify-content: space-between;
+      & > .search-menu {
+        min-width: 100px; /* 필요에 따라 최소 너비 조정 */
+        & > .select {
+          margin: 5px;
+        }
+      }
 
-      & > span {
+      span {
         font-weight: bold;
       }
     }
