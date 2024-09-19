@@ -11,7 +11,6 @@ import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.entity.*;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
@@ -162,23 +160,8 @@ public class PortfolioService {
         });
     }
 
-
-//    public Page<PortfolioSearchDto> getPortfolios(String searchWord, Pageable pageable) {
-//        log.info("pageable={}",pageable);
-//        return portfolioRepository.searchPortfolios(searchWord, pageable)
-//                .map(result -> new PortfolioSearchDto(
-//                        (UUID) result[0],
-//                        (String) result[1],
-//                        (String) result[2],
-//                        (String) result[3],
-//                        (String[]) result[4],
-//                        ((BigDecimal) result[5]).doubleValue()
-//                ));
-//    }
-
     // (일반 권한) 검색된 포트폴리오 검색 메서드
     public Page<PortfolioSearchDto> findPortfolioBySearchWord(String searchWord, String sortField, String sortDirection, Pageable pageable) {
-//        log.info("pageable={}",pageable);
         if (sortField.equals("createdAt")) {
             sortField = "p.createdAt";
         }
@@ -189,8 +172,8 @@ public class PortfolioService {
                 .map(PortfolioSearchDto::new);
     }
 
-//    public List<PortfolioRecommendDto> getRecommendedPortfolioByAvgRate() {
-//
+//    public List<PortfolioRecommendDto> getTop8RecommendedPortfolioByAvgRate() {
+//        return portfolioRepository.getRecommendedPortfolioByAvgRate()
 //    }
 
     // (일반 권한) 특정한 하나의 포트폴리오 DetailInfoDto 불러오기
