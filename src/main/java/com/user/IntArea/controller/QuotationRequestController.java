@@ -80,7 +80,7 @@ public class QuotationRequestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/sellerCancel/{id}")
+    @PutMapping("/seller/cancel/{id}")
     public ResponseEntity<Void> cancelSellerQuotationRequest(@PathVariable UUID id) {
         quotationRequestService.cancelSellerQuotationRequest(id);
         return ResponseEntity.noContent().build();

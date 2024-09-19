@@ -55,10 +55,17 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
 
+    // Member가 보는 회사 정보
+    @GetMapping("/info/{id}")
+    public CompanyPortfolioDetailDto getCompanyById(@PathVariable UUID id) {
+
+        return companyService.getCompanyById(id);
+    }
+
     @GetMapping("/info")
     public CompanyPortfolioDetailDto getCompanyById() {
 
-        return companyService.getCompanyById();
+        return companyService.getCompanyInfo();
     }
 
     @GetMapping("/admin/unapply")

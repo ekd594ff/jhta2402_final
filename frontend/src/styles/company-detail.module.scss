@@ -34,6 +34,17 @@
       }
     }
 
+    & > .button-top-div {
+      display: flex;
+      justify-content: end;
+      margin: 0 16px;
+
+      & > .button {
+        border-color: variables.$COLOR_PRIMARY;
+        color: variables.$COLOR_PRIMARY;
+      }
+    }
+
     & > .company-info-div {
       display: flex;
       flex-direction: row;
