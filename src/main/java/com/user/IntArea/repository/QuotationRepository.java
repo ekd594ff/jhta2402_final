@@ -28,7 +28,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "JOIN q.quotationRequest qr " +
             "JOIN qr.member m " +
             "WHERE m.id = :memberId and q.progress = :progress")
-    Page<Quotation> GetAllByMemberIdAndProgress(@Param("memberId") UUID memberId, @Param("progress") QuotationProgress progress, Pageable pageable);
+    Page<Quotation> GetAllByMemberIdAndProgress(UUID memberId, QuotationProgress progress, Pageable pageable);
 
 
     Optional<Quotation> findByQuotationRequestIdAndProgress(UUID quotationRequestId, QuotationProgress progress);
@@ -67,10 +67,10 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
 
     Page<Quotation> findAllByProgress(QuotationProgress progress, Pageable pageable);
 
-    @Query("SELECT DISTINCT q FROM Quotation q " +
-            "JOIN q.quotationRequest qr " +
-            "JOIN qr.portfolio p " +
-            "JOIN p.company c " +
+    @Query("SELECT q FROM Quotation q " +
+            "INNER JOIN q.quotationRequest qr " +
+            "INNER JOIN  qr.portfolio p " +
+            "INNER JOIN  p.company c " +
             "WHERE c.id = :companyId and q.progress=:progress")
     Page<Quotation> getAllByCompanySortedByProgress(@Param("progress") QuotationProgress progress, @Param("companyId") UUID companyId, Pageable pageable);
 
