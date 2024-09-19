@@ -44,16 +44,23 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
     }
 
+    @GetMapping("/list/recommend")
+    public ResponseEntity<List<PortfolioRecommendDto>> findTop8RecommendedPortfolios() {
+        return ResponseEntity.ok().build();
+    }
+
 
     // (일반 권한) 검색된 포트폴리오 반환 엔드포인트
     @GetMapping("/search/detailed")
-    public Page<PortfolioSearchDto> findPortfolioBySearchWord(@RequestParam String searchWord,
+    public ResponseEntity<Page<PortfolioSearchDto>> findPortfolioBySearchWord(@RequestParam String searchWord,
                                                               @RequestParam int page,
                                                               @RequestParam int size,
                                                               @RequestParam(defaultValue = "createdAt") String sortField,
-                                                              @RequestParam(defaultValue = "desc") String sortDirection) {
+                                                              @RequestParam(defaultValue = "asc") String sortDirection) {
+
         Pageable pageable = PageRequest.of(page, size);
-        return portfolioService.findPortfolioBySearchWord(searchWord,sortField, sortDirection,pageable);
+        Page<PortfolioSearchDto> portfolioSearchDtoPage = portfolioService.findPortfolioBySearchWord(searchWord, sortField, sortDirection, pageable);
+        return ResponseEntity.ok().body(portfolioSearchDtoPage);
     }
 
     @GetMapping("/{id}")
@@ -84,6 +91,7 @@ public class PortfolioController {
         return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
+    // seller
     // seller
     @PostMapping
     public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {

@@ -180,6 +180,9 @@ public class PortfolioService {
                 .map(PortfolioSearchDto::new);
     }
 
+//    public List<PortfolioRecommendDto> getRecommendedPortfolioByAvgRate() {
+//
+//    }
 
     // (일반 권한) 특정한 하나의 포트폴리오 DetailInfoDto 불러오기
     public PortfolioDetailInfoDto getOpenPortfolioInfoById(UUID id) {

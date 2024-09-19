@@ -1,5 +1,6 @@
 package com.user.IntArea.repository;
 
+import com.user.IntArea.entity.Portfolio;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
@@ -28,18 +29,19 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
                 .append("  ORDER BY i.url ")
                 .append("  LIMIT 8 ")
                 .append(") AS limited_images) AS imageUrls, ")
-                .append("ROUND(AVG(re.rate)::numeric, 2) AS rate ")
+                .append("COALESCE(ROUND(AVG(re.rate)::numeric, 2),0) AS rate ")
                 .append("FROM portfolio p ")
-                .append("JOIN company c ON c.id = p.companyid ")
-                .append("JOIN image i ON i.refId = p.id ")
-                .append("JOIN quotationrequest qr ON p.id = qr.portfolioid ")
-                .append("JOIN quotation q ON qr.id = q.quotationrequestid ")
-                .append("JOIN review re ON q.id = re.quotationid ")
+                .append("LEFT JOIN company c ON c.id = p.companyid ")
+                .append("LEFT JOIN image i ON i.refId = p.id ")
+                .append("LEFT JOIN quotationrequest qr ON p.id = qr.portfolioid ")
+                .append("LEFT JOIN quotation q ON qr.id = q.quotationrequestid ")
+                .append("LEFT JOIN review re ON q.id = re.quotationid ")
                 .append("WHERE p.isdeleted = false ")
                 .append("AND (p.title LIKE CONCAT('%', :searchWord, '%') OR ")
                 .append("p.description LIKE CONCAT('%', :searchWord, '%') OR ")
                 .append("c.companyName LIKE CONCAT('%', :searchWord, '%')) ")
                 .append("GROUP BY p.id, p.title, c.companyName, p.description ");
+
 
         // 동적 정렬 추가
         if (sortField != null && !sortField.isEmpty() && sortDirection != null && !sortDirection.isEmpty()) {
@@ -63,9 +65,10 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
         return new PageImpl<>(results, pageable, total);
     }
 
+
     private long getTotalCount(String searchWord) {
         String countQuery = "SELECT COUNT(*) FROM portfolio p " +
-                "JOIN company c ON c.id = p.companyid " + // 회사와 조인 추가
+                "LEFT JOIN company c ON c.id = p.companyid " + // 회사와 조인 추가
                 "WHERE p.isdeleted = false " +
                 "AND (p.title LIKE CONCAT('%', :searchWord, '%') OR " +
                 "p.description LIKE CONCAT('%', :searchWord, '%') OR " +
