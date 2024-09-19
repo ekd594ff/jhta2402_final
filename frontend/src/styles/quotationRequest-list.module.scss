@@ -1,0 +1,141 @@
+@use "variables";
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+
+    & > .qr-grid-container {
+      margin: 24px 0;
+
+      & > .qr-grid {
+
+        & > .focus-button {
+          border-color: variables.$COLOR_PRIMARY;
+          color: variables.$COLOR_PRIMARY;
+        }
+
+        & > .button {
+          border-color: gray;
+          color: gray;
+        }
+      }
+    }
+
+    & > .qr-card-container {
+
+      & > .no-content-div {
+        margin-top: 16px;
+        width: 100%;
+        text-align: center;
+        color: gray;
+        font-weight: 400;
+      }
+
+      & > .qr-card-grid {
+
+        & > .qr-card {
+
+          & > .qr-card-content {
+            margin: auto;
+
+
+            & > .image-div {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 16px;
+
+              & > .portfolio-div {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+              }
+
+              & > .PENDING {
+                font-size: 14px;
+                color: variables.$COLOR_PRIMARY;
+              }
+
+              & > .APPROVED {
+                font-size: 14px;
+                color: green;
+              }
+
+              & > .USER_CANCELLED {
+                font-size: 14px;
+                color: orange;
+              }
+
+              & > .SELLER_CANCELLED {
+                font-size: 14px;
+                color: orange;
+              }
+
+              & > .ADMIN_CANCELLED {
+                font-size: 14px;
+                color: orange;
+              }
+            }
+
+            & > .member-div {
+
+              & > .member-title-div {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                & > .member-info {
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                }
+              }
+
+              & > .member-content-div {
+
+              }
+            }
+
+            & > .info-div {
+
+            }
+
+            & > .bottom-div {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+
+              & > .date-div {
+                font-size: 14px;
+                color: #989898;
+              }
+
+              & > .button-div {
+                display: flex;
+                align-items: end;
+                justify-content: end;
+
+                & > .button {
+                  color: variables.$COLOR_PRIMARY;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

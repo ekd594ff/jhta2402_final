@@ -5,26 +5,30 @@ import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface QuotationRequestRepository extends JpaRepository<QuotationRequest, UUID> {
+
+    List<QuotationRequest> findByPortfolioId(UUID id);
+
+    @Query("select qr from QuotationRequest qr left join Quotation q where q.id = :quotationId")
+    QuotationRequest getByQuotationId(@Param("quotationId") UUID quotationId);
+
     List<QuotationRequest> findAllByMember(Member member);
 
     Page<QuotationRequest> findAllByMemberId(UUID memberId, Pageable pageable);
 
-    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds")
-    public abstract Page<QuotationRequest> findAllByPortfolioIds(List<UUID> portfolioIds, Pageable pageable);
+    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.member.id = :memberId AND qr.progress IN :progresses")
+    Page<QuotationRequest> findAllByMemberIdAndProgresses(UUID memberId, List<QuotationProgress> progresses, Pageable pageable);
 
-    List<QuotationRequest> getAllByPortfolioId(UUID id);
+    @Query("SELECT qr FROM QuotationRequest qr WHERE qr.portfolio.id IN :portfolioIds AND qr.progress IN :progresses")
+    Page<QuotationRequest> findAllByPortfolioIdsAndProgress(List<UUID> portfolioIds, List<QuotationProgress> progresses, Pageable pageable);
 
     Page<QuotationRequest> findAllByMember(Member member, Pageable pageable);
 
@@ -79,6 +83,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "join fetch q.member m " +
             "join fetch q.portfolio p ")
     Page<QuotationRequest> findAll(Pageable pageable);
+
     @Query("select q from QuotationRequest q where cast(q.id as string ) like %:id% ")
     Page<QuotationRequest> findAllByIdContains(String id, Pageable pageable);
 
@@ -128,5 +133,5 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
             "ORDER BY c.companyname, s.progress;\n", nativeQuery = true)
     List<Object[]> findQuotationRequestCountById(@Param("companyId") UUID companyId);
 
-    List<QuotationRequest> findByPortfolioId(UUID id);
+
 }

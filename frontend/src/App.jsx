@@ -11,9 +11,9 @@ import Registration from "./pages/portfolio/registration.jsx";
 import CreateEditCompany from "./pages/company/createEdit.jsx";
 import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
-import QuotationRequestUserList from "./pages/quotationRequestUserList.jsx";
-import QuotationRequestSellerList from "./pages/quotationReqeustSellerList.jsx";
-import CompanyDetail from "./pages/login/companyPage.jsx";
+import CompanyDetail from "./pages/company/companyPage.jsx";
+import QuotationRequestList from "./pages/quotationRequest/quotationRequestList.jsx";
+import QuotationRequestDetail from "./pages/quotationRequest/quotationRequestDetail.jsx";
 import QuotationForm from "./pages/quotation/quotation-form.jsx";
 
 function App() {
@@ -34,15 +34,10 @@ function App() {
                     <Route path="/portfolio/edit/:id" element={<Registration/>}/>
                     <Route path="/search/detailed" element={<SearchList/>}/>
                     <Route path="/quotationRequest" element={<QuotationRequest/>}/>
+                    <Route path="/quotationRequest/member" element={<QuotationRequestList/>}/>
+                    <Route path="/quotationRequest/company" element={<QuotationRequestList/>}/>
+                    <Route path="/quotationRequest/:id" element={<QuotationRequestDetail/>}/>
                     <Route path="/quotation/form/:requestId" element={<QuotationForm/>}/>
-                    <Route
-                        path="/qr/userList/:memberId"
-                        element={<QuotationRequestUserList/>}
-                    />
-                    <Route
-                        path="/qr/sellerList/:companyId"
-                        element={<QuotationRequestSellerList/>}
-                    />
                 </Routes>
             </BrowserRouter>
         </div>

@@ -15,6 +15,9 @@ import java.util.UUID;
 
 public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
 
+    @Query("SELECT q from Quotation q where q.id = :quotationId")
+    Optional<Quotation> getByQuotationId(UUID quotationId);
+
     @Query("SELECT DISTINCT q FROM Quotation q " +
             "JOIN q.quotationRequest qr " +
             "JOIN qr.member m " +
@@ -37,7 +40,7 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "WHERE qr.id = :quotationRequestId and q.progress = :progress")
     List<Quotation> getAllListByQuotationRequestIdAndProgress(UUID quotationRequestId, QuotationProgress progress);
 
-    List<Quotation> findAllByQuotationRequestId(UUID quotationRequestId);
+    List<Quotation> findAllByQuotationRequestIdOrderByUpdatedAt(UUID quotationRequestId);
 
     @Query("SELECT DISTINCT q FROM Quotation q " +
             "JOIN q.quotationRequest qr " +

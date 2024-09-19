@@ -83,17 +83,17 @@
       }
 
       & > .image-blob {
-        width: 128px;
-        height: 128px;
+        width: 280px;
+        height: 280px;
         object-fit: contain;
-        margin: 16px;
+        margin: 0 0 16px 0;
       }
     }
 
     & > .button-div {
       display: flex;
       justify-content: end;
-      margin: 32px;
+      margin: 16px;
 
       & > Button {
         color: white;

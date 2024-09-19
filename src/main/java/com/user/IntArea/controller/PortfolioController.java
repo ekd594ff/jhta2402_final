@@ -44,11 +44,16 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
     }
 
+
     // (일반 권한) 검색된 포트폴리오 반환 엔드포인트
     @GetMapping("/search/detailed")
-    public Page<PortfolioSearchDto> searchPortfolios(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return portfolioService.getPortfolios(searchWord, pageable);
+    public Page<PortfolioSearchDto> findPortfolioBySearchWord(@RequestParam String searchWord,
+                                                              @RequestParam int page,
+                                                              @RequestParam int size,
+                                                              @RequestParam(defaultValue = "createdAt") String sortField,
+                                                              @RequestParam(defaultValue = "desc") String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size);
+        return portfolioService.findPortfolioBySearchWord(searchWord,sortField, sortDirection,pageable);
     }
 
     @GetMapping("/{id}")
@@ -70,6 +75,13 @@ public class PortfolioController {
     @GetMapping("/list/random")
     public List<Map<String, Object>> getRandomPortfolioInfoDtos(@RequestParam int count) {
         return portfolioService.getRandomPortfolioInfoDtos(count);
+    }
+
+    // 평점순으로 받기(평점이 같을 경우 생성일이 더 오래된 것부터 배치)
+    @GetMapping("/list/recommended")
+    public List<Map<String, Object>> getRecommendedPortfolioByAvgRate(@RequestParam int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
     // seller

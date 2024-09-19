@@ -11,6 +11,7 @@ import style from "../../styles/search-list-item.module.scss";
 
 
 function SearchListItem(props) {
+    console.log(props);
     const {title, description, companyName, imageUrls, id} = props;
     const navigator = useNavigate();
     return <li className={style['search-list-item']}>
@@ -28,7 +29,7 @@ function SearchListItem(props) {
                 >
                     {
                         imageUrls.map((url, index) => <SwiperSlide className={style['slide']}
-                                                                   key={`${companyName}_${url}`}>
+                                                                   key={`${companyName}_${url}_${index}`}>
                             <img className={style['thumbnail']}
                                  src={url}
                                  alt='portfolio thumbnail'/>
