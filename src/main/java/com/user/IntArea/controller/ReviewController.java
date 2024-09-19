@@ -30,14 +30,14 @@ public class ReviewController {
 
     // (승인된 quotationRequest 작성자 권한) 리뷰 작성(새로 만들기)
     @PostMapping("/{quotationId}") // ● postman pass
-    public ResponseEntity<?> createReview(@ModelAttribute CreateReviewDto createReviewDto, @PathVariable UUID quotationId) {
+    public ResponseEntity<?> createReview(@RequestBody CreateReviewDto createReviewDto, @PathVariable UUID quotationId) {
         reviewService.create(createReviewDto, quotationId);
         return ResponseEntity.ok().build();
     }
 
     // (승인된 quotationRequest 작성자 권한) 작성된 리뷰 수정하기
     @PostMapping("/update") // ● postman pass
-    public ResponseEntity<?> updateReviewByWriter(UpdateReviewDto updateReviewDto) {
+    public ResponseEntity<?> updateReviewByWriter(@RequestBody UpdateReviewDto updateReviewDto) {
         reviewService.updateReviewByWriter(updateReviewDto);
         return ResponseEntity.ok().build();
     }
