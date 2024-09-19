@@ -11,7 +11,7 @@ import style from "../../styles/search-list-item.module.scss";
 
 
 function SearchListItem(props) {
-    const {title, description, companyName, imageUrls, id} = props;
+    const {title, description, companyName, imageUrls, id, late} = props;
     const navigator = useNavigate();
     return <li className={style['search-list-item']}>
         <div className={style['top']}>
@@ -28,7 +28,7 @@ function SearchListItem(props) {
                 >
                     {
                         imageUrls.map((url, index) => <SwiperSlide className={style['slide']}
-                                                                   key={`${companyName}_${url}`}>
+                                                                   key={`${companyName}_${url}_${index}`}>
                             <img className={style['thumbnail']}
                                  src={url}
                                  alt='portfolio thumbnail'/>
@@ -48,8 +48,8 @@ function SearchListItem(props) {
                 <div className={style['portfolio-title']}>{title}</div>
             </div>
             <div className={style['rating']}>
-                <Rating readOnly defaultValue={1} max={1} size="small"/>
-                4.8
+                <Rating readOnly defaultValue={parseFloat(late)} max={1} size="small"/>
+                {parseFloat(late).toFixed(1)}
             </div>
             <div className={style['description']}>{description}</div>
         </div>

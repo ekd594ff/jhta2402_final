@@ -83,7 +83,6 @@ public class CompanyController {
     @PostMapping("/list")
     public ResponseEntity<List<CompanyResponseDto>> getAllCompanies(@RequestBody CompanyRequestDto companyRequestDto) {
         List<CompanyResponseDto> companies = companyService.getAllCompanies(companyRequestDto);
-
         return ResponseEntity.ok(companies);
     }
 

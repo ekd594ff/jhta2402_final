@@ -27,8 +27,12 @@ import ReportModalContent from "./component/reportModalContent.jsx";
 import QuotationRequestModalContent from "./component/quotationRequestModalContent.jsx";
 import ReviewModalContent from "./component/reviewModalContent.jsx";
 
+const linkNameArray = ["회원 정보", "업체 정보", "포트폴리오", "리뷰", "신고 내역", "견적서", "견적 신청서"];
 
-function route(params, inputValue) {
+function route(params, inputValue, navigator) {
+    if (!params) {
+        navigator("/admin/member");
+    }
     switch (params) {
         case "member" :
             return <MemberModalContent {...inputValue}/>;
@@ -45,9 +49,10 @@ function route(params, inputValue) {
         case "quotationRequest" :
             return <QuotationRequestModalContent {...inputValue}/>;
         default :
-            <></>;
+            return <></>;
     }
 }
+
 function NestedList() {
     const [open, setOpen] = React.useState(true);
 
@@ -70,12 +75,12 @@ function NestedList() {
                 </ListSubheader>
             }
         >
-            {['Member', 'Company', 'Portfolio', 'Review', 'Report', 'Quotation', 'QuotationRequest'].map((text) => {
+            {['Member', 'Company', 'Portfolio', 'Review', 'Report', 'Quotation', 'QuotationRequest'].map((text, index) => {
                 return (
                     <Link to={text.charAt(0).toLowerCase() + text.slice(1)}
                           style={{textDecoration: 'none', color: 'inherit'}} key={text}>
-                        <ListItemButton className={style["list-item"]} >
-                            <ListItemText primary={text}/>
+                        <ListItemButton className={style["list-item"]}>
+                            <ListItemText primary={linkNameArray[index]}/>
                         </ListItemButton>
                     </Link>
                 );
@@ -83,6 +88,8 @@ function NestedList() {
         </List>
     );
 }
+
+
 const handleApiRequest = async () => {
     try {
         const ids = selectedRows;
@@ -97,6 +104,7 @@ const handleApiRequest = async () => {
         console.log('selectedRows', selectedRows);
     }
 };
+
 function CustomToolbar(props) {
     return (
         <GridToolbarContainer>
@@ -146,10 +154,7 @@ function DataTable() {
     const [inputValue, setInputValue] = useState({});
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
-    const handleEdit = ((params) => {
-        console.log(params);
-    });
+    const navigator = useNavigate();
 
     const buttonColumns = {
         field: 'delete',
@@ -319,7 +324,7 @@ function DataTable() {
                     삭제
                 </Button>
             </div>
-            <div className={style["data-Grid"]} >
+            <div className={style["data-Grid"]}>
                 <DataGrid
                     rows={data}
                     columns={columns}
@@ -356,7 +361,7 @@ function DataTable() {
                     <Typography id="modal-title" variant="h6" component="h2">
                         수정
                     </Typography>
-                    {route(pathname, inputValue)}
+                    {route(pathname, inputValue, navigator)}
                     <Button variant="outlined" onClick={handleClose}>
                         닫기
                     </Button>
