@@ -17,7 +17,15 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Optional<Review> findByQuotationId(UUID quotationId);
 
     @Query("SELECT r from Review r where r.member.id = :memberId")
-    Page<Review> getAllReviewsbyMember(UUID memberId, Pageable pageable);
+    Page<Review> getAllReviewsByMember(UUID memberId, Pageable pageable);
+
+    @Query("SELECT r from Review r " +
+            "INNER JOIN Quotation q ON q.id = r.quotation.id " +
+            "INNER JOIN QuotationRequest qr ON qr.id = q.quotationRequest.id " +
+            "INNER JOIN Portfolio p ON p.id = qr.portfolio.id " +
+            "INNER JOIN Company c ON c.id = p.company.id " +
+            "where c.id = :companyId")
+    Page<Review> getAllReviewsSortedByCompany(UUID companyId, Pageable pageable);
 
     @Query("SELECT r FROM Review r " +
             "INNER JOIN Quotation q ON q.id = r.quotation.id " +
@@ -42,6 +50,5 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Page<Review> findAllByCreatedAtContains(String createdAt, Pageable pageable);
 
     Page<Review> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
-
 
 }

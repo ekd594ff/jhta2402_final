@@ -50,8 +50,7 @@ public class ReviewController {
         return reviewService.getReviewInfoDtoListOfMember(pageable);
     }
 
-
-    // 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
+    // (일반) 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
     @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<ReviewPortfolioDetailDto>> getReviewByPortfolioId(
             @PathVariable UUID id, @RequestParam int page, @RequestParam int size) {
@@ -61,6 +60,17 @@ public class ReviewController {
 
         return ResponseEntity.ok().body(portfolioDetailDtos);
     }
+
+    // seller 권한
+
+    // (seller 권한) 회사가 받은 모든 리뷰 조회
+    @GetMapping("/company/list") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsForCompany(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListTowardCompany(pageable);
+    }
+
+    // admin 권한
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReviewPortfolioDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
