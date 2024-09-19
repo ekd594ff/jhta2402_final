@@ -19,7 +19,7 @@ function QuotationRequestDetail() {
         id: "",
         title: "",
         description: "",
-        progress: "",
+        progress: "PENDING",
         solutions: [],
         quotations: [],
     });
@@ -123,7 +123,8 @@ function QuotationRequestDetail() {
                     </Card>
                     <div className={style['create-button-div']}>
                         <h4 className={style['sub-title']}>완료된 견적서</h4>
-                        {quotationRequest.progress !== "PENDING" && !isMember &&
+                        {quotationRequest.progress === "PENDING" &&
+                            !isMember &&
                             <Button variant="contained" className={style['create-button']}
                                     onClick={() => navigate("/quotation")}>
                                 새 견적서 작성
