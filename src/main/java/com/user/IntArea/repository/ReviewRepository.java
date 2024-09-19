@@ -12,6 +12,8 @@ import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
+    @Query("SELECT r from Review r where r.id = :reviewId")
+    Optional<Review> getByReviewId(UUID reviewId);
 
     Optional<Review> findByQuotationId(UUID quotationId);
 
