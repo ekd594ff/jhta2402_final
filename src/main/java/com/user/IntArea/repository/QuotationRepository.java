@@ -107,5 +107,6 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
     @Modifying
     @Query("UPDATE Quotation q SET q.progress = :ADMIN_CANCELLED  WHERE q.id IN :ids")
     void updateQuotationById(Iterable<UUID> ids);
+
 }
 
