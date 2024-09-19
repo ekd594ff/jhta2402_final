@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -110,7 +111,7 @@ public class QuotationService {
     // (일반) 특정 견적서 출력
     public Quotation getById(UUID quotationId) {
         Optional<Quotation> quotation = quotationRepository.findById(quotationId);
-        if(quotation.isEmpty()) {
+        if (quotation.isEmpty()) {
             throw new NoSuchElementException("작성된 견적서가 없습니다.");
         }
         return quotation.get();
@@ -160,7 +161,7 @@ public class QuotationService {
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 선택한 특정 견적요청서에 대해서 작성된 견적서 중 대기중인 견적서(1개) 출력
     public QuotationInfoDto getValidQuotationForQuotationRequest(QuotationRequest quotationRequest) {
-        if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
+        if (!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
         Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
@@ -172,7 +173,7 @@ public class QuotationService {
     // (견적요청서를 작성한 사용자 권한) 사용자가 받은 견적서만 취소
     public void cancelQuotationByCustomer(Quotation quotation) {
         // 접근권한자인지 확인
-        if(!isLoggedMemberQuotationRequestWriter(quotation.getQuotationRequest())) {
+        if (!isLoggedMemberQuotationRequestWriter(quotation.getQuotationRequest())) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
         // 견적서 취소 가능 조건: 견적서의 진행상태가 PENDING
@@ -184,7 +185,7 @@ public class QuotationService {
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 견적서를 받은 이후 거래 취소
     public void cancelContractByCustomer(QuotationRequest quotationRequest) {
-        if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
+        if (!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
         Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
@@ -195,15 +196,19 @@ public class QuotationService {
     }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 받은 견적서 승인 조치
-    public void approveQuotation(QuotationRequest quotationRequest) {
-        if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
+    public void approveQuotation(UUID quotationId) {
+
+        Quotation quotation = quotationRepository.findById(quotationId)
+                .orElseThrow(() -> new NoSuchElementException("해당 견적서가 없습니다."));
+
+        if (!isLoggedMemberQuotationRequestWriter(quotation.getQuotationRequest())) {
             throw new NoSuchElementException("잘못된 접근입니다.");
         }
-        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
-                .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
 
         quotation.setProgress(QuotationProgress.APPROVED);
+        quotation.getQuotationRequest().setProgress(QuotationProgress.APPROVED);
         quotationRepository.save(quotation);
+        quotationRequestRepository.save(quotation.getQuotationRequest());
     }
 
     // seller
@@ -225,7 +230,7 @@ public class QuotationService {
         quotationRequest = quotationRequestList.get(0);
 
         // 이미지파일 유무 검증 로직
-        if(quotationCreateDto.getImageFiles() == null || quotationCreateDto.getImageFiles().isEmpty()) {
+        if (quotationCreateDto.getImageFiles() == null || quotationCreateDto.getImageFiles().isEmpty()) {
             throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
         }
 
@@ -273,7 +278,7 @@ public class QuotationService {
         quotationRequest = quotationRequestList.get(0);
 
         // 이미지파일 유무 검증 로직
-        if(quotationUpdateDto.getImageFiles() == null || quotationUpdateDto.getImageFiles().isEmpty()) {
+        if (quotationUpdateDto.getImageFiles() == null || quotationUpdateDto.getImageFiles().isEmpty()) {
             throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
         }
 
@@ -305,7 +310,7 @@ public class QuotationService {
         // Seller가 quotationRequest 에 대해 접근권한이 있는지 확인
         Company company = getCompanyOfMember();
         QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByQuotationIdAndCompany(company.getId(), quotationId);
-        if(quotationRequest == null) {
+        if (quotationRequest == null) {
             throw new NoSuchElementException("견적요청에 대한 접근 권한이 없습니다.");
         }
 
@@ -316,7 +321,7 @@ public class QuotationService {
         Optional<Quotation> optionalFormerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING);
 
         // 이미 판매자가 생성한 견적서가 있을 경우 -> 견적서의 progress를 판매자 취소 처리
-        if(optionalFormerQuotation.isPresent()) {
+        if (optionalFormerQuotation.isPresent()) {
             optionalFormerQuotation.get().setProgress(QuotationProgress.SELLER_CANCELLED);
             quotationRepository.save(optionalFormerQuotation.get());
         }
@@ -380,7 +385,7 @@ public class QuotationService {
 
     public Quotation findById(UUID quotationId) {
         Optional<Quotation> quotation = quotationRepository.findById(quotationId);
-        if(quotation.isEmpty()) {
+        if (quotation.isEmpty()) {
             throw new NoSuchElementException("작성된 견적서가 없습니다.");
         }
         return quotation.get();

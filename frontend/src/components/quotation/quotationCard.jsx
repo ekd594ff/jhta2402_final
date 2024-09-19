@@ -5,13 +5,26 @@ import {Card, Modal} from "@mui/material";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import {dateFormatter} from "../../utils/dateUtil.jsx";
+import axios from "axios";
 
-function QuotationCard({quotation, cancelQuotation, requestProgress}) {
+function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, navigate}) {
 
     const [modal, setModal] = useState({
         open: false,
         url: "",
     });
+
+    const approveQuotation = (id) => {
+        if (!confirm("해당 견적서를 승인처리하시겠습니까?")) return;
+
+        axios.patch(`/api/quotation/approve/${id}`,
+            {}, {withCredentials: true})
+            .then(() => {
+                alert("승인되었습니다.");
+                navigate(0);
+            })
+            .catch(() => alert("문제가 발생했습니다."));
+    }
 
     return (
         <Card className={style['quotation-card']}>
@@ -22,15 +35,25 @@ function QuotationCard({quotation, cancelQuotation, requestProgress}) {
                         <p className={style['price']}>₩{quotation.totalTransactionAmount}</p>
                     </div>
                 </div>
-                {quotation.progress === "PENDING" && !requestProgress.endsWith("CANCELLED") &&
+                {quotation.progress === "PENDING"
+                    && !requestProgress.endsWith("CANCELLED")
+                    && !isMember &&
                     <div className={style['button-div']}>
                         <Button variant="outlined" className={style['cancel-button']}
                                 onClick={() => cancelQuotation(quotation.id)}>
                             견적서 취소
                         </Button>
+                        {/*<Button variant="outlined" className={style['edit-button']}*/}
+                        {/*        onClick={() => navigate("/quotation")}>*/}
+                        {/*    견적서 수정*/}
+                        {/*</Button>*/}
+                    </div>
+                }
+                {isMember && quotation.progress === "PENDING" &&
+                    <div className={style['button-div']}>
                         <Button variant="outlined" className={style['edit-button']}
-                                onClick={() => navigate("/quotation")}>
-                            견적서 수정
+                                onClick={() => approveQuotation(quotation.id)}>
+                            견적서 승인
                         </Button>
                     </div>
                 }

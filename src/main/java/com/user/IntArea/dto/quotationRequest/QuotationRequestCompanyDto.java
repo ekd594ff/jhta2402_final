@@ -2,9 +2,10 @@ package com.user.IntArea.dto.quotationRequest;
 
 import com.user.IntArea.dto.member.QuotationRequestMemberDto;
 import com.user.IntArea.dto.portfolio.PortfolioQuotationRequestDto;
+import com.user.IntArea.dto.review.ReviewQuotationRequestDto;
 import com.user.IntArea.dto.solution.SolutionDto;
-import com.user.IntArea.entity.Member;
 import com.user.IntArea.entity.QuotationRequest;
+import com.user.IntArea.entity.Review;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class QuotationRequestCompanyDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<SolutionDto> solutions;
+    private ReviewQuotationRequestDto review;
     private UUID companyId;
 
     @Builder
@@ -33,7 +35,8 @@ public class QuotationRequestCompanyDto {
             String memberUrl,
             String portfolioUrl,
             List<SolutionDto> solutions,
-            UUID companyId
+            UUID companyId,
+            Review review
     ) {
         this.id = quotationRequest.getId();
         this.member = new QuotationRequestMemberDto(quotationRequest.getMember(), memberUrl);
@@ -44,6 +47,7 @@ public class QuotationRequestCompanyDto {
         this.updatedAt = quotationRequest.getUpdatedAt();
         this.portfolio = new PortfolioQuotationRequestDto(quotationRequest.getPortfolio(), portfolioUrl);
         this.solutions = solutions;
+        this.review = new ReviewQuotationRequestDto(review);
         this.companyId = companyId;
     }
 }

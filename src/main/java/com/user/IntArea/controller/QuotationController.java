@@ -63,6 +63,13 @@ public class QuotationController {
         return quotationService.getQuotationInfoDtoListTowardMemberSortedByProgress(progress, pageable);
     }
 
+    // 견적서 수락
+    @PatchMapping("/approve/{id}")
+    public ResponseEntity<?> approveQuotation(@PathVariable(name = "id") UUID quotationId) {
+        quotationService.approveQuotation(quotationId);
+        return ResponseEntity.ok().build();
+    }
+
 
     // seller 권한
 
