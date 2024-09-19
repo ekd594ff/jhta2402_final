@@ -4,9 +4,7 @@ import com.user.IntArea.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +15,9 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Optional<Review> getByReviewId(UUID reviewId);
 
     Optional<Review> findByQuotationId(UUID quotationId);
+
+    @Query("SELECT r from Review r where r.member.id = :memberId")
+    Page<Review> getAllReviewsbyMember(UUID memberId, Pageable pageable);
 
     @Query("SELECT r FROM Review r " +
             "INNER JOIN Quotation q ON q.id = r.quotation.id " +
@@ -41,5 +42,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Page<Review> findAllByCreatedAtContains(String createdAt, Pageable pageable);
 
     Page<Review> findAllByUpdatedAtContains(String updatedAt, Pageable pageable);
+
 
 }

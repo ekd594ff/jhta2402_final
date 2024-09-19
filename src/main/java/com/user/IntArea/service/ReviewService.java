@@ -10,7 +10,6 @@ import com.user.IntArea.entity.Review;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.MemberRepository;
 import com.user.IntArea.repository.QuotationRepository;
-import com.user.IntArea.repository.QuotationRequestRepository;
 import com.user.IntArea.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,6 +107,13 @@ public class ReviewService {
         review.setTitle(updateReviewDto.getTitle());
         review.setDescription(updateReviewDto.getDescription());
         reviewRepository.save(review);
+    }
+
+    // 사용자가 작성한 모든 리뷰 리스트 출력
+    public Page<ReviewInfoListDto> getReviewInfoDtoListOfMember(Pageable pageable) {
+        Member member = loggedMember();
+        return reviewRepository.getAllReviewsbyMember(member.getId(), pageable)
+                .map(ReviewInfoListDto::new);
     }
 
 

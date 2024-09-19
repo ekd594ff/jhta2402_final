@@ -2,6 +2,7 @@ package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.portfolio.EditPortfolioDto;
+import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.review.*;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,14 @@ public class ReviewController {
         reviewService.updateReviewByWriter(updateReviewDto);
         return ResponseEntity.ok().build();
     }
+
+    // (일반 사용자 권한) 사용자가 작성한 모든 리뷰 정보 조회
+    @GetMapping("/list") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsOfUser(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListOfMember(pageable);
+    }
+
 
     // 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
     @GetMapping("/portfolio/{id}")
