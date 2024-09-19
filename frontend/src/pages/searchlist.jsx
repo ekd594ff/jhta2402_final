@@ -20,7 +20,7 @@ function SearchList() {
   const [sortField, setSortField] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState('desc');
 
-    const fetchResults = (pageToFetch = 0, reset = false, sortField, sortDirection) => {
+    const fetchResults = (pageToFetch = 0, reset = false, sortField = 'createdAt', sortDirection = 'desc') => {
         setLoading(true);
         setError(null);
         axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=4&sortField=${sortField}&=sortDirection=${sortDirection}`)
@@ -40,7 +40,7 @@ function SearchList() {
       setPage(0);
       fetchResults(0, true,sortField,sortDirection);
     }
-  }, [query, prevQuery,sortField,sortDirection]);
+  }, [query, prevQuery]);
 
   useEffect(() => {
     if (page > 0) {
@@ -48,6 +48,9 @@ function SearchList() {
     }
   }, [page]);
 
+    useEffect(() => {
+        fetchResults(page, true, sortField, sortDirection);
+    }, [sortField,sortDirection]);
   const loadMoreResults = () => {
     if (hasMore && !loading) {
       setPage(prevPage => prevPage + 1);
@@ -56,13 +59,13 @@ function SearchList() {
 
   const handleSortFieldChange = (event) => {
       setSortField(event.target.value);
-      console.log(event.target.value);
+      console.log('sortField',event.target.value);
       // onSortChange(event.target.value);
   };
 
   const handleSortDirectionChange = (event) => {
-      setSortField(event.target.value);
-      console.log(event.target.value);
+      setSortDirection(event.target.value);
+      console.log('sortDirection',event.target.value);
       // onSortChange(event.target.value);
   };
   return (
@@ -81,7 +84,7 @@ function SearchList() {
                         label="정렬"
                     >
                         <MenuItem value="createdAt"><em>날짜순</em></MenuItem>
-                        <MenuItem value="comapnyName">이름순</MenuItem>
+                        <MenuItem value="companyName">이름순</MenuItem>
                         <MenuItem value="rate">인기순</MenuItem>
                     </Select>
                 </FormControl>

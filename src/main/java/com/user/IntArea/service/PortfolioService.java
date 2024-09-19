@@ -173,6 +173,9 @@ public class PortfolioService {
         if (sortField.equals("createdAt")) {
             sortField = "p.createdAt";
         }
+        if (sortField.equals("companyName")) {
+            sortField = "c.companyName";
+        }
         return customPortfolioRepository.findPortfolioBySearchWord(searchWord, sortField, sortDirection,pageable)
                 .map(PortfolioSearchDto::new);
     }
