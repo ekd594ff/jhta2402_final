@@ -26,7 +26,7 @@ const QuotationRequestUserList = () => {
         const response = await axios.get(
           `/api/quotationRequest/list/${memberId}?page=${page}&pageSize=10`
         );
-        console.log(response.data);
+        console.log("Fetched Quotation Requests:", response.data);
         setQuotationRequests((prevRequests) => [
           ...prevRequests,
           ...response.data.content,

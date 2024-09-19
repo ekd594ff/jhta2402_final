@@ -5,9 +5,11 @@ import { useNavigate, Route, Routes } from "react-router-dom";
 import Header from "../../components/common/header";
 import Footer from "../../components/common/footer";
 import Sidebar from "../login/mypage-sidebar";
-import QuotationRequestUserList from "../quotationRequestUserList";
+import { useParams } from "react-router-dom";
+import QuotationRequestList from "../quotationRequestUserList";
 
 const MyPage = () => {
+    const { memberId } = useParams(); // memberId를 가져옵니다. 
     const [selectedComponent, setSelectedComponent] = useState("profile");
 
     const handleSelectProfile = () => {
@@ -27,7 +29,7 @@ const MyPage = () => {
                 </Box>
                 <Box flexGrow={1} paddingTop="20px">
                     {selectedComponent === "profile" && <MyProfile />}
-                    {selectedComponent === "quotationRequests" && <QuotationRequestUserList />}
+                    {selectedComponent === "quotationRequests" && <QuotationRequestList />}
                 </Box>
             </Box>
             <Footer />

@@ -28,7 +28,7 @@ const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
 
     const handleNavigation = (path) => {
         if (path === "/quotationRequest/member") {
-            onSelect();
+            onSelectQuotationRequests(); // 수정된 부분
         }
     };
 

@@ -34,7 +34,7 @@ function App() {
                     <Route path="/portfolio/edit/:id" element={<Registration/>}/>
                     <Route path="/search/detailed" element={<SearchList/>}/>
                     <Route path="/quotationRequest" element={<QuotationRequest/>}/>
-                    <Route path="/quotationRequest/member" element={<QuotationRequestUserList/>}/>
+                    <Route path="/quotationRequest/member" element={<QuotationRequestList/>}/>
                     <Route path="/quotationRequest/company" element={<QuotationRequestList/>}/>
                     <Route path="/quotationRequest/:id" element={<QuotationRequestDetail/>}/>
                 </Routes>
