@@ -2,15 +2,11 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.member.MemberDto;
+import com.user.IntArea.dto.member.QuotationRequestMemberDto;
+import com.user.IntArea.dto.quotation.QuotationDetailDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestCompanyDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestCountDto;
-import com.user.IntArea.dto.quotation.QuotationResponseDto;
-import com.user.IntArea.dto.quotationRequest.EditQuotationRequestDto;
-import com.user.IntArea.dto.quotationRequest.QuotationAdminRequestDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestInfoDto;
-import com.user.IntArea.dto.quotationRequest.QuotationRequestListDto;
+import com.user.IntArea.dto.quotationRequest.*;
+import com.user.IntArea.dto.solution.SolutionDetailDto;
 import com.user.IntArea.dto.solution.SolutionDto;
 import com.user.IntArea.dto.solution.SolutionForQuotationRequestDto;
 import com.user.IntArea.entity.*;
@@ -19,6 +15,7 @@ import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,15 +35,17 @@ public class QuotationRequestService {
 
     private final QuotationService quotationService;
     private final SolutionService solutionService;
+    private final ImageRepository imageRepository;
+    private final QuotationRepository quotationRepository;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
 
         // Member 및 Portfolio 조회
         Member member = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new NoSuchElementException(""));
+                .orElseThrow(() -> new NoSuchElementException("멤버 정보가 없습니다."));
         Portfolio portfolio = portfolioRepository.findById(requestDto.getPortfolioId())
-                .orElseThrow(() -> new NoSuchElementException(""));
+                .orElseThrow(() -> new NoSuchElementException("포트폴리오 정보가 없습니다."));
 
         // QuotationRequest 엔티티 생성 및 저장
         QuotationRequest quotationRequest = QuotationRequest.builder()
@@ -88,7 +87,7 @@ public class QuotationRequestService {
     @Transactional(readOnly = true)
     public QuotationRequestDto getQuotationRequest(UUID id) {
         QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(""));
+                .orElseThrow(() -> new NoSuchElementException("견적신청서 정보가 없습니다."));
 
         return QuotationRequestDto.builder()
                 .memberId(quotationRequest.getMember().getId())
@@ -108,15 +107,58 @@ public class QuotationRequestService {
                 .build();
     }
 
+    public QuotationRequestDetailDto getQuotationRequestDetail(UUID id) {
+        QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("견적신청서 정보가 없습니다."));
+
+        String loginEmail = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("로그인 정보가 없습니다."))
+                .getEmail();
+        // 신청 유저, 회사 유저만 api 허용
+        if (!loginEmail.equals(quotationRequest.getMember().getEmail())) {
+            Company company = getCompanyOfMember();
+            if (!loginEmail.equals(company.getMember().getEmail())) {
+                throw new UsernameNotFoundException("접근 권한이 없습니다.");
+            }
+        }
+
+        String memberUrl = imageRepository.findByRefId(quotationRequest.getMember().getId())
+                .orElseGet(Image::new).getUrl();
+        List<SolutionDetailDto> solutions = solutionRepository.getSolutionsByQuotationRequestId(quotationRequest.getId())
+                .stream().map(SolutionDetailDto::new).toList();
+        List<QuotationDetailDto> quotations = quotationRepository.findAllByQuotationRequestIdOrderByUpdatedAt(quotationRequest.getId())
+                .stream().map(quotation -> {
+                    List<String> quotationUrls = imageRepository.findAllByRefId(quotation.getId())
+                            .stream().map(Image::getUrl).toList();
+                    return new QuotationDetailDto(quotation, quotationUrls);
+                })
+                .toList();
+
+        return QuotationRequestDetailDto.builder()
+                .quotationRequest(quotationRequest)
+                .memberUrl(memberUrl)
+                .solutions(solutions)
+                .quotations(quotations)
+                .build();
+    }
+
     @Transactional(readOnly = true)
-    public Page<QuotationRequestListDto> getQuotationRequestsByMemberId(UUID memberId, Pageable pageable) {
-        Page<QuotationRequest> requests = quotationRequestRepository.findAllByMemberId(memberId, pageable);
-        return  requests.map(request -> QuotationRequestListDto.builder()
-                .id(request.getId())
+    public Page<QuotationRequestListDto> getQuotationRequestsByMemberId(String progress, Pageable pageable) {
+        String email = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new UsernameNotFoundException("로그인 정보가 없습니다."))
+                .getEmail();
+        UUID memberId = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 멤버가 없습니다."))
+                .getId();
+
+        List<QuotationProgress> progresses = stringToProgress(progress);
+
+        Page<QuotationRequest> requests = quotationRequestRepository.findAllByMemberIdAndProgresses(memberId, progresses, pageable);
+        return requests.map(request -> QuotationRequestListDto.builder()
+                .quotationRequest(request)
                 .memberId(request.getMember().getId())
-                .portfolioId(request.getPortfolio().getId())
-                .title(request.getTitle())
-                .description(request.getDescription())
+                .portfolio(request.getPortfolio())
+                .portfolioUrl(imageRepository.findFirstByRefId(request.getPortfolio().getId()).orElse(new Image()).getUrl())
                 .solutions(request.getRequestSolutions().stream()
                         .map(rs -> SolutionDto.builder()
                                 .id(rs.getSolution().getId())
@@ -126,43 +168,48 @@ public class QuotationRequestService {
                                 .createdAt(rs.getSolution().getCreatedAt())
                                 .build())
                         .collect(Collectors.toList()))
-                .progress(request.getProgress().name())
                 .build());
     }
 
     @Transactional(readOnly = true)
-    public Page<QuotationRequestCompanyDto> getQuotationRequestsByCompanyId(UUID companyId, Pageable pageable) {
+    public Page<QuotationRequestCompanyDto> getQuotationRequestsByCompanyId(String progress, Pageable pageable) {
+
+        // progress : PENDING, APPROVED, ALL
+        List<QuotationProgress> progresses = stringToProgress(progress);
+
+        Company company = getCompanyOfMember();
 
         // 회사에 속하는 포트폴리오 조회
-        Page<Portfolio> portfolios = portfolioRepository.findAllByCompanyId(companyId, pageable);
+        List<Portfolio> portfolios = portfolioRepository.findAllByCompanyId(company.getId());
 
         // 포트폴리오 ID 리스트 생성
         List<UUID> portfolioIds = portfolios.stream()
                 .map(Portfolio::getId)
                 .collect(Collectors.toList());
 
-        // 해당 포트폴리오 ID를 가진 견적 신청서 조회
-        Page<QuotationRequest> requests = quotationRequestRepository.findAllByPortfolioIds(portfolioIds, pageable);
+        // 해당 포트폴리오 ID와 Progress를 가진 견적 신청서 조회
+        Page<QuotationRequest> requests = quotationRequestRepository.findAllByPortfolioIdsAndProgress(portfolioIds, progresses, pageable);
 
         // DTO로 변환하여 반환
-        return requests.map(request -> QuotationRequestCompanyDto.builder()
-                .id(request.getId())
-                .memberId(request.getMember().getId())
-                .portfolioId(request.getPortfolio().getId())
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .solutions(request.getRequestSolutions().stream()
-                        .map(rs -> SolutionDto.builder()
-                                .id(rs.getSolution().getId())
-                                .title(rs.getSolution().getTitle())
-                                .description(rs.getSolution().getDescription())
-                                .price(rs.getSolution().getPrice())
-                                .createdAt(rs.getSolution().getCreatedAt())
-                                .build())
-                        .collect(Collectors.toList()))
-                .progress(request.getProgress().name())
-                .companyId(companyId)
-                .build());
+        return requests.map(request -> {
+            String memberUrl = imageRepository.findByRefId(request.getMember().getId()).orElseGet(Image::new).getUrl();
+
+            return QuotationRequestCompanyDto.builder()
+                    .quotationRequest(request)
+                    .memberUrl(memberUrl)
+                    .portfolioUrl(imageRepository.findFirstByRefId(request.getPortfolio().getId()).orElse(new Image()).getUrl())
+                    .solutions(request.getRequestSolutions().stream()
+                            .map(rs -> SolutionDto.builder()
+                                    .id(rs.getSolution().getId())
+                                    .title(rs.getSolution().getTitle())
+                                    .description(rs.getSolution().getDescription())
+                                    .price(rs.getSolution().getPrice())
+                                    .createdAt(rs.getSolution().getCreatedAt())
+                                    .build())
+                            .collect(Collectors.toList()))
+                    .companyId(company.getId())
+                    .build();
+        });
     }
 
     @Transactional
@@ -394,6 +441,17 @@ public class QuotationRequestService {
             quotationRequest.setProgress(editQuotationRequestDto.getProgress());
         } else {
             throw new NoSuchElementException("editQuotationRequestForAdmin");
+        }
+    }
+
+    private List<QuotationProgress> stringToProgress(String progressStr) {
+
+        if (progressStr.equals(QuotationProgress.PENDING.getProgress())) {
+            return List.of(QuotationProgress.PENDING);
+        } else if (progressStr.equals(QuotationProgress.APPROVED.getProgress())) {
+            return List.of(QuotationProgress.APPROVED);
+        } else {
+            return List.of(QuotationProgress.PENDING, QuotationProgress.APPROVED, QuotationProgress.USER_CANCELLED, QuotationProgress.ADMIN_CANCELLED, QuotationProgress.SELLER_CANCELLED);
         }
     }
 }

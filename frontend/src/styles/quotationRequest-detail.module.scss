@@ -1,0 +1,70 @@
+@use "variables";
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
+
+    & > .quotationRequest-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    & > .create-button-div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0;
+
+      & > .create-button {
+        background-color: variables.$COLOR_PRIMARY;
+      }
+    }
+
+    & > .quotation-card {
+      margin: 16px 0;
+
+      & > .quotation-info {
+        display: flex;
+        gap: 16px;
+        align-items: end;
+
+        & > .image {
+          width: 120px;
+          height: 120px;
+          object-fit: cover;
+        }
+
+        & > .button-div {
+          display: flex;
+          justify-content: end;
+          margin: 16px;
+          gap: 16px;
+
+          & > .cancel-button {
+            border-color: variables.$COLOR_PRIMARY;
+            color: variables.$COLOR_PRIMARY;
+          }
+
+          & > .edit-button {
+            border-color: variables.$COLOR_PRIMARY;
+            color: variables.$COLOR_PRIMARY;
+          }
+        }
+      }
+    }
+  }
+}

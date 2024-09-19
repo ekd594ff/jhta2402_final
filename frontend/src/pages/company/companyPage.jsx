@@ -37,17 +37,16 @@ function CompanyDetail() {
 
     const [pageInfo, setPageInfo] = useState({
         page: 0,
-        size: 12,
+        size: 4,
+        totalPage: 0,
     });
 
     const getCompanyInfo = async () => await axios.get("/api/company/info", {withCredentials: true});
     const getRequestCount = async () => await axios.get("/api/quotationRequest/company/count", {withCredentials: true});
-    const getPortfolioList = async () => await axios.get(`/api/portfolio/list/company?page=${pageInfo.page}&size=${pageInfo.size}`, {withCredentials: true});
 
     useEffect(() => {
-        Promise.all([getCompanyInfo(), getRequestCount(), getPortfolioList(), checkSeller()])
+        Promise.all([getCompanyInfo(), getRequestCount(), checkSeller()])
             .then(([res, countRes, portfolioRes, _]) => {
-                console.log(portfolioRes)
                 if (res.data.deleted) {
                     alert("삭제된 회사입니다.");
                     navigate(-1);
@@ -64,10 +63,17 @@ function CompanyDetail() {
                     requestPendingCount: countRes.data.pendingCount,
                     requestApprovedCount: countRes.data.approvedCount,
                 });
-
-                setPortfolioList(portfolioRes.data.content || []);
             })
     }, []);
+
+    useEffect(() => {
+        axios.get(`/api/portfolio/list/company?page=${pageInfo.page}&size=${pageInfo.size}`,
+            {withCredentials: true})
+            .then((res) => {
+                setPortfolioList([...portfolioList, ...res.data.content]);
+                setPageInfo({...pageInfo, totalPage: res.data.page.totalPages});
+            }).catch(() => alert("포트폴리오를 불러오는데 문제가 발생했습니다."));
+    }, [pageInfo.page]);
 
     const createData = (name, value) => {
         return {name, value};
@@ -148,7 +154,7 @@ function CompanyDetail() {
                         </TableContainer>
                     </div>
                     <div className={style['button-div']}>
-                        <Button variant="outlined"
+                        <Button variant="text"
                                 className={style['button']}
                                 onClick={() => navigate("/company/edit")}>수정하기</Button>
                     </div>
@@ -167,9 +173,9 @@ function CompanyDetail() {
                         </CardContent>
                     </Card>
                     <div className={style['button-div']}>
-                        <Button variant="outlined"
+                        <Button variant="text"
                                 className={style['button']}
-                                onClick={() => navigate(`/qr/sellerList/${companyInfo.companyId}`)}>
+                                onClick={() => navigate("/quotationRequest/company")}>
                             더보기
                         </Button>
                     </div>
@@ -181,7 +187,12 @@ function CompanyDetail() {
                                 <img src={portfolio.imageUrls[0]}
                                      alt='portfolio thumbnail'/>
                                 <ImageListItemBar
-                                    title={<Typography sx={{fontWeight: '500'}}>{portfolio.title}</Typography>}
+                                    title={
+                                        <Typography sx={{fontWeight: '500', cursor: 'pointer'}}
+                                                    onClick={() => navigate(`/portfolio/${portfolio.id}`)}>
+                                            {portfolio.title}
+                                        </Typography>
+                                    }
                                     subtitle={
                                         <Box sx={{
                                             display: 'flex',
@@ -212,6 +223,15 @@ function CompanyDetail() {
                             </ImageListItem>
                         ))}
                     </ImageList>
+                    {(pageInfo.page + 1 < pageInfo.totalPage) &&
+                        <Button
+                            onClick={() =>
+                                setPageInfo({...pageInfo, page: pageInfo.page + 1})}
+                            variant="text"
+                            sx={{borderColor: '#FA4D56', color: '#FA4D56', margin: '0 8px'}}>
+                            더보기
+                        </Button>
+                    }
                 </div>
             </main>
             <Footer/>

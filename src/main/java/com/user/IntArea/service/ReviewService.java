@@ -1,10 +1,16 @@
 package com.user.IntArea.service;
 
-import com.user.IntArea.dto.portfolio.PortfolioInfoDto;
-import com.user.IntArea.dto.review.EditReviewDto;
-import com.user.IntArea.dto.review.ReviewPortfolioDetailDto;
-import com.user.IntArea.dto.review.ReviewPortfolioDto;
+import com.user.IntArea.common.utils.SecurityUtil;
+import com.user.IntArea.dto.member.MemberDto;
+import com.user.IntArea.dto.review.*;
+import com.user.IntArea.entity.Member;
+import com.user.IntArea.entity.Quotation;
+import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.entity.Review;
+import com.user.IntArea.entity.enums.QuotationProgress;
+import com.user.IntArea.repository.MemberRepository;
+import com.user.IntArea.repository.QuotationRepository;
+import com.user.IntArea.repository.QuotationRequestRepository;
 import com.user.IntArea.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +29,83 @@ import java.util.UUID;
 @Slf4j
 public class ReviewService {
 
+    private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
+    private final QuotationRequestRepository quotationRequestRepository;
+    private final QuotationRepository quotationRepository;
+
+
+    private Member loggedMember() {
+        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요."));
+        String email = memberDto.getEmail();
+        return memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 사용자 이메일에 대한 정보가 없습니다."));
+    }
+
+    // 현재 로그인한 멤버가 해당 견적서에 대한 견적요청서의 작성 권한자인지 확인
+    private void checkIfLoggedMemberCanWriteReviewFor(Quotation quotation) {
+        Member member = loggedMember();
+        QuotationRequest quotationRequest = quotation.getQuotationRequest();
+        if(quotationRequest == null) {
+            throw new NoSuchElementException("작성된 견적 요청서가 없습니다");
+        }
+        if(!member.equals(quotationRequest.getMember())) {
+            throw new NoSuchElementException("리뷰 작성 권한이 없습니다.");
+        }
+        if(!quotationRequest.getProgress().equals(QuotationProgress.APPROVED)) {
+            throw new NoSuchElementException("거래가 승인되어야 리뷰 작성이 가능합니다");
+        }
+        Optional<Review> review = reviewRepository.findByQuotationId(quotation.getId());
+        if(review.isPresent()) {
+            throw new NoSuchElementException("이미 리뷰를 작성하였습니다.");
+        }
+    }
+
+    // 현재 로그인한 멤버가 해당 리뷰에 대한 수정 권한자인지 확인
+    private void checkLoggedMemberAndGetReviewFor(Review review) {
+        Member member = loggedMember();
+        Quotation quotation = review.getQuotation();
+        QuotationRequest quotationRequest = quotation.getQuotationRequest();
+        if(quotationRequest == null) {
+            throw new NoSuchElementException("작성된 견적 요청서가 없습니다");
+        }
+        if(!member.equals(quotationRequest.getMember())) {
+            throw new NoSuchElementException("리뷰 작성 권한이 없습니다.");
+        }
+        if(!quotationRequest.getProgress().equals(QuotationProgress.APPROVED)) {
+            throw new NoSuchElementException("거래가 승인되어야 리뷰 작성이 가능합니다");
+        }
+    }
+
+    // (APPROVED QuotationRequest를 가진 사용자 권한) 사용자의 리뷰 작성
+    @Transactional
+    public void create(CreateReviewDto createReviewDto, UUID quotationId) {
+        // 권한 확인
+        Optional<Quotation> quotation = quotationRepository.findById(quotationId);
+        if(quotation.isEmpty()) {
+            throw new NoSuchElementException("알 수 없는 오류. 견적서가 존재하지 않습니다.");
+        }
+        checkIfLoggedMemberCanWriteReviewFor(quotation.get());
+        Review review = Review.builder()
+                .createReviewDto(createReviewDto)
+                .quotation(quotation.get())
+                .member(loggedMember())
+                .build();
+        reviewRepository.save(review);
+    }
+
+    @Transactional
+    public void updateReviewByWriter(UpdateReviewDto updateReviewDto) {
+        // 수정권한 확인
+        Optional<Review> reviewOptional = reviewRepository.findById(updateReviewDto.getReviewId());
+        if (reviewOptional.isPresent()) {
+            checkLoggedMemberAndGetReviewFor(reviewOptional.get());
+            Review review = reviewOptional.get();
+            review.setTitle(updateReviewDto.getTitle());
+            review.setDescription(updateReviewDto.getDescription());
+        }
+        throw new NoSuchElementException("알 수 없는 오류. 리뷰가 존재하지 않습니다.");
+    }
+
 
     public Page<ReviewPortfolioDetailDto> getReviewByPortfolioId(UUID portfolioId, Pageable pageable) {
         return reviewRepository.findReviewsByPortfolioId(portfolioId, pageable)
@@ -80,4 +162,6 @@ public class ReviewService {
             throw new NoSuchElementException("editReviewForAdmin");
         }
     }
+
+
 }

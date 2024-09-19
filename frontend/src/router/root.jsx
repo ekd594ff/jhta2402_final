@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import SearchList from "../pages/searchlist";
 import QuotationRequest from "../pages/quotationRequest";
 import QuotationRequestUserList from "../pages/quotationRequestUserList";
-import QuotationRequestSellerList from "../pages/quotationReqeustSellerList";
+import QuotationRequestSellerList from "../pages/quotationRequest/quotationRequestList.jsx";
 
 const Index = lazy(() => import("../pages/index"));
 const SignIn = lazy(() => import("../pages/signin"));
