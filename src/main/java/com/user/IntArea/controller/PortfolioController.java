@@ -44,10 +44,10 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
     }
 
-    @GetMapping("/list/recommend")
-    public ResponseEntity<List<PortfolioRecommendDto>> findTop8RecommendedPortfolios() {
-        return ResponseEntity.ok().build();
-    }
+//    @GetMapping("/list/recommend")
+//    public ResponseEntity<List<PortfolioRecommendDto>> findTop8RecommendedPortfolios() {
+//        return ResponseEntity.ok().build();
+//    }
 
 
     // (일반 권한) 검색된 포트폴리오 반환 엔드포인트
@@ -87,7 +87,7 @@ public class PortfolioController {
     // 평점순으로 받기(평점이 같을 경우 생성일이 더 오래된 것부터 배치)
     @GetMapping("/list/recommended")
     public List<Map<String, Object>> getRecommendedPortfolioByAvgRate(@RequestParam int count) {
-        Pageable pageable = PageRequest.of(0, count);
+        Pageable pageable = PageRequest.ofSize(count);
         return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
