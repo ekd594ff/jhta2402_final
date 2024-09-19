@@ -215,15 +215,12 @@ public class CompanyService {
     @Transactional
     public List<CompanyWithImageDto> findTop8CompaniesByQuotationCount() {
         Pageable pageable = PageRequest.ofSize(8);
-        List<Company> companyList = companyRepository.findTop8CompaniesByQuotationCount(pageable);
-        log.info("companyList={}", companyList); //확인
-        return null;
-//        return companyRepository.findTop8CompaniesByQuotationCount(pageable).stream()
-//                .map(company -> {
-//                    Optional<Image> optionalImage = imageRepository.findById(company.getId());
-//                    return optionalImage.map(image -> new CompanyWithImageDto(company,image))
-//                            .orElse(new CompanyWithImageDto(company));
-//                }).toList();
+        return companyRepository.findTop8CompaniesByQuotationCount(pageable).stream()
+                .map(company -> {
+                    Optional<Image> optionalImage = imageRepository.findByRefId(company.getId());
+                    return optionalImage.map(image -> new CompanyWithImageDto(company,image))
+                            .orElse(new CompanyWithImageDto(company));
+                }).toList();
     }
 
 }

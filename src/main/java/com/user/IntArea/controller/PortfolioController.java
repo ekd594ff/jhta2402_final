@@ -44,11 +44,16 @@ public class PortfolioController {
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
     }
 
+
     // (일반 권한) 검색된 포트폴리오 반환 엔드포인트
     @GetMapping("/search/detailed")
-    public Page<PortfolioSearchDto> searchPortfolios(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return portfolioService.getPortfolios(searchWord, pageable);
+    public Page<PortfolioSearchDto> findPortfolioBySearchWord(@RequestParam String searchWord,
+                                                              @RequestParam int page,
+                                                              @RequestParam int size,
+                                                              @RequestParam(defaultValue = "createdAt") String sortField,
+                                                              @RequestParam(defaultValue = "desc") String sortDirection) {
+        Pageable pageable = PageRequest.of(page, size);
+        return portfolioService.findPortfolioBySearchWord(searchWord,sortField, sortDirection,pageable);
     }
 
     @GetMapping("/{id}")
