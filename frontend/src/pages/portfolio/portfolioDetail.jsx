@@ -41,6 +41,25 @@ const reviewListAJAXPromise = (portfolioId, pagination) =>
     axios.get(`/api/review/portfolio/${portfolioId}?${Object
         .entries(pagination)
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&')}`);
+const memberInfoAJAXPromise = axios.get('/api/member/email');
+
+function PortfolioReportRadioList() {
+    return <>
+        <FormControlLabel value="부적절한 내용" control={<Radio/>} label="부적절한 내용"/>
+        <FormControlLabel value="사진과 다른 서비스" control={<Radio/>} label="사진과 다른 서비스"/>
+        <FormControlLabel value="불친절한 서비스" control={<Radio/>} label="불친절한 서비스"/>
+        <FormControlLabel value="저작권 불법 도용" control={<Radio/>} label="저작권 불법 도용"/>
+        <FormControlLabel value="기타(직접작성)" control={<Radio/>} label="기타(직접작성)"/>
+    </>
+}
+
+function ReviewReportRadioList() {
+    return <>
+        <FormControlLabel value="부적절한 리뷰" control={<Radio/>} label="부적절한 리뷰"/>
+        <FormControlLabel value="허위 리뷰" control={<Radio/>} label="허위 리뷰"/>
+        <FormControlLabel value="기타(직접작성)" control={<Radio/>} label="기타(직접작성)"/>
+    </>
+}
 
 function PortfolioDetail() {
     const {id} = useParams();
@@ -54,7 +73,8 @@ function PortfolioDetail() {
     const [modalImg, setModalImg] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [reportModalOpen, setReportModalOpen] = useState(false);
-    const [reportData, setReportData] = useState({title: "", description: ""});
+    const [reportData, setReportData] = useState({title: "", description: "", refId: ""});
+    const [reportModalMode, setReportModalMode] = useState("portfolio");
     const [customReportTitle, setCustomReportTitle] = useState("");
     const [disableCustomReport, setDisableCustomReport] = useState(true);
     const [alert, setAlert] = useState({
@@ -62,6 +82,7 @@ function PortfolioDetail() {
         severity: "success",
         msg: ""
     });
+    const [memberId, setMemberId] = useState("");
 
     const [portfolioInfo, setPortfolioInfo] = useState({
         portfolioId: id,
@@ -104,13 +125,18 @@ function PortfolioDetail() {
         Promise.all([reviewListAJAXPromise(id, {
             page: reviewInfo.page,
             size: reviewInfo.size
-        }), portFolioAJAXPromise, solutionAJAXPromise(id)])
-            .then(([reviewListResult, portfolioResult, solutionResult]) => {
+        }), portFolioAJAXPromise, solutionAJAXPromise(id), memberInfoAJAXPromise])
+            .then(([reviewListResult,
+                       portfolioResult,
+                       solutionResult,
+                       memberInfoResult]) => {
                 const {data: {content, page: {number, totalElements, totalPages}}} = reviewListResult;
                 setReviewInfo({...reviewInfo, page: number, totalElements, totalPages, review: content});
                 const {data} = solutionResult;
                 setSolutionList(data);
                 setSelectedSolutionList(Array.from({length: data.length}, () => false));
+                const {data: {id: memberId}} = memberInfoResult;
+                setMemberId(memberId);
             }).finally(() => {
             setIsLoading(false);
         });
@@ -156,6 +182,10 @@ function PortfolioDetail() {
         }
     }, []);
 
+    useEffect(() => {
+        setReportData(prev => ({...prev, title: "", description: ""}));
+    }, [reportModalMode, setReportData])
+
     return (
         <>
             <Header/>
@@ -189,7 +219,11 @@ function PortfolioDetail() {
                                     <span className={style['btn-group']}>
                                         <Tooltip title="신고하기">
                                             <IconButton size="small" disableRipple onClick={() => {
-                                                setReportModalOpen(true);
+                                                setReportModalMode("portfolio");
+                                                setReportData({...reportData, refId: portfolioInfo.portfolioId});
+                                                setTimeout(() => {
+                                                    setReportModalOpen(true);
+                                                }, 1);
                                             }}>
                                                 <NotificationsIcon/>
                                             </IconButton>
@@ -296,6 +330,13 @@ function PortfolioDetail() {
                             {
                                 !isLoading ? reviewInfo.review.length ? reviewInfo.review.map((item, index) => {
                                     const render = [<PortfolioReviewListItem
+                                        onReport={() => {
+                                            setReportModalMode("review");
+                                            setReportData({...reportData, refId: item.id})
+                                            setTimeout(() => {
+                                                setReportModalOpen(prev => !prev);
+                                            }, 1);
+                                        }}
                                         {...item}
                                         key={`${index}_${index}`}/>];
                                     if (index !== reviewInfo.review.length - 1) {
@@ -341,19 +382,22 @@ function PortfolioDetail() {
                                 const title = event.target.value;
                                 if (title === "기타(직접작성)") {
                                     setDisableCustomReport(false);
-                                    setReportData({description: reportData.description, title: customReportTitle});
+                                    setReportData({
+                                        ...reportData,
+                                        description: reportData.description,
+                                        title: customReportTitle
+                                    });
                                 } else {
                                     setDisableCustomReport(true);
-                                    setReportData({description: reportData.description, title});
+                                    setReportData({...reportData, description: reportData.description, title});
                                 }
                             }}
                             className={style['report-list']}
                         >
-                            <FormControlLabel value="부적절한 내용" control={<Radio/>} label="부적절한 내용"/>
-                            <FormControlLabel value="사진과 다른 서비스" control={<Radio/>} label="사진과 다른 서비스"/>
-                            <FormControlLabel value="불친절한 서비스" control={<Radio/>} label="불친절한 서비스"/>
-                            <FormControlLabel value="저작권 불법 도용" control={<Radio/>} label="저작권 불법 도용"/>
-                            <FormControlLabel value="기타(직접작성)" control={<Radio/>} label="기타(직접작성)"/>
+                            {
+                                reportModalMode === "portfolio" ?
+                                    <PortfolioReportRadioList/> : <ReviewReportRadioList/>
+                            }
                             <TextField variant="outlined" disabled={disableCustomReport}
                                        value={customReportTitle}
                                        onChange={(event) => {
@@ -375,7 +419,20 @@ function PortfolioDetail() {
                             </label>
                             <Button className={style['report-submit']} size="medium"
                                     onClick={() => {
-                                        console.log(reportData);
+                                        if (!memberId) {
+                                            window.alert("로그인이 필요합니다");
+                                        }
+                                        const data = {
+                                            ...reportData,
+                                            memberId
+                                        };
+                                        axios.post(`/api/report/create/${reportModalMode}`, data)
+                                            .then((result) => {
+                                                window.alert("신고가 접수되었습니다");
+                                                setReportModalOpen(false);
+                                            }).catch(err => {
+                                            window.alert("신고 접수 실패");
+                                        });
                                     }}
                                     disableRipple>신고 제출</Button>
                         </RadioGroup>

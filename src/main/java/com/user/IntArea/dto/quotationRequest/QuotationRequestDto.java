@@ -20,6 +20,7 @@ public class QuotationRequestDto {
     private String description;
     private List<SolutionDto> solutions;
     private String progress;
+    private String username;
 
     // QuotationRequest를 받아서 필드를 매핑하는 생성자 추가
     public QuotationRequestDto(QuotationRequest quotationRequest) {

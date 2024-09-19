@@ -36,6 +36,7 @@ public class QuotationRequestController {
         return ResponseEntity.ok(responseDto);
     }
 
+
     @GetMapping("/detail/{id}")
     public ResponseEntity<QuotationRequestDetailDto> getQuotationRequestDetail(@PathVariable UUID id) {
         return ResponseEntity.ok(quotationRequestService.getQuotationRequestDetail(id));
