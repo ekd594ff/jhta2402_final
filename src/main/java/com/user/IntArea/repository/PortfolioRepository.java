@@ -119,4 +119,40 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     List<Portfolio> findAllByCompanyId(UUID companyId);
 
 //    List<Tuple> getRecommendedPortfolioByAvgRate();
+
+    @Query(value = "WITH latestPortfolios AS (\n" +
+            "    SELECT \n" +
+            "        p.id AS portfolioId,\n" +
+            "        q2.createdat, \n" +
+            "        p.title,\n" +
+            "        p.description,\n" +
+            "        ROUND(AVG(r.rate)::numeric, 2) as rate,\n" +
+            "        ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY q2.createdat DESC) AS idx\n" +
+            "    FROM portfolio p\n" +
+            "    INNER JOIN quotationrequest q ON p.id = q.portfolioid\n" +
+            "    INNER JOIN quotation q2 ON q.id = q2.quotationrequestid AND q2.progress = 'APPROVED'\n" +
+            "    INNER JOIN review r ON q2.id = r.quotationid\n" +
+            "    WHERE p.isactivated = true AND p.isdeleted = false\n" +
+            "    GROUP BY p.id, q2.createdat, p.title, p.description\n" +
+            "),\n" +
+            "portfolioImages AS (\n" +
+            "    SELECT \n" +
+            "        i.refid AS portfolioId,\n" +
+            "        i.url,\n" +
+            "        ROW_NUMBER() OVER (PARTITION BY i.refid ORDER BY i.createdat DESC) AS img_idx\n" +
+            "    FROM Image i\n" +
+            ")\n" +
+            "SELECT \n" +
+            "    lp.portfolioId as portfolioId, \n" +
+            "    lp.createdat, \n" +
+            "    lp.title, \n" +
+            "    lp.description, \n" +
+            "    lp.rate as avgRate, \n" +
+            "    pi.url as thumbnail\n" +
+            "FROM latestPortfolios lp\n" +
+            "INNER JOIN portfolioImages pi ON lp.portfolioId = pi.portfolioId AND pi.img_idx = 1\n" +
+            "WHERE lp.idx = 1\n" +
+            "ORDER BY lp.createdat DESC\n" +
+            "LIMIT :count", nativeQuery = true)
+    List<Map<String, Object>> getRecentTransactionPortfolioList(@Param("count") int count);
 }
