@@ -84,10 +84,17 @@ public class PortfolioController {
         return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
+    @GetMapping("/list/recent")
+    public ResponseEntity<List<PortfolioRecommendDto>> getTop4RecentPortfoliosWithTransactions() {
+        return ResponseEntity.ok().build();
+    }
+
+
     // seller
     // seller
     @PostMapping
     public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+
         portfolioService.create(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
@@ -97,6 +104,7 @@ public class PortfolioController {
         portfolioService.updatePortfolio(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
+
 
     @GetMapping("/list/company")
     public Page<PortfolioDetailInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
