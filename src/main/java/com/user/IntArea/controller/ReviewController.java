@@ -2,6 +2,7 @@ package com.user.IntArea.controller;
 
 import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.portfolio.EditPortfolioDto;
+import com.user.IntArea.dto.quotation.QuotationInfoDto;
 import com.user.IntArea.dto.review.*;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,14 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    // 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
+    // (일반 사용자 권한) 사용자가 작성한 모든 리뷰 정보 조회
+    @GetMapping("/list") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsOfUser(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListOfMember(pageable);
+    }
+
+    // (일반) 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
     @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<ReviewPortfolioDetailDto>> getReviewByPortfolioId(
             @PathVariable UUID id, @RequestParam int page, @RequestParam int size) {
@@ -52,6 +60,17 @@ public class ReviewController {
 
         return ResponseEntity.ok().body(portfolioDetailDtos);
     }
+
+    // seller 권한
+
+    // (seller 권한) 회사가 받은 모든 리뷰 조회
+    @GetMapping("/company/list") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsForCompany(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListTowardCompany(pageable);
+    }
+
+    // admin 권한
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReviewPortfolioDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
