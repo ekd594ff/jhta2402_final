@@ -41,9 +41,10 @@ function Index() {
                        getTopCompanyResult,
                        hotPortfolioListResult,
                        getRecommendedPortfolioResult]) => {
-                console.log(getRecommendedPortfolioResult);
+                setRecommendList(() => [...hotPortfolioListResult.data]);
                 setCompanyList(() => [...getTopCompanyResult.data]);
                 setRecommendList(() => [...randomPortfolioList.data]);
+                setHotPortfolioList(() => [...hotPortfolioListResult.data]);
             });
     }, []);
 
@@ -111,7 +112,7 @@ function Index() {
                         <div className={style['section-content']}>
                             <ul className={style['portfolio-list']}>
                                 {hotPortfolioList.map((item, index) => {
-                                    return <PortfolioListItem value={item} key={index}/>
+                                    return <PortfolioListItem {...item} key={`${item.portfolioid}_${index}_hot`}/>
                                 })}
                             </ul>
                         </div>

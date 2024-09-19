@@ -109,7 +109,6 @@ function SearchList() {
                         </div>
                     </div>
 
-
                     {!loading && !results.length ?
                         <div className={style['empty']}>
                             <span>검색 결과가 존재하지 않습니다</span>

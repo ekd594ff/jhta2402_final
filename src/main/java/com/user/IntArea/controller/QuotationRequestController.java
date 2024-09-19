@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/quotationRequest")
 @RequiredArgsConstructor
-@Slf4j
 public class QuotationRequestController {
 
     private final QuotationRequestService quotationRequestService;
@@ -80,7 +78,7 @@ public class QuotationRequestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/sellerCancel/{id}")
+    @PutMapping("/seller/cancel/{id}")
     public ResponseEntity<Void> cancelSellerQuotationRequest(@PathVariable UUID id) {
         quotationRequestService.cancelSellerQuotationRequest(id);
         return ResponseEntity.noContent().build();
@@ -99,12 +97,6 @@ public class QuotationRequestController {
                                                                           @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                           @RequestParam(required = false) String filterColumn,
                                                                           @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-        System.out.println(filterColumn);
-        System.out.println(filterValue);
         if (sortField.equals("username")) {
             sortField = "m.username";
         }

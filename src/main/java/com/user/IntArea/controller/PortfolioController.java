@@ -5,7 +5,6 @@ import com.user.IntArea.dto.portfolio.PortfolioUpdateDto;
 import com.user.IntArea.dto.portfolio.*;
 import com.user.IntArea.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 
-@Slf4j
 @RestController
 @RequestMapping("/api/portfolio")
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/list/company/{id}")
-    public Page<PortfolioInfoDto> getOpenPortfolioInfoDtosOfCompany(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
+    public Page<PortfolioDetailInfoDto> getOpenPortfolioInfoDtosOfCompany(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
     }
@@ -42,11 +40,6 @@ public class PortfolioController {
     public Page<PortfolioInfoDto> searchOpenPortfolioInfoDtos(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
-    }
-
-    @GetMapping("/list/recommend")
-    public ResponseEntity<List<PortfolioRecommendDto>> findTop8RecommendedPortfolios() {
-        return ResponseEntity.ok().build();
     }
 
 
@@ -87,7 +80,7 @@ public class PortfolioController {
     // 평점순으로 받기(평점이 같을 경우 생성일이 더 오래된 것부터 배치)
     @GetMapping("/list/recommended")
     public List<Map<String, Object>> getRecommendedPortfolioByAvgRate(@RequestParam int count) {
-        Pageable pageable = PageRequest.of(0, count);
+        Pageable pageable = PageRequest.ofSize(count);
         return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
@@ -184,10 +177,6 @@ public class PortfolioController {
                                                                   @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                   @RequestParam(required = false) String filterColumn,
                                                                   @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
         if (sortField.equals("companyName")) {
             sortField = "company.companyName";
         }
@@ -197,7 +186,6 @@ public class PortfolioController {
         } else {
             pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
         }
-        log.info("pageable={}", pageable);
         Page<PortfolioInfoDto> portfolioInfoDtoPage = portfolioService.getSearchPortfolio(Optional.ofNullable(filterColumn), Optional.ofNullable(filterValue), pageable);
         return ResponseEntity.ok().body(portfolioInfoDtoPage);
     }
