@@ -45,9 +45,9 @@ function SearchList() {
 
     useEffect(() => {
         if (page > 0) {
-            fetchResults(page);
+            fetchResults(page, false, sortField, sortDirection);
         }
-    }, [page]);
+    }, [page, sortField, sortDirection]);
 
     useEffect(() => {
         fetchResults(0, true, sortField, sortDirection);
