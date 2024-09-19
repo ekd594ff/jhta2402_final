@@ -17,14 +17,14 @@ function SearchList() {
     const [error, setError] = useState(null);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [sortField, setSortField] = useState('createdAt');
+    const [sortField, setSortField] = useState('rate');
     const [sortDirection, setSortDirection] = useState('desc');
     const [reset, setReset] = useState(false);
 
     const fetchResults = (pageToFetch = 0, reset = false, sortField = 'createdAt', sortDirection = 'desc') => {
         setLoading(true);
         setError(null);
-        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=4&sortField=${sortField}&=sortDirection=${sortDirection}`)
+        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=4&sortField=${sortField}&sortDirection=${sortDirection}`)
             .then(result => {
                 setResults(prevResults => reset ? [...result.data.content] : [...prevResults, ...result.data.content]);
                 setHasMore(result.data.content.length);
