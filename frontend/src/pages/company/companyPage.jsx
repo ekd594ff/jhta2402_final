@@ -181,6 +181,13 @@ function CompanyDetail() {
                     </div>
 
                     <h2 className={style['sub-title']}>포트폴리오 관리</h2>
+                    <div className={style['button-top-div']}>
+                        <Button variant="text"
+                                className={style['button']}
+                                onClick={() => navigate("/portfolio/registration")}>
+                            포트폴리오 생성
+                        </Button>
+                    </div>
                     <ImageList>
                         {portfolioList.map((portfolio) => (
                             <ImageListItem sx={{margin: '0 8px', minWidth: '160px'}} key={portfolio.id}>

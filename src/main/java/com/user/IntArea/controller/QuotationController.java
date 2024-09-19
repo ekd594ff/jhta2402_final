@@ -43,8 +43,8 @@ public class QuotationController {
     // 일반 권한
 
     // 받은 특정한 quotation 거부 (고객이 quotation만 취소) // ● Postman Pass
-    @GetMapping("/reject")
-    public void cancelQuotation(@RequestParam UUID quotationId) {
+    @PatchMapping("/cancel/{id}")
+    public void cancelQuotation(@PathVariable(name = "id") UUID quotationId) {
         Quotation quotation = quotationService.getById(quotationId);
         quotationService.cancelQuotationByCustomer(quotation);
     }
@@ -85,6 +85,7 @@ public class QuotationController {
     public void cancelQuotationBySeller(@PathVariable UUID id) {
         quotationService.cancelQuotationBySeller(id);
     }
+
     @GetMapping("/admin/list")
     public ResponseEntity<Page<QuotationResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -180,6 +181,7 @@ public class QuotationController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return quotationService.getAllQuotationsOfCompanySortedByProgressByAdmin(companyId, progress, pageable);
     }
+
     //
     @PatchMapping("/admin")
     public ResponseEntity<?> editQuotation(@RequestBody EditQuotationDto editQuotationDto) {

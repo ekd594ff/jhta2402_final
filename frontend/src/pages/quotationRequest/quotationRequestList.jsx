@@ -11,6 +11,7 @@ import Footer from "../../components/common/footer.jsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {CheckCircle, Image, Pending, Person} from "@mui/icons-material";
 import Avatar from "@mui/material/Avatar";
+import {dateFormatter} from "../../utils/dateUtil.jsx";
 
 const QuotationRequestList = () => {
 
@@ -70,8 +71,12 @@ const QuotationRequestList = () => {
     const updateProgress = async (id) => {
         if (!confirm("해당 거래를 취소하시겠습니까?")) return;
 
+        const url = path.endsWith("member")
+            ? `/api/quotationRequest/cancel/${id}`
+            : `/api/quotationRequest/seller/cancel/${id}`;
+
         try {
-            await axios.put(`/api/quotationRequest/sellerCancel/${id}`);
+            await axios.put(url);
             setSnackbarMessage("진행 상태가 업데이트되었습니다.");
             setSnackbarOpen(true);
             setPageInfo({...pageInfo, progress: "ALL", page: 0})
@@ -115,7 +120,7 @@ const QuotationRequestList = () => {
             <main className={style['main']}>
                 <div className={style['container']}>
                     <Typography variant="h6" style={{textAlign: "center", margin: "24px 0"}}>
-                        회사 견적신청서 목록
+                        {path.endsWith("company") ? "회사 견적신청서 목록" : "견적신청서 목록"}
                     </Typography>
                     <Grid2 container spacing={2} className={style['qr-grid-container']}>
                         <Grid2 size={2} className={style['qr-grid']}>
@@ -196,7 +201,7 @@ const QuotationRequestList = () => {
                                         </div>
                                         <div className={style['bottom-div']}>
                                             <div className={style['date-div']}>
-                                                {request.updatedAt}
+                                                {dateFormatter(request.updatedAt)}
                                             </div>
                                             <div className={style['button-div']}>
                                                 {request.progress === "PENDING" &&
@@ -218,7 +223,8 @@ const QuotationRequestList = () => {
 
                     {(pageInfo.page + 1 < pageInfo.totalPage) && (
                         <Button onClick={() => setPageInfo({...pageInfo, page: pageInfo.page + 1})}
-                                disabled={loading}>
+                                disabled={loading}
+                                sx={{margin: "16px 0"}}>
                             {loading ? "Loading..." : "더보기"}
                         </Button>
                     )}
@@ -239,6 +245,7 @@ const QuotationRequestList = () => {
                             {snackbarMessage}
                         </Alert>
                     </Snackbar>
+                    <Box sx={{height: "32px"}}/>
                 </div>
             </main>
             <Footer/>
