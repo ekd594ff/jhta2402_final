@@ -89,12 +89,13 @@ public class QuotationRequestService {
     public QuotationRequestDto getQuotationRequest(UUID id) {
         QuotationRequest quotationRequest = quotationRequestRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(""));
-
+        String useranme = quotationRequest.getMember().getUsername();
         return QuotationRequestDto.builder()
                 .memberId(quotationRequest.getMember().getId())
                 .portfolioId(quotationRequest.getPortfolio().getId())
                 .title(quotationRequest.getTitle())
                 .description(quotationRequest.getDescription())
+                .username(useranme)
                 .solutions(quotationRequest.getRequestSolutions().stream()
                         .map(rs -> SolutionDto.builder()
                                 .id(rs.getSolution().getId())

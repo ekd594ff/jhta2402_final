@@ -23,6 +23,13 @@
       font-size: 12px;
       color: variables.$color-700;
     }
+
+    & > .report {
+      & .report-btn * {
+        font-size: 16px;
+        color: variables.$color-600;
+      }
+    }
   }
 
   & > .middle {
