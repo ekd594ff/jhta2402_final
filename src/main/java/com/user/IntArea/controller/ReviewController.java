@@ -3,7 +3,6 @@ package com.user.IntArea.controller;
 import com.user.IntArea.dto.review.*;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/review")
 @RequiredArgsConstructor
-@Slf4j
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -88,11 +86,6 @@ public class ReviewController {
                                                                           @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                           @RequestParam(required = false) String filterColumn,
                                                                           @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-
         if (sortField.equals("username")) {
             sortField = "member.username";
         }

@@ -3,7 +3,7 @@ import { List, ListItem, ListItemText, Divider, Avatar, Typography } from "@mui/
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
+const Sidebar = ({ onSelectProfile, onSelectQuotationRequests, onSelectReportUserList,  }) => {
     const navigate = useNavigate();
     const [memberId, setMemberId] = useState("");
     const [userData, setUserData] = useState({ username: "", profileImage: "default-profile-image-url.jpg" });
@@ -63,7 +63,11 @@ const Sidebar = ({ onSelectProfile, onSelectQuotationRequests }) => {
                 <Divider />
                 <ListItem button style={{marginTop: "10px"}} onClick={onSelectQuotationRequests}>
                     <ListItemText primary="내 신청서" />
-                </ListItem>            
+                </ListItem>   
+                <Divider />
+                <ListItem button style={{marginTop: "10px"}} onClick={onSelectReportUserList}>
+                    <ListItemText primary="내 신고" />
+                </ListItem>         
             </List>
             <Divider />
         </div>

@@ -5,7 +5,6 @@ import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.company.*;
 import com.user.IntArea.service.CompanyService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/company")
 @RequiredArgsConstructor
-@Slf4j
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -106,12 +104,6 @@ public class CompanyController {
                                                                     @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                     @RequestParam(required = false) String filterColumn,
                                                                     @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-
-
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());

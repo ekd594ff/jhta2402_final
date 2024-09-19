@@ -128,4 +128,9 @@ public class ReportService {
                 .description(savedReport.getDescription())
                 .build();
     }
+
+    // (유저가 작성한) 신고 리스트
+    public Page<ReportDto> findReportByMemberId(UUID memberId, Pageable pageable) {
+        return reportRepository.findAllByMemberId(memberId, pageable);
+    }
 }

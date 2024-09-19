@@ -7,7 +7,6 @@ import com.user.IntArea.entity.*;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ReviewService {
 
     private final MemberRepository memberRepository;

@@ -5,24 +5,51 @@ import { useNavigate, Route, Routes } from "react-router-dom";
 import Header from "../../components/common/header";
 import Footer from "../../components/common/footer";
 import Sidebar from "../login/mypage-sidebar";
-import { useParams } from "react-router-dom";
-import QuotationRequestList from "../quotationRequestUserList";
 import style from "../../styles/quotationRequest-list.module.scss";
 import {CheckCircle, Image, Pending, Person} from "@mui/icons-material";
+import ReportUserList from "../reportUserList";
 
 const MyPage = () => {
-    const { memberId } = useParams(); // memberId를 가져옵니다. 
     const [selectedComponent, setSelectedComponent] = useState("profile");
+    const [userData, setUserData] = useState(null);
     const navigator = useNavigate();
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get("/api/member/email");
+                setUserData(response.data);
+                //console.info(response.data);
+            } catch (error) {
+                console.error("사용자 정보를 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchUserData();
+        //console.info(userData);
+    }, []);
+
+    useEffect(() => {
+        console.log(userData);
+    }, [userData]);
+
     const handleSelectProfile = () => {
-        setSelectedComponent("profile");
+        //setSelectedComponent("profile");
         navigator("profile");
     };
 
     const handleSelectQuotationRequests = () => {
-        setSelectedComponent("quotationRequest/member");
+        //setSelectedComponent("quotationRequest/member");
         navigator("quotationRequest/member");
+    };
+
+    const handleSelectReportUserList = () => {
+        //setSelectedComponent("reportUserList");
+        if (userData && userData.id) {
+            navigator(`reportUserList/${userData.id}`);
+        } else {
+            console.error("userData가 로드되지 않았습니다.");
+        }
     };
 
     return (
@@ -30,12 +57,17 @@ const MyPage = () => {
             <Header />
             <Box display="flex">
                 <Box>
-                    <Sidebar onSelectProfile={handleSelectProfile} onSelectQuotationRequests={handleSelectQuotationRequests} />
+                    <Sidebar 
+                        onSelectProfile={handleSelectProfile} 
+                        onSelectQuotationRequests={handleSelectQuotationRequests} 
+                        onSelectReportUserList={handleSelectReportUserList}
+                    />
                 </Box>
                 <Box flexGrow={1} paddingTop="20px">
                     <Routes>
                         <Route path="/profile" element={<MyProfile />} />
                         <Route path="/quotationRequest/member" element={<QuotationRequestUserList />} />
+                        <Route path="/reportUserList/:memberId" element={userData ? <ReportUserList memberId={userData.id} /> : <div>Loading...</div>} />
                     </Routes>
                 </Box>
             </Box>
