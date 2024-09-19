@@ -1,5 +1,6 @@
 package com.user.IntArea.repository;
 
+import com.user.IntArea.entity.Portfolio;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
@@ -28,18 +29,22 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
                 .append("  ORDER BY i.url ")
                 .append("  LIMIT 8 ")
                 .append(") AS limited_images) AS imageUrls, ")
-                .append("ROUND(AVG(re.rate)::numeric, 2) AS rate ")
+                .append("COALESCE(ROUND(AVG(re.rate)::numeric, 2),0) AS rate ")
                 .append("FROM portfolio p ")
-                .append("JOIN company c ON c.id = p.companyid ")
-                .append("JOIN image i ON i.refId = p.id ")
-                .append("JOIN quotationrequest qr ON p.id = qr.portfolioid ")
-                .append("JOIN quotation q ON qr.id = q.quotationrequestid ")
-                .append("JOIN review re ON q.id = re.quotationid ")
-                .append("WHERE p.isdeleted = false ")
+                .append("LEFT JOIN company c ON c.id = p.companyid ")
+                .append("LEFT JOIN image i ON i.refId = p.id ")
+                .append("LEFT JOIN quotationrequest qr ON p.id = qr.portfolioid ")
+                .append("LEFT JOIN quotation q ON qr.id = q.quotationrequestid ")
+                .append("LEFT JOIN review re ON q.id = re.quotationid ")
+                .append("WHERE 1 = 1 ")
+                .append("AND p.isdeleted = false ")
+                .append("AND p.isActivated = true ")
+                .append("AND qr.progress = 'APPROVED'")
                 .append("AND (p.title LIKE CONCAT('%', :searchWord, '%') OR ")
                 .append("p.description LIKE CONCAT('%', :searchWord, '%') OR ")
                 .append("c.companyName LIKE CONCAT('%', :searchWord, '%')) ")
                 .append("GROUP BY p.id, p.title, c.companyName, p.description ");
+
 
         // 동적 정렬 추가
         if (sortField != null && !sortField.isEmpty() && sortDirection != null && !sortDirection.isEmpty()) {
@@ -63,16 +68,25 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
         return new PageImpl<>(results, pageable, total);
     }
 
-    private long getTotalCount(String searchWord) {
-        String countQuery = "SELECT COUNT(*) FROM portfolio p " +
-                "JOIN company c ON c.id = p.companyid " + // 회사와 조인 추가
-                "WHERE p.isdeleted = false " +
-                "AND (p.title LIKE CONCAT('%', :searchWord, '%') OR " +
-                "p.description LIKE CONCAT('%', :searchWord, '%') OR " +
-                "c.companyName LIKE CONCAT('%', :searchWord, '%'))"; // 괄호 확인
 
-        return ((Number) em.createNativeQuery(countQuery)
-                .setParameter("searchWord", searchWord)
-                .getSingleResult()).longValue(); // 결과를 Number로 변환
+    private Long getTotalCount(String searchWord) {
+
+        String countQuery = "select " +
+                "count(distinct(p.id)) " +
+                "FROM portfolio p " +
+                "LEFT JOIN company c ON c.id = p.companyid " +
+                "LEFT JOIN quotationrequest qr ON p.id = qr.portfolioid " +
+                "WHERE 1=1 " +
+                "AND p.isdeleted = false " +
+                "AND p.isActivated = true " +
+                "AND qr.progress = 'APPROVED' " +
+                "AND (p.title LIKE CONCAT('%', :searchWordInQuery, '%' ) OR " +
+                "p.description LIKE CONCAT('%', :searchWordInQuery, '%' ) OR " +
+                "c.companyName LIKE CONCAT('%', :searchWordInQuery, '%' ) ) "; // 괄호 확인
+
+        TypedQuery<Long> query = (TypedQuery<Long>) em.createNativeQuery(countQuery, Long.class);
+        query.setParameter("searchWordInQuery", searchWord);
+
+        return query.getSingleResult();// 결과를 Number로 변환
     }
 }
