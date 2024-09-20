@@ -17,6 +17,7 @@ import {
     TableRow, Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import ReviewList from "./reviewList.jsx";
 
 function CompanyDetail() {
 
@@ -278,6 +279,10 @@ function CompanyDetail() {
                             더보기
                         </Button>
                     }
+                    {/* 리뷰 컴포넌트 추가 */}
+                    <h2 className={style['sub-title']}>구매자 리뷰</h2>
+                    <ReviewList companyId={companyInfo.companyId}/>
+
                 </div>
             </main>
             <Footer/>
