@@ -6,6 +6,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import {dateFormatter} from "../../utils/dateUtil.jsx";
 import axios from "axios";
+import {TransformComponent, TransformWrapper} from "react-zoom-pan-pinch";
 
 function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, navigate}) {
 
@@ -83,17 +84,27 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
                 }
             </div>
             <Modal open={modal.open} onClose={() => setModal({open: false, url: ""})}>
-                <img style={{
-                    position: "absolute", top: "50%", left: "50%",
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: "150",
-                    width: "90%",
-                    height: "90%",
-                    objectFit: "contain",
-                    backgroundColor: "#989898",
-                    cursor: "zoom-out"
-                }} src={modal.url}
-                     onClick={() => setModal({open: false, url: ""})}/>
+                <div
+                    style={{
+                        position: "absolute", top: "50%", left: "50%",
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: "999",
+                        width: "80vw",
+                        height: "80vh",
+                        cursor: "all-scroll",
+                    }}>
+                    <TransformWrapper>
+                        <TransformComponent>
+                            <img style={{
+                                width: "80vw",
+                                height: "80vh",
+                                objectFit: "contain",
+                                backgroundColor: "#989898",
+                            }} src={modal.url}
+                                 onClick={() => setModal({open: false, url: ""})}/>
+                        </TransformComponent>
+                    </TransformWrapper>
+                </div>
             </Modal>
         </Card>
     );
