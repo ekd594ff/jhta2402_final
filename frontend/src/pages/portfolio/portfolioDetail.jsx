@@ -157,6 +157,9 @@ function PortfolioDetail() {
     }, [modalOpen, reportModalOpen]);
 
     useEffect(() => {
+
+        window.scrollTo(0, 0);
+
         const alertOpen = searchParams.get("requestSuccess");
         if (alertOpen !== null) {
             window.scrollTo(0, 0);

@@ -20,19 +20,33 @@ import 'swiper/css/pagination';
 import style from "../styles/index.module.scss";
 
 const getRandomPortfolioListPromise = axios.get("/api/portfolio/list/random?count=8");
+const getTopCompanyPromise = axios.get(`/api/company/list/top`);
+const getRecommendedPortfolioPromise = axios.get(`/api/portfolio/list/recommended?count=${8}`);
+const getLatestTransactionPortfolioPromise = axios.get(`/api/portfolio/list/latest/transaction?count=${4}`);
 
 function Index() {
 
     const [recommendList, setRecommendList] = useState([]);
     const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
     const [solutionList, setSolutionList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
-    const [companyList, setCompanyList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
-    const [hotPortfolioList, setHotPortfolioList] = useState([1, 2, 3, 4]);
+    const [companyList, setCompanyList] = useState([]);
+    const [hotPortfolioList, setHotPortfolioList] = useState([]);
 
     useEffect(() => {
-        Promise.all([getRandomPortfolioListPromise]).then(([randomPortfolioList]) => {
-            setRecommendList(() => [...randomPortfolioList.data]);
-        });
+        Promise.all([getRandomPortfolioListPromise,
+            getTopCompanyPromise,
+            getLatestTransactionPortfolioPromise,
+            getRecommendedPortfolioPromise])
+            .then(([randomPortfolioList,
+                       getTopCompanyResult,
+                       hotPortfolioListResult,
+                       getRecommendedPortfolioResult]) => {
+                setRecommendList(() => [...hotPortfolioListResult.data]);
+                setCompanyList(() => [...getTopCompanyResult.data]);
+                setRecommendList(() => [...randomPortfolioList.data]);
+                setHotPortfolioList(() => [...hotPortfolioListResult.data]);
+                setPortfolioList(() => [...getRecommendedPortfolioResult.data]);
+            });
     }, []);
 
     return (
@@ -62,7 +76,7 @@ function Index() {
                         <div className={style['section-content']}>
                             <ul className={style['company-list']}>
                                 {companyList.map((item, index) =>
-                                    <CompanyListItem value={item} key={index}/>)}
+                                    <CompanyListItem {...item} rank={index} key={item.id}/>)}
                             </ul>
                         </div>
                     </section>
@@ -73,7 +87,8 @@ function Index() {
                         <div className={style['section-content']}>
                             <ul className={style['portfolio-list']}>
                                 {portfolioList.map((item, index) => {
-                                    return <PortfolioListItem value={item} key={index}/>
+                                    return <PortfolioListItem {...item}
+                                                              key={`${item.portfolioid}_${index}_rec`}/>
                                 })}
                             </ul>
                         </div>
@@ -94,12 +109,12 @@ function Index() {
                     </section>
                     <section className={style['section']}>
                         <div className={style['section-title']}>
-                            요즘 뜨는 시공사
+                            요즘 뜨는 인테리어
                         </div>
                         <div className={style['section-content']}>
                             <ul className={style['portfolio-list']}>
                                 {hotPortfolioList.map((item, index) => {
-                                    return <PortfolioListItem value={item} key={index}/>
+                                    return <PortfolioListItem {...item} key={`${item.portfolioid}_${index}_hot`}/>
                                 })}
                             </ul>
                         </div>

@@ -476,6 +476,10 @@ public class PortfolioService {
         throw new RuntimeException("getSearchPortfolio");
     }
 
+    public List<Map<String, Object>> getRecentTransactionPortfolioList(Integer count) {
+        return portfolioRepository.getRecentTransactionPortfolioList(count);
+    }
+
     @Transactional
     public void softDeletePortfolios(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
