@@ -37,6 +37,7 @@ public class QuotationRequestService {
     private final SolutionService solutionService;
     private final ImageRepository imageRepository;
     private final QuotationRepository quotationRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
@@ -154,6 +155,7 @@ public class QuotationRequestService {
         List<QuotationProgress> progresses = stringToProgress(progress);
 
         Page<QuotationRequest> requests = quotationRequestRepository.findAllByMemberIdAndProgresses(memberId, progresses, pageable);
+
         return requests.map(request -> QuotationRequestListDto.builder()
                 .quotationRequest(request)
                 .memberId(request.getMember().getId())
@@ -168,6 +170,7 @@ public class QuotationRequestService {
                                 .createdAt(rs.getSolution().getCreatedAt())
                                 .build())
                         .collect(Collectors.toList()))
+                .review(reviewRepository.findByQuotationRequestId(request.getId()).orElseGet(Review::new))
                 .build());
     }
 
@@ -208,6 +211,7 @@ public class QuotationRequestService {
                                     .build())
                             .collect(Collectors.toList()))
                     .companyId(company.getId())
+                    .review(reviewRepository.findByQuotationRequestId(request.getId()).orElseGet(Review::new))
                     .build();
         });
     }

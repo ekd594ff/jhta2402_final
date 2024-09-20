@@ -44,7 +44,6 @@ function QuotationRequestDetail() {
     useEffect(() => {
         getQuotationDetail()
             .then((res) => {
-                console.log(res.data)
                 setQuotationRequest(res.data);
 
                 if (res.data.progress.endsWith("CANCELLED")) {
@@ -126,7 +125,7 @@ function QuotationRequestDetail() {
                         {quotationRequest.progress === "PENDING" &&
                             !isMember &&
                             <Button variant="contained" className={style['create-button']}
-                                    onClick={() => navigate("/quotation")}>
+                                    onClick={() => navigate(`/quotation/form/${quotationRequest.id}`)}>
                                 새 견적서 작성
                             </Button>
                         }
@@ -135,7 +134,9 @@ function QuotationRequestDetail() {
                         .filter((quotation) => quotation.progress === "APPROVED")
                         .map(quotation => <QuotationCard key={quotation.id} quotation={quotation}
                                                          cancelQuotation={cancelQuotation}
-                                                         requestProgress={quotationRequest.progress}/>
+                                                         requestProgress={quotationRequest.progress}
+                                                         isMember={isMember}
+                                                         navigate={navigate}/>
                         )}
                     {quotationRequest.quotations
                             .filter((quotation) => quotation.progress === "APPROVED")
@@ -150,7 +151,9 @@ function QuotationRequestDetail() {
                         .filter((quotation) => quotation.progress === "PENDING")
                         .map(quotation => <QuotationCard key={quotation.id} quotation={quotation}
                                                          cancelQuotation={cancelQuotation}
-                                                         requestProgress={quotationRequest.progress}/>
+                                                         requestProgress={quotationRequest.progress}
+                                                         isMember={isMember}
+                                                         navigate={navigate}/>
                         )}
                     {quotationRequest.quotations
                             .filter((quotation) => quotation.progress === "PENDING")
@@ -168,7 +171,9 @@ function QuotationRequestDetail() {
                             quotation.progress === "ADMIN_CANCELLED")
                         .map(quotation => <QuotationCard key={quotation.id} quotation={quotation}
                                                          cancelQuotation={cancelQuotation}
-                                                         requestProgress={quotationRequest.progress}/>
+                                                         requestProgress={quotationRequest.progress}
+                                                         isMember={isMember}
+                                                         navigate={navigate}/>
                         )}
                     {quotationRequest.quotations
                             .filter((quotation) =>
