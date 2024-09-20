@@ -33,8 +33,8 @@ public class SolutionService {
         return solutionForQuotationRequestDtos;
     }
 
-    public List<SolutionWithImageDto> getTop8MostQuotedSolutions() {
-        return solutionRepository.getTop8MostQuotedSolutions()
+    public List<SolutionWithImageDto> getTopMostQuotedSolutions(int count) {
+        return solutionRepository.getTopMostQuotedSolutions(count)
                 .stream().map(SolutionWithImageDto::new).toList();
     }
 }

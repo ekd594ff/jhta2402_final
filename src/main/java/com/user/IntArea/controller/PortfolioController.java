@@ -84,12 +84,6 @@ public class PortfolioController {
         return portfolioService.getRecommendedPortfolioByAvgRate(pageable);
     }
 
-    @GetMapping("/list/recent")
-    public ResponseEntity<List<PortfolioRecommendDto>> getTop4RecentPortfoliosWithTransactions() {
-        return ResponseEntity.ok().build();
-    }
-
-
     // seller
     // seller
     @PostMapping

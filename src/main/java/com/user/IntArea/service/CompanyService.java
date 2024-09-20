@@ -211,9 +211,9 @@ public class CompanyService {
     }
 
     @Transactional
-    public List<CompanyWithImageDto> findTop8CompaniesByQuotationCount() {
-        Pageable pageable = PageRequest.ofSize(8);
-        return companyRepository.findTop8CompaniesByQuotationCount(pageable).stream()
+    public List<CompanyWithImageDto> findTopCompaniesByQuotationCount(int count) {
+        Pageable pageable = PageRequest.ofSize(count);
+        return companyRepository.findTopCompaniesByQuotationCount(pageable).stream()
                 .map(company -> {
                     Optional<Image> optionalImage = imageRepository.findByRefId(company.getId());
                     return optionalImage.map(image -> new CompanyWithImageDto(company,image))

@@ -5,6 +5,7 @@ import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,9 +50,9 @@ public interface SolutionRepository extends JpaRepository<Solution, UUID> {
           AND q.progress = 'APPROVED'
         GROUP BY s.id, p.id, fi.url
         ORDER BY COUNT(s.id) DESC
-        LIMIT 8;
+        LIMIT :count 
     """, nativeQuery = true)
-    List<Tuple> getTop8MostQuotedSolutions();
+    List<Tuple> getTopMostQuotedSolutions(@Param("count") int count);
 
     List<Solution> findByPortfolioId(UUID id);
 }

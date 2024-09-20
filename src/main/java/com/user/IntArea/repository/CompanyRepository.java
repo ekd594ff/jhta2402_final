@@ -46,7 +46,7 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
             "AND (q.progress = 'APPROVED' OR q.progress IS NULL) " +
             "GROUP BY c.id " +
             "ORDER BY COUNT(q.progress) DESC ")
-    List<Company> findTop8CompaniesByQuotationCount(Pageable pageable);
+    List<Company> findTopCompaniesByQuotationCount(Pageable pageable);
 
     @Modifying
     @Query("UPDATE Company c SET c.isDeleted = true WHERE c.id IN :ids")

@@ -22,9 +22,9 @@ public class SolutionController {
         return ResponseEntity.ok(this.solutionService.getSolutionsByPortfolioId(portfolioId).stream().map(Solution::toSolutionDto));
     }
 
-    @GetMapping("/list/top8")
-    public ResponseEntity<List<SolutionWithImageDto>> getTop8MostQuotedSolutions() {
-        List<SolutionWithImageDto> solutionWithImageDtos = solutionService.getTop8MostQuotedSolutions();
+    @GetMapping("/list/top/{count}")
+    public ResponseEntity<List<SolutionWithImageDto>> getTopMostQuotedSolutions(@PathVariable(name = "count") int count) {
+        List<SolutionWithImageDto> solutionWithImageDtos = solutionService.getTopMostQuotedSolutions(count);
         return ResponseEntity.ok().body(solutionWithImageDtos);
     }
 }
