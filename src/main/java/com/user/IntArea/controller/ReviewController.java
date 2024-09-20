@@ -62,6 +62,13 @@ public class ReviewController {
         return ResponseEntity.ok().body(portfolioDetailDtos);
     }
 
+    // (일반) 특정한 회사가 받은 모든 리뷰 조회(isApplied = true 인 회사만 조회)
+    @GetMapping("/list/company/{companyId}") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsByCompanyId(@PathVariable UUID companyId, @RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListTowardCompanyIdForUser(companyId, pageable);
+    }
+    
     // seller 권한
 
     // (seller 권한) 회사가 받은 모든 리뷰 조회
