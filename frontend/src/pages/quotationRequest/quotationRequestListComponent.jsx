@@ -369,7 +369,7 @@ const QuotationRequestListComponent = () => {
                       open={reviewModal.open}>
                 <div className={style['review-modal']}>
                     <div className={style['review-info']}>
-                        {(reviewModal.isEdit) ? "리뷰 수정" : "리뷰 작성"}
+                        {(reviewModal.readOnly) ? "리뷰 확인" : (reviewModal.isEdit) ? "리뷰 수정" : "리뷰 작성"}
                     </div>
                     <div className={style['rate-div']}>
                         <Rating
@@ -443,7 +443,7 @@ const QuotationRequestListComponent = () => {
                     <div className={style['button-div']}>
                         <Button className={style['cancel-button']}
                                 onClick={() => setReviewModal({
-                                    isEdit: reviewModal.isEdit,
+                                    ...reviewModal,
                                     open: false
                                 })}>
                             취소
