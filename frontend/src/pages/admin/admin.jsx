@@ -62,7 +62,6 @@ function NestedList() {
 
     return (
         <List
-            sx={{height: '100%', width: '100%', maxWidth: 360}}
             component="nav"
             aria-labelledby="nested-list-subheader"
             subheader={
@@ -171,6 +170,7 @@ function DataTable() {
             </Button>
         ),
     };
+
     const fetchData = async (pathname, paginationModel) => {
         try {
             const {page, pageSize} = paginationModel;
@@ -298,7 +298,7 @@ function DataTable() {
 
 
     return (
-        <Paper sx={{height: '100%', width: '100%'}}>
+        <>
             <div className={style.buttonContainer}>
                 {/*<Button*/}
                 {/*    onClick={handleApiRequest}*/}
@@ -326,11 +326,6 @@ function DataTable() {
                     checkboxSelection
                     components={{
                         Toolbar: CustomToolbar,
-                        Footer: () => (
-                            <div className={style["footerCell"]}>
-                                Footer Content
-                            </div>
-                        ),
                     }}
                     pagination
                     filterMode="server" // 클라이언트 측 필터링 또는 서버 측 필터링 설정 (server / client)
@@ -362,7 +357,7 @@ function DataTable() {
                     </Button>
                 </Box>
             </Modal>
-        </Paper>
+        </>
     );
 }
 
@@ -392,14 +387,14 @@ function Admin() {
             </aside>
             <div className={style['container']}>
                 <Routes>
-                    {/*<Route path={"company"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"portfolio"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"review"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"member"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"report"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"quotation"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"quotationRequest"} element={<DataTable/>}/>*/}
-                    {/*<Route path={"/"} element={<DataTable/>}/>*/}
+                    <Route path={"company"} element={<DataTable/>}/>
+                    <Route path={"portfolio"} element={<DataTable/>}/>
+                    <Route path={"review"} element={<DataTable/>}/>
+                    <Route path={"member"} element={<DataTable/>}/>
+                    <Route path={"report"} element={<DataTable/>}/>
+                    <Route path={"quotation"} element={<DataTable/>}/>
+                    <Route path={"quotationRequest"} element={<DataTable/>}/>
+                    <Route path={"/"} element={<DataTable/>}/>
                 </Routes>
             </div>
         </main>
