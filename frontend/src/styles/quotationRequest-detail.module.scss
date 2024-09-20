@@ -10,7 +10,7 @@
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
-    padding: 0 8px;
+    padding: 0 24px;
     margin: 0 16px;
     display: flex;
     flex-direction: column;
@@ -36,6 +36,7 @@
 
       & > .sub-title {
         text-align: center;
+        margin-top: 24px;
       }
 
       & > .create-button {
@@ -57,10 +58,21 @@
         align-items: center;
         margin: 16px;
 
-        & > .updated-at {
+        & > .card-sub-title {
+          display: flex;
+          flex-direction: row;
+          justify-content: start;
+          gap: 16px;
+          margin: 0 16px;
           opacity: 0.9;
           color: #212529;
           font-weight: 600;
+
+          & > .updated-at {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          }
 
           & > .total {
             display: flex;
@@ -68,7 +80,8 @@
 
             & > .price {
               color: variables.$COLOR_PRIMARY;
-              font-weight: 600;
+              font-size: 18px;
+              font-weight: 700;
             }
           }
         }

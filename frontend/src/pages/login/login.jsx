@@ -19,7 +19,6 @@ function Login() {
         const {email, password} = login;
         axios.post('/api/member/login', {email, password}, {withCredentials: true})
             .then(res => {
-                alert("login Success");
                 navigate(-1);
             })
             .catch(err => alert(err.response ? err.response.data.message : "로그인 실패"));
@@ -37,7 +36,7 @@ function Login() {
 
         if (errorMessage !== null) {
             setSnackbarState({
-                message: `${errorMessage}로 가입한 계정입니다. 다른 방법으로 로그인해주세요.`,
+                message: `${errorMessage}로 가입한 계정입니다. 로그인을 다시 시도해주세요.`,
                 open: true
             });
         }
