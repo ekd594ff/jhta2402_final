@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/report")
 @RequiredArgsConstructor
-@Slf4j
 public class ReportController {
 
     private final ReportService reportService;
@@ -44,6 +43,14 @@ public class ReportController {
         return ResponseEntity.ok(createdReport);
     }
 
+    @GetMapping("/memberList/{memberId}")
+    public ResponseEntity<Page<ReportDto>> getReportsByMemberId(@PathVariable UUID memberId, @RequestParam int page, @RequestParam(name= "pageSize") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReportDto> reportDtos = reportService.findReportByMemberId(memberId, pageable);
+        return ResponseEntity.ok().body(reportDtos);
+    }
+
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReportResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -57,11 +64,6 @@ public class ReportController {
                                                                    @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                    @RequestParam(required = false) String filterColumn,
                                                                    @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-
         if (sortField.equals("username")) {
             sortField = "m.username";
         }

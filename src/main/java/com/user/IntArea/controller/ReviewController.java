@@ -1,11 +1,8 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.member.MemberResponseDto;
-import com.user.IntArea.dto.portfolio.EditPortfolioDto;
 import com.user.IntArea.dto.review.*;
 import com.user.IntArea.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,18 +18,23 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/review")
 @RequiredArgsConstructor
-@Slf4j
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     // 일반 권한
+    // 견적신청서 ID로 리뷰 작성
+    @PostMapping("/quotationRequest/{quotationRequestId}")
+    public ResponseEntity<ReviewResponseDto> createReviewByQuotationRequestId(@RequestBody CreateReviewDto createReviewDto, @PathVariable UUID quotationRequestId) {
+        ReviewResponseDto reviewResponseDto = reviewService.createByQuotationRequestId(createReviewDto, quotationRequestId);
+        return ResponseEntity.ok(reviewResponseDto);
+    }
 
     // (승인된 quotationRequest 작성자 권한) 리뷰 작성(새로 만들기)
     @PostMapping("/{quotationId}") // ● postman pass
-    public ResponseEntity<?> createReview(@RequestBody CreateReviewDto createReviewDto, @PathVariable UUID quotationId) {
-        reviewService.create(createReviewDto, quotationId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ReviewResponseDto> createReview(@RequestBody CreateReviewDto createReviewDto, @PathVariable UUID quotationId) {
+        ReviewResponseDto reviewResponseDto = reviewService.create(createReviewDto, quotationId);
+        return ResponseEntity.ok(reviewResponseDto);
     }
 
     // (승인된 quotationRequest 작성자 권한) 작성된 리뷰 수정하기
@@ -42,7 +44,14 @@ public class ReviewController {
         return ResponseEntity.ok().build();
     }
 
-    // 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
+    // (일반 사용자 권한) 사용자가 작성한 모든 리뷰 정보 조회
+    @GetMapping("/list") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsOfUser(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListOfMember(pageable);
+    }
+
+    // (일반) 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
     @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<ReviewPortfolioDetailDto>> getReviewByPortfolioId(
             @PathVariable UUID id, @RequestParam int page, @RequestParam int size) {
@@ -52,6 +61,17 @@ public class ReviewController {
 
         return ResponseEntity.ok().body(portfolioDetailDtos);
     }
+
+    // seller 권한
+
+    // (seller 권한) 회사가 받은 모든 리뷰 조회
+    @GetMapping("/company/list") // ● postman pass
+    public Page<ReviewInfoListDto> getAllReviewsForCompany(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return reviewService.getReviewInfoDtoListTowardCompany(pageable);
+    }
+
+    // admin 권한
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReviewPortfolioDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
@@ -66,11 +86,6 @@ public class ReviewController {
                                                                           @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                           @RequestParam(required = false) String filterColumn,
                                                                           @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-
         if (sortField.equals("username")) {
             sortField = "member.username";
         }

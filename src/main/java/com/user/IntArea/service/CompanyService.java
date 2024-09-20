@@ -14,7 +14,6 @@ import com.user.IntArea.repository.CompanyRepository;
 import com.user.IntArea.repository.ImageRepository;
 import com.user.IntArea.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +28,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
@@ -90,7 +88,18 @@ public class CompanyService {
         }
     }
 
-    public CompanyPortfolioDetailDto getCompanyById() {
+    public CompanyPortfolioDetailDto getCompanyById(UUID id) {
+
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 회사가 없습니다."));
+
+        String imageUrl = imageRepository.findByRefId(id)
+                .orElseGet(Image::new).getUrl();
+
+        return new CompanyPortfolioDetailDto(company, imageUrl);
+    }
+
+    public CompanyPortfolioDetailDto getCompanyInfo() {
 
         Company company = getCompanyOfMember();
 
@@ -213,9 +222,9 @@ public class CompanyService {
     }
 
     @Transactional
-    public List<CompanyWithImageDto> findTop8CompaniesByQuotationCount() {
-        Pageable pageable = PageRequest.ofSize(8);
-        return companyRepository.findTop8CompaniesByQuotationCount(pageable).stream()
+    public List<CompanyWithImageDto> findTopCompaniesByQuotationCount(int count) {
+        Pageable pageable = PageRequest.ofSize(count);
+        return companyRepository.findTopCompaniesByQuotationCount(pageable).stream()
                 .map(company -> {
                     Optional<Image> optionalImage = imageRepository.findByRefId(company.getId());
                     return optionalImage.map(image -> new CompanyWithImageDto(company,image))

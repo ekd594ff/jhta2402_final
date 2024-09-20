@@ -16,6 +16,11 @@
     flex-direction: column;
     height: auto;
 
+    & > .custom-stepper {
+      & > .stepper {
+        height: 320px;
+      }
+    }
 
     & > .quotationRequest-card {
       display: flex;
@@ -29,24 +34,45 @@
       align-items: center;
       margin: 16px 0;
 
+      & > .sub-title {
+        text-align: center;
+      }
+
       & > .create-button {
         background-color: variables.$COLOR_PRIMARY;
       }
     }
 
+    & > .no-content {
+      text-align: center;
+      color: #989898;
+    }
+
     & > .quotation-card {
       margin: 16px 0;
 
-      & > .quotation-info {
+      & > .quotation-sub-title {
         display: flex;
-        gap: 16px;
-        align-items: end;
+        justify-content: space-between;
+        align-items: center;
+        margin: 16px;
 
-        & > .image {
-          width: 120px;
-          height: 120px;
-          object-fit: cover;
+        & > .updated-at {
+          opacity: 0.9;
+          color: #212529;
+          font-weight: 600;
+
+          & > .total {
+            display: flex;
+            flex-direction: row;
+
+            & > .price {
+              color: variables.$COLOR_PRIMARY;
+              font-weight: 600;
+            }
+          }
         }
+
 
         & > .button-div {
           display: flex;
@@ -62,6 +88,26 @@
           & > .edit-button {
             border-color: variables.$COLOR_PRIMARY;
             color: variables.$COLOR_PRIMARY;
+          }
+        }
+      }
+
+      & > .quotation-info {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+
+        & > .swiper {
+          display: flex;
+          flex-direction: row;
+
+          & > .slide {
+
+            & > .image {
+              width: 120px;
+              height: 120px;
+              object-fit: cover;
+            }
           }
         }
       }

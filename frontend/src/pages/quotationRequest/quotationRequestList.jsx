@@ -3,14 +3,16 @@ import axios from "axios";
 import {
     Typography,
     Button,
-    Snackbar, Grid2, Card, CardContent, Alert, Box,
+    Snackbar, Grid2, Card, CardContent, Alert, Box, Backdrop,
 } from "@mui/material";
 import style from "../../styles/quotationRequest-list.module.scss";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
-import {useNavigate, useParams} from "react-router-dom";
-import {CheckCircle, Image, Pending, Person} from "@mui/icons-material";
-import Avatar from "@mui/material/Avatar";
+import {useNavigate} from "react-router-dom";
+import {CheckCircle, Image, Pending} from "@mui/icons-material";
+import {dateFormatter} from "../../utils/dateUtil.jsx";
+import TextField from "@mui/material/TextField";
+import Rating from "@mui/material/Rating";
 
 const QuotationRequestList = () => {
 
@@ -28,18 +30,26 @@ const QuotationRequestList = () => {
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [reviewModal, setReviewModal] = useState({
+        open: false,
+        isEdit: false,
+        readOnly: true,
+        id: "",
+        title: "",
+        description: "",
+        rate: 5.0,
+        quotationRequestId: "",
+    });
+    const [reviewHoverRate, setReviewHoverRate] = useState(5.0);
 
     useEffect(() => {
         const fetchQuotationRequests = async () => {
             setLoading(true);
             setError(null);
 
-            let url;
-            if (path.endsWith("member")) {
-                url = `/api/quotationRequest/list?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`;
-            } else if (path.endsWith("company")) {
-                url = `/api/quotationRequest/companyList?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`;
-            }
+            const url = path.endsWith("member")
+                ? `/api/quotationRequest/list?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`
+                : `/api/quotationRequest/companyList?progress=${pageInfo.progress}&page=${pageInfo.page}&pageSize=${pageInfo.size}`;
 
             try {
                 const response = await axios.get(url);
@@ -70,8 +80,12 @@ const QuotationRequestList = () => {
     const updateProgress = async (id) => {
         if (!confirm("해당 거래를 취소하시겠습니까?")) return;
 
+        const url = path.endsWith("member")
+            ? `/api/quotationRequest/cancel/${id}`
+            : `/api/quotationRequest/seller/cancel/${id}`;
+
         try {
-            await axios.put(`/api/quotationRequest/sellerCancel/${id}`);
+            await axios.put(url);
             setSnackbarMessage("진행 상태가 업데이트되었습니다.");
             setSnackbarOpen(true);
             setPageInfo({...pageInfo, progress: "ALL", page: 0})
@@ -104,6 +118,100 @@ const QuotationRequestList = () => {
         }
     }
 
+    const openReviewModal = (review, isEdit, readOnly, quotationRequestId) => {
+        if (readOnly) {
+            setReviewModal({
+                open: true,
+                readOnly: readOnly,
+                title: review.title,
+                description: review.description,
+                rate: review.rate,
+                quotationRequestId: quotationRequestId
+            });
+            setReviewHoverRate(review.rate);
+        } else if (isEdit) {
+            setReviewModal({
+                open: true,
+                isEdit: isEdit,
+                readOnly: readOnly,
+                id: review.id,
+                title: review.title,
+                description: review.description,
+                rate: review.rate,
+                quotationRequestId: quotationRequestId
+            });
+            setReviewHoverRate(review.rate);
+        } else {
+            setReviewModal({
+                open: true,
+                isEdit: isEdit,
+                readOnly: readOnly,
+                id: "",
+                title: "",
+                description: "",
+                rate: 5.0,
+                quotationRequestId: quotationRequestId
+            });
+        }
+    }
+
+    const updateQuotationRequest = () => {
+        setQuotationRequests(prevState =>
+            prevState.map(request =>
+                request.review.id === reviewModal.id
+                    ? {
+                        ...request,
+                        review: {
+                            id: request.review.id,
+                            title: reviewModal.title,
+                            description: reviewModal.description,
+                            rate: reviewModal.rate,
+                        }
+                    }
+                    : request))
+    }
+
+    const createReview = (review) => {
+        setQuotationRequests(prevState =>
+            prevState.map(request =>
+                (request.id === reviewModal.quotationRequestId)
+                    ? {
+                        ...request,
+                        review: {
+                            id: review.id,
+                            title: review.title,
+                            description: review.description,
+                            rate: review.rate,
+                        }
+                    }
+                    : request));
+    }
+
+    const saveEditReview = (quotationRequestId) => {
+        if (!confirm((reviewModal.isEdit) ? "리뷰를 수정하시겠습니까?" : "리뷰를 작성하시겠습니까?")) return;
+
+        console.log(quotationRequestId);
+        const url = (reviewModal.isEdit)
+            ? "/api/review/update"
+            : `/api/review/quotationRequest/${quotationRequestId}`;
+
+        const data = (reviewModal.isEdit)
+            ? reviewModal
+            : {
+                title: reviewModal.title,
+                description: reviewModal.description,
+                rate: reviewModal.rate
+            };
+
+        axios.post(url, data)
+            .then((res) => {
+                alert((reviewModal.isEdit) ? "수정되었습니다." : "생성되었습니다.");
+                (reviewModal.isEdit) ? updateQuotationRequest() : createReview(res.data);
+                setReviewModal({open: false});
+            })
+            .catch(() => alert("문제가 발생했습니다."));
+    }
+
     if (error) {
         alert("오류가 발생했습니다.");
         navigate(-1);
@@ -115,7 +223,7 @@ const QuotationRequestList = () => {
             <main className={style['main']}>
                 <div className={style['container']}>
                     <Typography variant="h6" style={{textAlign: "center", margin: "24px 0"}}>
-                        회사 견적신청서 목록
+                        {path.endsWith("company") ? "회사 견적신청서 목록" : "견적신청서 목록"}
                     </Typography>
                     <Grid2 container spacing={2} className={style['qr-grid-container']}>
                         <Grid2 size={2} className={style['qr-grid']}>
@@ -143,8 +251,9 @@ const QuotationRequestList = () => {
                     <Grid2 container spacing={2} className={style['qr-card-container']}>
                         {quotationRequests.length === 0 &&
                             <div className={style['no-content-div']}>해당 조건의 견적신청서가 없습니다.</div>}
-                        {quotationRequests.map(request =>
-                            <Grid2 key={request.id} size={6} className={style['qr-card-grid']}>
+                        {quotationRequests.map((request, index) =>
+                            <Grid2 key={`${index}_${request.id}`} size={6}
+                                   className={style['qr-card-grid']}>
                                 <Card variant="outlined" className={style['qr-card']}>
                                     <CardContent className={style['qr-card-content']}>
                                         <div className={style['image-div']}>
@@ -172,14 +281,6 @@ const QuotationRequestList = () => {
                                                                 variant="h6"
                                                                 sx={{fontSize: "18px"}}>{request.title}</Typography>
                                                     <div className={style['member-info']}>
-                                                        {(request.member.memberUrl)
-                                                            ? <Avatar alt="member profile"
-                                                                      sx={{height: "32px", width: "32px"}}
-                                                                      src={request.member.memberUrl}/>
-                                                            : <Avatar alt="member profile"
-                                                                      sx={{height: "32px", width: "32px"}}>
-                                                                <Person/>
-                                                            </Avatar>}
                                                         <div className={style['member-username']}>
                                                             {request.member.username}
                                                         </div>
@@ -196,14 +297,32 @@ const QuotationRequestList = () => {
                                         </div>
                                         <div className={style['bottom-div']}>
                                             <div className={style['date-div']}>
-                                                {request.updatedAt}
+                                                {dateFormatter(request.updatedAt)}
                                             </div>
                                             <div className={style['button-div']}>
                                                 {request.progress === "PENDING" &&
                                                     <Button className={style['button']}
                                                             onClick={() => updateProgress(request.id)}>
                                                         거래 취소
-                                                    </Button>}
+                                                    </Button>
+                                                }
+                                                {request.progress === "APPROVED" && (
+                                                    (path.endsWith("member"))
+                                                        ? (!!request.review.id)
+                                                            ? <Button className={style['button']}
+                                                                      onClick={() => openReviewModal(request.review, true, false, request.id)}>
+                                                                리뷰 수정
+                                                            </Button>
+                                                            : <Button className={style['button']}
+                                                                      onClick={() => openReviewModal(request.review, false, false, request.id)}>
+                                                                리뷰 작성
+                                                            </Button>
+                                                        : (!!request.review) &&
+                                                        <Button className={style['button']}
+                                                                onClick={() => openReviewModal(request.review, false, true, request.id)}>
+                                                            리뷰 확인
+                                                        </Button>
+                                                )}
                                                 <Button className={style['button']}
                                                         onClick={() => navigate(`/quotationRequest/${request.id}`)}>
                                                     상세 정보
@@ -218,7 +337,8 @@ const QuotationRequestList = () => {
 
                     {(pageInfo.page + 1 < pageInfo.totalPage) && (
                         <Button onClick={() => setPageInfo({...pageInfo, page: pageInfo.page + 1})}
-                                disabled={loading}>
+                                disabled={loading}
+                                sx={{margin: "16px 0", color: "#FA4D56"}}>
                             {loading ? "Loading..." : "더보기"}
                         </Button>
                     )}
@@ -239,7 +359,102 @@ const QuotationRequestList = () => {
                             {snackbarMessage}
                         </Alert>
                     </Snackbar>
+                    <Box sx={{height: "32px"}}/>
                 </div>
+
+                <Backdrop className={style['back-drop']}
+                          open={reviewModal.open}>
+                    <div className={style['review-modal']}>
+                        <div className={style['review-info']}>
+                            {(reviewModal.isEdit) ? "리뷰 수정" : "리뷰 작성"}
+                        </div>
+                        <div className={style['rate-div']}>
+                            <Rating
+                                className={style['rating']}
+                                name="review-rate"
+                                value={reviewModal.rate}
+                                onChange={(event, newValue) =>
+                                    setReviewModal({
+                                        ...reviewModal,
+                                        rate: newValue,
+                                    })
+                                }
+                                onChangeActive={(event, newHover) => {
+                                    setReviewHoverRate(newHover);
+                                }}
+                                readOnly={reviewModal.readOnly}
+                                precision={0.5}
+                            />
+                            <div className={style["rate-text"]}>
+                                {(reviewHoverRate === -1)
+                                    ? reviewModal.rate
+                                    : reviewHoverRate
+                                }
+                            </div>
+                        </div>
+                        <TextField className={style['text-field-detail']}
+                                   value={reviewModal.title}
+                                   onChange={(e) => {
+                                       setReviewModal({
+                                           ...reviewModal,
+                                           title: e.target.value
+                                       });
+                                   }}
+                                   type="text"
+                                   name="title"
+                                   placeholder=""
+                                   variant="outlined"
+                                   label="제목"
+                                   required={true}
+                                   slotProps={{
+                                       inputLabel: {
+                                           shrink: true,
+                                       },
+                                       input: {
+                                           readOnly: reviewModal.readOnly,
+                                       }
+                                   }}/>
+                        <TextField className={style['text-field-detail']}
+                                   value={reviewModal.description}
+                                   onChange={(e) => {
+                                       setReviewModal({
+                                           ...reviewModal,
+                                           description: e.target.value
+                                       });
+                                   }}
+                                   multiline
+                                   minRows={6}
+                                   name="description"
+                                   placeholder=""
+                                   variant="outlined"
+                                   label="리뷰 내용"
+                                   required={true}
+                                   slotProps={{
+                                       inputLabel: {
+                                           shrink: true,
+                                       },
+                                       input: {
+                                           readOnly: reviewModal.readOnly,
+                                       }
+                                   }}/>
+                        <div className={style['button-div']}>
+                            <Button className={style['cancel-button']}
+                                    onClick={() => setReviewModal({
+                                        isEdit: reviewModal.isEdit,
+                                        open: false
+                                    })}>
+                                취소
+                            </Button>
+                            {!reviewModal.readOnly &&
+                                <Button className={style['save-button']}
+                                        variant="contained"
+                                        onClick={() => saveEditReview(reviewModal.quotationRequestId)}>
+                                    저장
+                                </Button>
+                            }
+                        </div>
+                    </div>
+                </Backdrop>
             </main>
             <Footer/>
         </>

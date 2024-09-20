@@ -13,9 +13,9 @@ import SearchList from "./pages/searchlist.jsx";
 import QuotationRequest from "./pages/quotationRequest.jsx";
 import CompanyDetail from "./pages/company/companyPage.jsx";
 import QuotationRequestList from "./pages/quotationRequest/quotationRequestList.jsx";
-import QuotationRequestUserList from "./pages/quotationRequestUserList.jsx";
 import QuotationRequestDetail from "./pages/quotationRequest/quotationRequestDetail.jsx";
 import QuotationForm from "./pages/quotation/quotation-form.jsx";
+import ReportUserList from "./pages/reportUserList.jsx";
 
 function App() {
     return (
@@ -26,6 +26,7 @@ function App() {
                     <Route path="/signup" element={<Signup/>}/>
                     <Route path="/mypage/*" element={<MyPage/>}/>
                     <Route path="/login" element={<Login/>}/>
+                    <Route path="/company/:id" element={<CompanyDetail/>}/>
                     <Route path="/company/info" element={<CompanyDetail/>}/>
                     <Route path="/company/create" element={<CreateEditCompany/>}/>
                     <Route path="/company/edit" element={<CreateEditCompany/>}/>
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/quotationRequest/company" element={<QuotationRequestList/>}/>
                     <Route path="/quotationRequest/:id" element={<QuotationRequestDetail/>}/>
                     <Route path="/quotation/form/:requestId" element={<QuotationForm/>}/>
+                    <Route path="/reportUserList/:id" element={<ReportUserList />} />
                 </Routes>
             </BrowserRouter>
         </div>

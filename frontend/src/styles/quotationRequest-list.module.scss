@@ -138,4 +138,50 @@
       }
     }
   }
+
+  & > .back-drop {
+
+    & > .review-modal {
+      height: 400px;
+      width: 360px;
+      border-radius: 8px;
+      padding: 32px;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      & > .review-info {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      & > .rate-div {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        & > .rating {
+          color: variables.$COLOR_PRIMARY;
+        }
+
+        & > .rate-text {
+          text-align: center;
+        }
+      }
+
+      & > .button-div {
+        display: flex;
+        justify-content: space-between;
+
+        & > .cancel-button {
+          color: variables.$COLOR_PRIMARY;
+        }
+
+        & > .save-button {
+          background-color: variables.$COLOR_PRIMARY;
+        }
+      }
+    }
+  }
 }

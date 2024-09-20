@@ -5,7 +5,6 @@ import com.user.IntArea.common.utils.SecurityUtil;
 import com.user.IntArea.dto.company.*;
 import com.user.IntArea.service.CompanyService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/company")
 @RequiredArgsConstructor
-@Slf4j
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -55,10 +53,17 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
 
+    // Member가 보는 회사 정보
+    @GetMapping("/info/{id}")
+    public CompanyPortfolioDetailDto getCompanyById(@PathVariable UUID id) {
+
+        return companyService.getCompanyById(id);
+    }
+
     @GetMapping("/info")
     public CompanyPortfolioDetailDto getCompanyById() {
 
-        return companyService.getCompanyById();
+        return companyService.getCompanyInfo();
     }
 
     @GetMapping("/admin/unapply")
@@ -99,12 +104,6 @@ public class CompanyController {
                                                                     @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                     @RequestParam(required = false) String filterColumn,
                                                                     @RequestParam(required = false) String filterValue) {
-        log.info("sortField={}", sortField);
-        log.info("sort={}", sort);
-        log.info("filterColumn={}", filterColumn);
-        log.info("filterValue={}", filterValue);
-
-
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
@@ -137,9 +136,9 @@ public class CompanyController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/list/top")
-    public ResponseEntity<List<CompanyWithImageDto>> getCompaniesTop8ByQuotationCount() {
-        List<CompanyWithImageDto> companyWithImageDtoList = companyService.findTop8CompaniesByQuotationCount();
+    @GetMapping("/list/top/{count}")
+    public ResponseEntity<List<CompanyWithImageDto>> getCompaniesTopByQuotationCount(@PathVariable("count") int count) {
+        List<CompanyWithImageDto> companyWithImageDtoList = companyService.findTopCompaniesByQuotationCount(count);
         return ResponseEntity.ok().body(companyWithImageDtoList);
     }
 }

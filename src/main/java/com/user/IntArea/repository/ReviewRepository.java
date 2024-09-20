@@ -4,9 +4,7 @@ import com.user.IntArea.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +15,22 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Optional<Review> getByReviewId(UUID reviewId);
 
     Optional<Review> findByQuotationId(UUID quotationId);
+
+    @Query("SELECT r FROM Review r " +
+            "INNER JOIN QuotationRequest qr ON qr.id = r.quotation.quotationRequest.id " +
+            "WHERE qr.progress = 'APPROVED' AND qr.id = :quotationRequestId")
+    Optional<Review> findByQuotationRequestId(UUID quotationRequestId);
+
+    @Query("SELECT r from Review r where r.member.id = :memberId")
+    Page<Review> getAllReviewsByMember(UUID memberId, Pageable pageable);
+
+    @Query("SELECT r from Review r " +
+            "INNER JOIN Quotation q ON q.id = r.quotation.id " +
+            "INNER JOIN QuotationRequest qr ON qr.id = q.quotationRequest.id " +
+            "INNER JOIN Portfolio p ON p.id = qr.portfolio.id " +
+            "INNER JOIN Company c ON c.id = p.company.id " +
+            "where c.id = :companyId")
+    Page<Review> getAllReviewsSortedByCompany(UUID companyId, Pageable pageable);
 
     @Query("SELECT r FROM Review r " +
             "INNER JOIN Quotation q ON q.id = r.quotation.id " +

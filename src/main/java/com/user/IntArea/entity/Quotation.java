@@ -20,7 +20,7 @@ public class Quotation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "quotationRequestId")
     private QuotationRequest quotationRequest;
 
