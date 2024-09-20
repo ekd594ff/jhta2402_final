@@ -190,8 +190,9 @@ const QuotationRequestList = () => {
     const saveEditReview = (quotationRequestId) => {
         if (!confirm((reviewModal.isEdit) ? "리뷰를 수정하시겠습니까?" : "리뷰를 작성하시겠습니까?")) return;
 
+        console.log(quotationRequestId);
         const url = (reviewModal.isEdit)
-            ? "/api/review/quotationRequest/id"
+            ? "/api/review/update"
             : `/api/review/quotationRequest/${quotationRequestId}`;
 
         const data = (reviewModal.isEdit)

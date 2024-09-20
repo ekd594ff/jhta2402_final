@@ -36,8 +36,9 @@ public class QuotationController {
 
     // (일반) 받은 특정한 quotation 및 quotationRequest 승인처리 // ● Postman Pass
     @PatchMapping("/approve/{quotationId}")
-    public void approveQuotation(@PathVariable(name = "quotationId") UUID quotationId) {
+    public ResponseEntity<?> approveQuotation(@PathVariable(name = "quotationId") UUID quotationId) {
         quotationService.approveQuotationByCustomer(quotationId);
+        return ResponseEntity.ok().build();
     }
 
     // (일반) 받은 특정한 quotation 거부 (고객이 quotation만 취소) // ● Postman Pass
@@ -71,13 +72,6 @@ public class QuotationController {
     public Page<QuotationInfoDto> getAllQuotationsByProgress(@PathVariable(name = "progress") QuotationProgress progress, @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return quotationService.getQuotationInfoDtoListTowardMemberSortedByProgress(progress, pageable);
-    }
-
-    // 견적서 수락
-    @PatchMapping("/approve/{id}")
-    public ResponseEntity<?> approveQuotation(@PathVariable(name = "id") UUID quotationId) {
-        quotationService.approveQuotation(quotationId);
-        return ResponseEntity.ok().build();
     }
 
 
