@@ -139,6 +139,12 @@ public class ReviewService {
                 .map(ReviewInfoListDto::new);
     }
 
+    // (일반 권한) 특정한 회사가 받은 모든 리뷰 리스트 출력
+    public Page<ReviewInfoListDto> getReviewInfoDtoListTowardCompanyIdForUser(UUID companyId, Pageable pageable) {
+        return reviewRepository.getAllReviewsSortedByCompanyForUser(companyId, pageable)
+                .map(ReviewInfoListDto::new);
+    }
+
     // (seller 권한) 회사가 받은 모든 리뷰 리스트 출력
     public Page<ReviewInfoListDto> getReviewInfoDtoListTowardCompany(Pageable pageable) {
         Company company = getCompanyOfMember();
