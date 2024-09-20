@@ -38,8 +38,8 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     @Query("SELECT c FROM Company c " +
             "LEFT JOIN c.portfolios p " +
-            "LEFT JOIN p.quotationRequests qr " + //join 문제
-            "LEFT JOIN qr.quotations q " + //join 문제
+            "LEFT JOIN p.quotationRequests qr " +
+            "LEFT JOIN qr.quotations q " +
             "WHERE 1 = 1 " +
             "AND c.isApplied = true " +
             "AND c.isDeleted = false " +

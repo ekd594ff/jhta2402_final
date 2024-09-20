@@ -132,10 +132,6 @@ public class PortfolioService {
                 .build();
     }
 
-//    public List<PortfolioRecommendDto> getTop4RecentPortfoliosWithTransactions() {
-//        Pageable pageable = PageRequest.ofSize(4);
-//    }
-
     // (일반 권한) DB에 존재하는 공개된 포트폴리오 InfoDto 불러오기
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtos(Pageable pageable) {
         Page<Portfolio> portfolios = portfolioRepository.getOpenPortfolios(pageable);
