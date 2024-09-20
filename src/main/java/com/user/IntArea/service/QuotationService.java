@@ -93,8 +93,8 @@ public class QuotationService {
     }
 
     // 진행상태가 PENDING인지 확인
-    private void checkIfProgressIsPending(QuotationProgress progresss) {
-        switch (progresss) {
+    private void checkIfProgressIsPending(QuotationProgress progress) {
+        switch (progress) {
             case USER_CANCELLED:
                 throw new NoSuchElementException("고객의 견적 신청이 취소되었습니다.");
             case SELLER_CANCELLED:

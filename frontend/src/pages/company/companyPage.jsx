@@ -17,6 +17,7 @@ import {
     TableRow, Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
+import ReviewList from "./reviewList.jsx";
 
 function CompanyDetail() {
 
@@ -98,7 +99,10 @@ function CompanyDetail() {
             .then((res) => {
                 setPortfolioList([...portfolioList, ...res.data.content]);
                 setPageInfo({...pageInfo, totalPage: res.data.page.totalPages});
-            }).catch(() => alert("포트폴리오를 불러오는데 문제가 발생했습니다."));
+            }).catch(() => {
+            alert("포트폴리오를 불러오는데 문제가 발생했습니다.");
+            navigate(-1);
+        });
     }, [pageInfo.page]);
 
     const createData = (name, value) => {
@@ -275,6 +279,10 @@ function CompanyDetail() {
                             더보기
                         </Button>
                     }
+                    {/* 리뷰 컴포넌트 추가 */}
+                    <h2 className={style['sub-title']}>구매자 리뷰</h2>
+                    <ReviewList companyId={companyInfo.companyId}/>
+
                 </div>
             </main>
             <Footer/>

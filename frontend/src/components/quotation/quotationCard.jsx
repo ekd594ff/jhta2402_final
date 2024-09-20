@@ -30,10 +30,14 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
     return (
         <Card className={style['quotation-card']}>
             <div className={style['quotation-sub-title']}>
-                <div className={style['updated-at']}>
-                    {dateFormatter(quotation.updatedAt)}
+                <div className={style['card-sub-title']}>
+                    <div className={style['updated-at']}>
+                        {dateFormatter(quotation.updatedAt)}
+                    </div>
                     <div className={style['total']}>
-                        <p className={style['price']}>₩{quotation.totalTransactionAmount}</p>
+                        <p className={style['price']}>
+                            ₩ {Number(quotation.totalTransactionAmount).toLocaleString()}
+                        </p>
                     </div>
                 </div>
                 {quotation.progress === "PENDING"
@@ -68,8 +72,8 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
                             scrollbar={{draggable: true}}
                             sx={{margin: "auto"}}>
                         {quotation.imageUrls.map(url =>
-                            <SwiperSlide key={url} sx={{height: "64px", width: "64px", margin: "auto"}}>
-                                <img style={{height: "auto", width: "100%", objectFit: "cover", cursor: "zoom-in"}}
+                            <SwiperSlide key={url}>
+                                <img style={{height: "auto", width: "100%", objectFit: "cover", cursor: "pointer", border: "0.5px solid", borderColor: "#989898"}}
                                      src={url}
                                      alt="quotation image"
                                      onClick={() => setModal({open: true, url: url})}/>
@@ -77,7 +81,7 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
                         )}
                     </Swiper>
                     :
-                    <img style={{height: "auto", width: "30%", objectFit: "cover", cursor: "zoom-in"}}
+                    <img style={{height: "auto", width: "30%", objectFit: "cover", cursor: "pointer", margin: "16px", border: "0.5px solid", borderColor: "#989898"}}
                          src={quotation.imageUrls[0]}
                          alt="quotation image"
                          onClick={() => setModal({open: true, url: quotation.imageUrls[0]})}/>
@@ -91,7 +95,7 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
                         zIndex: "999",
                         width: "80vw",
                         height: "80vh",
-                        cursor: "all-scroll",
+                        cursor: "zoom-in",
                     }}>
                     <TransformWrapper>
                         <TransformComponent>
