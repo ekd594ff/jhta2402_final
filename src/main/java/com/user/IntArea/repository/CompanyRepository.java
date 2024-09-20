@@ -38,15 +38,15 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     @Query("SELECT c FROM Company c " +
             "LEFT JOIN c.portfolios p " +
-            "LEFT JOIN p.quotationRequests qr " + //join 문제
-            "LEFT JOIN qr.quotations q " + //join 문제
+            "LEFT JOIN p.quotationRequests qr " +
+            "LEFT JOIN qr.quotations q " +
             "WHERE 1 = 1 " +
             "AND c.isApplied = true " +
             "AND c.isDeleted = false " +
             "AND (q.progress = 'APPROVED' OR q.progress IS NULL) " +
             "GROUP BY c.id " +
             "ORDER BY COUNT(q.progress) DESC ")
-    List<Company> findTop8CompaniesByQuotationCount(Pageable pageable);
+    List<Company> findTopCompaniesByQuotationCount(Pageable pageable);
 
     @Modifying
     @Query("UPDATE Company c SET c.isDeleted = true WHERE c.id IN :ids")

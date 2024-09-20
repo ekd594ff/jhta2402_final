@@ -88,6 +88,7 @@ public class PortfolioController {
     // seller
     @PostMapping
     public ResponseEntity<?> createPortfolio(PortfolioRequestDto portfolioRequestDto) {
+
         portfolioService.create(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
@@ -97,6 +98,7 @@ public class PortfolioController {
         portfolioService.updatePortfolio(portfolioRequestDto);
         return ResponseEntity.ok().build();
     }
+
 
     @GetMapping("/list/company")
     public Page<PortfolioDetailInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {

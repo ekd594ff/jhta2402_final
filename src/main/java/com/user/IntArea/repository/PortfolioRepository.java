@@ -80,7 +80,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             "WHERE 1 = 1 " +
             "    AND p.isDeleted = false " +
             "    AND p.isActivated = true " +
-            "    AND qr.progress = 'APPROVED' " +
+            "    AND q.progress = 'APPROVED' " +
             "GROUP BY " +
             "    p.id,c.companyName " +
             "ORDER BY " +
@@ -131,5 +131,9 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
     List<Portfolio> findAllByCompanyId(UUID companyId);
+
+    @Query(" SELECT p FROM Portfolio p " +
+            " ")
+    List<Portfolio> getTop4RecentPortfoliosWithTransactions(Pageable pageable);
 
 }
