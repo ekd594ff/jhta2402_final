@@ -1,6 +1,5 @@
 import {Link, Route, Routes, useLocation, useNavigate} from "react-router-dom";
 
-
 import style from "../../styles/admin-index.module.scss"
 import * as React from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -63,14 +62,13 @@ function NestedList() {
 
     return (
         <List
-            sx={{height: '100%', width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}
+            sx={{height: '100%', width: '100%', maxWidth: 360}}
             component="nav"
             aria-labelledby="nested-list-subheader"
             subheader={
                 <ListSubheader
                     component="div"
                     id="nested-list-subheader"
-                    style={{backgroundColor: '#27AE60', color: '#FFF'}}
                 >
                     Admin
                 </ListSubheader>
@@ -135,10 +133,6 @@ const handleUpdateClick = async (id) => {
     //     console.error('Error sending API request:', error);
     // }
 };
-
-// const selectColumn = {
-//     deleted: {true, false}
-// }
 
 
 function DataTable() {
@@ -398,14 +392,14 @@ function Admin() {
             </aside>
             <div className={style['container']}>
                 <Routes>
-                    <Route path={"company"} element={<DataTable/>}/>
-                    <Route path={"portfolio"} element={<DataTable/>}/>
-                    <Route path={"review"} element={<DataTable/>}/>
-                    <Route path={"member"} element={<DataTable/>}/>
-                    <Route path={"report"} element={<DataTable/>}/>
-                    <Route path={"quotation"} element={<DataTable/>}/>
-                    <Route path={"quotationRequest"} element={<DataTable/>}/>
-                    <Route path={"/"} element={<DataTable/>}/>
+                    {/*<Route path={"company"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"portfolio"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"review"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"member"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"report"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"quotation"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"quotationRequest"} element={<DataTable/>}/>*/}
+                    {/*<Route path={"/"} element={<DataTable/>}/>*/}
                 </Routes>
             </div>
         </main>
