@@ -12,6 +12,7 @@ import com.user.IntArea.entity.*;
 import com.user.IntArea.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,8 +132,6 @@ public class PortfolioService {
                 .solutions(solutionDtos)
                 .build();
     }
-
-    // 일반 권한
 
     // (일반 권한) DB에 존재하는 공개된 포트폴리오 InfoDto 불러오기
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtos(Pageable pageable) {
@@ -474,6 +473,10 @@ public class PortfolioService {
             return portfolioRepository.findAll(pageable).map(PortfolioInfoDto::new);
         }
         throw new RuntimeException("getSearchPortfolio");
+    }
+
+    public List<Map<String, Object>> getRecentTransactionPortfolioList(Integer count) {
+        return portfolioRepository.getRecentTransactionPortfolioList(count);
     }
 
     @Transactional

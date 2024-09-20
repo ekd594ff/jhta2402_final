@@ -41,8 +41,8 @@ function PortfolioReviewListItem(props) {
             </div>
         </div>
         <div className={style['bottom']}>
-            <div className={style['title']}>{`리뷰제목_${title}`}</div>
-            <div className={style['description']}>{`리뷰상세_${description}`}</div>
+            <div className={style['title']}>{`${title}`}</div>
+            <div className={style['description']}>{`${description}`}</div>
         </div>
     </li>
 }

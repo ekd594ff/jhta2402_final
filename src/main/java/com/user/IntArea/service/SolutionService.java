@@ -2,6 +2,7 @@ package com.user.IntArea.service;
 
 import com.user.IntArea.dto.requestSolution.RequestSolutionDto;
 import com.user.IntArea.dto.solution.SolutionForQuotationRequestDto;
+import com.user.IntArea.dto.solution.SolutionWithImageDto;
 import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.entity.RequestSolution;
 import com.user.IntArea.entity.Solution;
@@ -30,5 +31,10 @@ public class SolutionService {
             solutionForQuotationRequestDtos.add(new SolutionForQuotationRequestDto(solution));
         }
         return solutionForQuotationRequestDtos;
+    }
+
+    public List<SolutionWithImageDto> getTopMostQuotedSolutions(int count) {
+        return solutionRepository.getTopMostQuotedSolutions(count)
+                .stream().map(SolutionWithImageDto::new).toList();
     }
 }
