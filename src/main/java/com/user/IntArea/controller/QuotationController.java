@@ -1,6 +1,5 @@
 package com.user.IntArea.controller;
 
-import com.user.IntArea.dto.member.MemberResponseDto;
 import com.user.IntArea.dto.quotation.EditQuotationDto;
 import com.user.IntArea.dto.quotation.QuotationCreateDto;
 import com.user.IntArea.dto.quotation.QuotationInfoDto;
@@ -9,13 +8,8 @@ import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import com.user.IntArea.service.QuotationRequestService;
 import com.user.IntArea.dto.quotation.QuotationResponseDto;
-import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.service.QuotationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,11 +34,24 @@ public class QuotationController {
 
     // 일반 권한
 
+    // (일반) 받은 특정한 quotation 및 quotationRequest 승인처리 // ● Postman Pass
+    @PatchMapping("/approve/{quotationId}")
+    public ResponseEntity<?> approveQuotation(@PathVariable(name = "quotationId") UUID quotationId) {
+        quotationService.approveQuotationByCustomer(quotationId);
+        return ResponseEntity.ok().build();
+    }
+
     // (일반) 받은 특정한 quotation 거부 (고객이 quotation만 취소) // ● Postman Pass
     @PatchMapping("/cancel/{id}")
     public void cancelQuotation(@PathVariable(name = "id") UUID quotationId) {
         Quotation quotation = quotationService.getById(quotationId);
         quotationService.cancelQuotationByCustomer(quotation);
+    }
+
+    // (일반) (받은 견적서가 있을 때) 고객에 의한 완전한 거래 취소 (quotation 및 quotationRequest 취소) // ● Postman Pass
+    @PatchMapping("/cancel/contract/{quotationId}") // ● Postman Pass
+    public void cancelQuotationAndQuotationRequestByCustomer(@PathVariable(name = "quotationId") UUID quotationId) {
+        quotationService.cancelContractByCustomer(quotationId);
     }
 
     // (일반) 받은 모든 quotation 조회
@@ -131,7 +138,7 @@ public class QuotationController {
     @PatchMapping("/admin/progress/{ids}")
     public ResponseEntity<?> softDeleteQuotations(@PathVariable String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
-        quotationService.updateProgess(idList);
+        quotationService.updateProgress(idList);
         return ResponseEntity.noContent().build();
     }
 
@@ -194,7 +201,7 @@ public class QuotationController {
         return quotationService.getAllQuotationsOfCompanySortedByProgressByAdmin(companyId, progress, pageable);
     }
 
-    //
+    // (admin) 특정 견적서 진행상태 수정
     @PatchMapping("/admin")
     public ResponseEntity<?> editQuotation(@RequestBody EditQuotationDto editQuotationDto) {
         quotationService.editQuotationForAdmin(editQuotationDto);

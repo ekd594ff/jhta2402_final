@@ -13,8 +13,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.UUID;
 
 public interface ReportRepository extends JpaRepository<Report, UUID> {
-
-
     @Query("SELECT r.id AS id, " +
             "CASE " +
             "   WHEN r.sort = 'PORTFOLIO' THEN p.title " +

@@ -137,9 +137,9 @@ public class CompanyController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/list/top")
-    public ResponseEntity<List<CompanyWithImageDto>> getCompaniesTop8ByQuotationCount() {
-        List<CompanyWithImageDto> companyWithImageDtoList = companyService.findTop8CompaniesByQuotationCount();
+    @GetMapping("/list/top/{count}")
+    public ResponseEntity<List<CompanyWithImageDto>> getCompaniesTopByQuotationCount(@PathVariable("count") int count) {
+        List<CompanyWithImageDto> companyWithImageDtoList = companyService.findTopCompaniesByQuotationCount(count);
         return ResponseEntity.ok().body(companyWithImageDtoList);
     }
 }

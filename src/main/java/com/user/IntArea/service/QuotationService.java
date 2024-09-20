@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class QuotationService {
     private final QuotationRequestRepository quotationRequestRepository;
     private final ImageService imageService;
 
+    // 권한 확인 및 유틸
 
     // 견적서에 접근하는 멤버가 그 견적서와 연관된 포트폴리오를 제작한 회사의 관리자가 맞는지 확인
     private void checkIsCompanyManagerOf(Quotation quotation) {
@@ -46,13 +48,12 @@ public class QuotationService {
         }
     }
 
-    //
+    // 현재 로그인한 사용자 확인
     private Member getLoggedMember() {
         MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException("로그인해주세요"));
         String email = memberDto.getEmail();
         return memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("이메일 정보가 없습니다."));
     }
-
 
     // 현재 로그인한 멤버가 관리하는 회사 확인
     private Company getCompanyOfMember() {
@@ -64,21 +65,15 @@ public class QuotationService {
     }
 
     // 현재 로그인한 멤버가 해당 견적요청서의 작성자인지 확인
-    private boolean isLoggedMemberQuotationRequestWriter(QuotationRequest quotationRequest) {
-        MemberDto memberDto = SecurityUtil.getCurrentMember().orElseThrow(() -> new NoSuchElementException(""));
+    private void checkIfLoggedMemberIsQuotationRequestWriter(QuotationRequest quotationRequest) {
+        MemberDto memberDto = SecurityUtil.getCurrentMember()
+                .orElseThrow(() -> new NoSuchElementException("로그인 정보가 없습니다."));
         String email = memberDto.getEmail();
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException(""));
-        return member.equals(quotationRequest.getMember());
-    }
-
-    // quotation에서 이미지를 로드하여 URL 리스트를 반환
-    private List<String> getImageUrlsForQuotation(Quotation quotation) {
-        List<Image> imageDtos = imageService.getImagesFrom(quotation);
-        List<String> imageUrls = new ArrayList<>();
-        for (Image image : imageDtos) {
-            imageUrls.add(image.getUrl());
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("해당 이메일을 가진 멤버가 없습니다."));
+        if (!member.equals(quotationRequest.getMember())) {
+            throw new NoSuchElementException("접근 권한이 없습니다.");
         }
-        return imageUrls;
     }
 
     // Quotation을 QuotationInfoDto로 변환하는 메서드
@@ -94,11 +89,10 @@ public class QuotationService {
         } catch (Exception e) { // 예외 발생 시 로그 남기기
             System.err.println("이미지 로드 실패: " + e.getMessage());
         }
-
-        // QuotationInfoDto로 매핑
         return new QuotationInfoDto(quotation, imageUrls);
     }
 
+    // 진행상태가 PENDING인지 확인
     private void checkIfProgressIsPending(QuotationProgress progresss) {
         switch (progresss) {
             case USER_CANCELLED:
@@ -121,7 +115,7 @@ public class QuotationService {
     // (일반) 특정 견적서 출력
     public Quotation getById(UUID quotationId) {
         Optional<Quotation> quotation = quotationRepository.findById(quotationId);
-        if(quotation.isEmpty()) {
+        if (quotation.isEmpty()) {
             throw new NoSuchElementException("작성된 견적서가 없습니다.");
         }
         return quotation.get();
@@ -136,7 +130,6 @@ public class QuotationService {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다."));
         Page<Quotation> quotationsForMember = quotationRepository.GetAllByMemberId(member.getId(), pageable);
 
-        // Quotation을 QuotationInfoDto로 변환하여 반환
         return quotationsForMember.map(this::convertToQuotationInfoDto);
     }
 
@@ -145,7 +138,7 @@ public class QuotationService {
         Member member = getLoggedMember();
         Quotation quotation = quotationRepository.findById(quotationId)
                 .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
-        if(!quotation.getQuotationRequest().getMember().equals(member)){
+        if (!quotation.getQuotationRequest().getMember().equals(member)) {
             throw new NoSuchElementException("열람 권한이 없습니다.");
         }
         List<Image> images = imageService.getImagesFrom(quotation);
@@ -167,9 +160,7 @@ public class QuotationService {
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 선택한 특정 견적요청서에 대해서 작성된 모든 견적서 출력 (sorted by updatedAt)
     public List<QuotationInfoDto> getQuotationInfoDtoListFrom(QuotationRequest quotationRequest) {
-        if (!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
-            throw new NoSuchElementException("잘못된 접근입니다.");
-        }
+        checkIfLoggedMemberIsQuotationRequestWriter(quotationRequest);
         List<Quotation> quotationList = quotationRequest.getQuotations()
                 .stream()
                 .sorted(Comparator.comparing(Quotation::getUpdatedAt))
@@ -184,9 +175,7 @@ public class QuotationService {
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 선택한 특정 견적요청서에 대해서 작성된 견적서 중 대기중인 견적서(1개) 출력
     public QuotationInfoDto getValidQuotationForQuotationRequest(QuotationRequest quotationRequest) {
-        if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
-            throw new NoSuchElementException("잘못된 접근입니다.");
-        }
+        checkIfLoggedMemberIsQuotationRequestWriter(quotationRequest);
         Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
                 .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
         List<String> imageUrls = imageService.getImagesFrom(quotation).stream().map(Image::getUrl).toList();
@@ -194,11 +183,9 @@ public class QuotationService {
     }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 받은 견적서만 취소
+    @Transactional
     public void cancelQuotationByCustomer(Quotation quotation) {
-        // 접근권한자인지 확인
-        if(!isLoggedMemberQuotationRequestWriter(quotation.getQuotationRequest())) {
-            throw new NoSuchElementException("잘못된 접근입니다.");
-        }
+        checkIfLoggedMemberIsQuotationRequestWriter(quotation.getQuotationRequest());
         // 견적서 취소 가능 조건: 견적서의 진행상태가 PENDING
         checkIfProgressIsPending(quotation.getProgress());
 
@@ -206,35 +193,45 @@ public class QuotationService {
         quotationRepository.save(quotation);
     }
 
-    // (견적요청서를 작성한 사용자 권한) 사용자가 견적서를 받은 이후 거래 취소
-    public void cancelContractByCustomer(QuotationRequest quotationRequest) {
-        if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
-            throw new NoSuchElementException("잘못된 접근입니다.");
-        }
-        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
-                .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
+    // (견적요청서를 작성한 사용자 권한) 사용자가 견적서를 받은 이후 거래를 완전 취소
+    @Transactional
+    public void cancelContractByCustomer(UUID quotationId) {
+        Quotation quotation = quotationRepository.getByQuotationId(quotationId)
+                .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
+        QuotationRequest quotationRequest = quotation.getQuotationRequest();
+
+        checkIfLoggedMemberIsQuotationRequestWriter(quotationRequest);
+        checkIfProgressIsPending(quotation.getProgress());
+        checkIfProgressIsPending(quotationRequest.getProgress());
 
         quotation.setProgress(QuotationProgress.USER_CANCELLED);
         quotationRepository.save(quotation);
+        quotationRequest.setProgress(QuotationProgress.USER_CANCELLED);
+        quotationRequestRepository.save(quotationRequest);
     }
 
     // (견적요청서를 작성한 사용자 권한) 사용자가 받은 견적서 승인 조치
-    public void approveQuotation(QuotationRequest quotationRequest) {
-        if(!isLoggedMemberQuotationRequestWriter(quotationRequest)) {
-            throw new NoSuchElementException("잘못된 접근입니다.");
-        }
-        Quotation quotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
-                .orElseThrow(() -> new NoSuchElementException("대기중인 견적서가 없습니다."));
+    @Transactional
+    public void approveQuotationByCustomer(UUID quotationId) {
+        Quotation quotation = quotationRepository.getByQuotationId(quotationId)
+                .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
+        QuotationRequest quotationRequest = quotation.getQuotationRequest();
+
+        checkIfLoggedMemberIsQuotationRequestWriter(quotationRequest);
+        checkIfProgressIsPending(quotation.getProgress());
+        checkIfProgressIsPending(quotationRequest.getProgress());
 
         quotation.setProgress(QuotationProgress.APPROVED);
         quotationRepository.save(quotation);
+        quotationRequest.setProgress(QuotationProgress.APPROVED);
+        quotationRequestRepository.save(quotationRequest);
     }
 
     // seller
 
     // (seller) 신규 견적서 생성 - 받은 견적 요청서와 연관된 견적서를 작성
+    @Transactional
     public void creatQuotationBySeller(QuotationCreateDto quotationCreateDto) {
-        // 작성권한 확인
         Company company = getCompanyOfMember();
 
         // 견적 요청서 검증 로직 (견적요청이 PENDING인 경우 확인)
@@ -249,7 +246,7 @@ public class QuotationService {
         quotationRequest = quotationRequestList.get(0);
 
         // 이미지파일 유무 검증 로직
-        if(quotationCreateDto.getImageFiles() == null || quotationCreateDto.getImageFiles().isEmpty()) {
+        if (quotationCreateDto.getImageFiles() == null || quotationCreateDto.getImageFiles().isEmpty()) {
             throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
         }
 
@@ -264,6 +261,7 @@ public class QuotationService {
     }
 
     // (seller) 선택한 견적서 취소처리
+    @Transactional
     public void cancelQuotationBySeller(UUID id) {
         Quotation quotation = quotationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 견적서가 없습니다."));
@@ -297,7 +295,7 @@ public class QuotationService {
         quotationRequest = quotationRequestList.get(0);
 
         // 이미지파일 유무 검증 로직
-        if(quotationUpdateDto.getImageFiles() == null || quotationUpdateDto.getImageFiles().isEmpty()) {
+        if (quotationUpdateDto.getImageFiles() == null || quotationUpdateDto.getImageFiles().isEmpty()) {
             throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
         }
 
@@ -325,11 +323,10 @@ public class QuotationService {
     @Transactional
     // (seller) 고객 결제 전 거래 취소 처리 (견적 요청서에 대해 '거래 불가' 내용이 담긴 견적서 생성. 발송 후 해당 요청서에 대해서 판매자의 견적서 작성 권한 박탈)
     public void cancelQuotationAndQuotationRequestBySeller(UUID quotationId) {
-
         // Seller가 quotationRequest 에 대해 접근권한이 있는지 확인
         Company company = getCompanyOfMember();
         QuotationRequest quotationRequest = quotationRequestRepository.findQuotationRequestByQuotationIdAndCompany(company.getId(), quotationId);
-        if(quotationRequest == null) {
+        if (quotationRequest == null) {
             throw new NoSuchElementException("견적요청에 대한 접근 권한이 없습니다.");
         }
 
@@ -340,7 +337,7 @@ public class QuotationService {
         Optional<Quotation> optionalFormerQuotation = quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING);
 
         // 이미 판매자가 생성한 견적서가 있을 경우 -> 견적서의 progress를 판매자 취소 처리
-        if(optionalFormerQuotation.isPresent()) {
+        if (optionalFormerQuotation.isPresent()) {
             optionalFormerQuotation.get().setProgress(QuotationProgress.SELLER_CANCELLED);
             quotationRepository.save(optionalFormerQuotation.get());
         }
@@ -355,7 +352,7 @@ public class QuotationService {
         Company company = getCompanyOfMember();
         Quotation quotation = quotationRepository.findById(quotationId)
                 .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
-        if(!quotation.getQuotationRequest().getPortfolio().getCompany().equals(company)){
+        if (!quotation.getQuotationRequest().getPortfolio().getCompany().equals(company)) {
             throw new NoSuchElementException("열람 권한이 없습니다.");
         }
         List<Image> images = imageService.getImagesFrom(quotation);
@@ -387,7 +384,6 @@ public class QuotationService {
         return quotations.map(this::convertToQuotationInfoDto);
     }
 
-
     // admin
 
     // (admin) 특정한 하나의 견적서 정보 출력
@@ -395,7 +391,7 @@ public class QuotationService {
         Member member = getLoggedMember();
         Quotation quotation = quotationRepository.findById(quotationId)
                 .orElseThrow(() -> new NoSuchElementException("알 수 없는 오류. 견적서가 없습니다."));
-        if(!member.getRole().equals(Role.ROLE_ADMIN)){
+        if (!member.getRole().equals(Role.ROLE_ADMIN)) {
             throw new NoSuchElementException("열람 권한이 없습니다.");
         }
         List<Image> images = imageService.getImagesFrom(quotation);
@@ -427,14 +423,6 @@ public class QuotationService {
         return quotations.map(this::convertToQuotationInfoDto);
     }
 
-    public Quotation findById(UUID quotationId) {
-        Optional<Quotation> quotation = quotationRepository.findById(quotationId);
-        if(quotation.isEmpty()) {
-            throw new NoSuchElementException("작성된 견적서가 없습니다.");
-        }
-        return quotation.get();
-    }
-
     public Page<QuotationResponseDto> findAllQutationResponseDto(Pageable pageable) {
         return quotationRepository.findAll(pageable).map(QuotationResponseDto::new);
     }
@@ -464,15 +452,11 @@ public class QuotationService {
         throw new RuntimeException("findAllByFilter : QuotationService");
     }
 
-    public void softDeleteQuotation(List<String> idList) {
-//        quotationRepository.
-    }
-
-    public void updateProgess(List<String> idList) {
+    @Transactional
+    public void updateProgress(List<String> idList) {
         List<UUID> ids = idList.stream().map(UUID::fromString).toList();
         quotationRepository.updateQuotationById(ids);
     }
-
 
     @Transactional
     public void editQuotationForAdmin(EditQuotationDto editQuotationDto) {
@@ -484,6 +468,4 @@ public class QuotationService {
             throw new NoSuchElementException("editQuotationForAdmin");
         }
     }
-
-
 }

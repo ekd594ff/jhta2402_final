@@ -6,7 +6,8 @@ import java.util.UUID;
 
 @Data
 public class UpdateReviewDto {
-    private UUID reviewId;
+    private UUID id;
     private String title;
     private String description;
+    private double rate;
 }

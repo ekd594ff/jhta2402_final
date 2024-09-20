@@ -1,6 +1,7 @@
 package com.user.IntArea.repository;
 
 import com.user.IntArea.entity.Member;
+import com.user.IntArea.entity.Quotation;
 import com.user.IntArea.entity.QuotationRequest;
 import com.user.IntArea.entity.enums.QuotationProgress;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface QuotationRequestRepository extends JpaRepository<QuotationRequest, UUID> {
@@ -18,7 +20,7 @@ public interface QuotationRequestRepository extends JpaRepository<QuotationReque
     List<QuotationRequest> findByPortfolioId(UUID id);
 
     @Query("select qr from QuotationRequest qr left join Quotation q where q.id = :quotationId")
-    QuotationRequest getByQuotationId(@Param("quotationId") UUID quotationId);
+    Optional<QuotationRequest> getByQuotationId(@Param("quotationId") UUID quotationId);
 
     List<QuotationRequest> findAllByMember(Member member);
 

@@ -76,10 +76,11 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
                 "FROM portfolio p " +
                 "LEFT JOIN company c ON c.id = p.companyid " +
                 "LEFT JOIN quotationrequest qr ON p.id = qr.portfolioid " +
+                "left join quotation q on q.quotationrequestid = qr.id " +
                 "WHERE 1=1 " +
                 "AND p.isdeleted = false " +
                 "AND p.isActivated = true " +
-                "AND qr.progress = 'APPROVED' " +
+                "AND q.progress = 'APPROVED' " +
                 "AND (p.title LIKE CONCAT('%', :searchWordInQuery, '%' ) OR " +
                 "p.description LIKE CONCAT('%', :searchWordInQuery, '%' ) OR " +
                 "c.companyName LIKE CONCAT('%', :searchWordInQuery, '%' ) ) "; // 괄호 확인

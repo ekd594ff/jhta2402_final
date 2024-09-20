@@ -16,6 +16,11 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
     Optional<Review> findByQuotationId(UUID quotationId);
 
+    @Query("SELECT r FROM Review r " +
+            "INNER JOIN QuotationRequest qr ON qr.id = r.quotation.quotationRequest.id " +
+            "WHERE qr.progress = 'APPROVED' AND qr.id = :quotationRequestId")
+    Optional<Review> findByQuotationRequestId(UUID quotationRequestId);
+
     @Query("SELECT r from Review r where r.member.id = :memberId")
     Page<Review> getAllReviewsByMember(UUID memberId, Pageable pageable);
 

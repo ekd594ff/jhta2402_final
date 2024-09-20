@@ -11,7 +11,6 @@ import PortfolioListItem from "../components/index/portfolio-list-item.jsx";
 import SolutionListItem from "../components/index/solution-list-item.jsx";
 import CompanyListItem from "../components/index/company-list-item.jsx";
 
-
 import {Pagination, Autoplay} from 'swiper/modules';
 
 import 'swiper/css';
@@ -20,14 +19,15 @@ import 'swiper/css/pagination';
 import style from "../styles/index.module.scss";
 
 const getRandomPortfolioListPromise = axios.get("/api/portfolio/list/random?count=8");
-const getTopCompanyPromise = axios.get(`/api/company/list/top`);
+const getTopCompanyPromise = axios.get(`/api/company/list/top/8`);
 const getRecommendedPortfolioPromise = axios.get(`/api/portfolio/list/recommended?count=${8}`);
 const getLatestTransactionPortfolioPromise = axios.get(`/api/portfolio/list/latest/transaction?count=${4}`);
+const getTopSolutionPromise = axios.get(`/api/solution/list/top/${8}`);
 
 function Index() {
 
     const [recommendList, setRecommendList] = useState([]);
-    const [portfolioList, setPortfolioList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+    const [portfolioList, setPortfolioList] = useState([]);
     const [solutionList, setSolutionList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
     const [companyList, setCompanyList] = useState([]);
     const [hotPortfolioList, setHotPortfolioList] = useState([]);
@@ -36,16 +36,20 @@ function Index() {
         Promise.all([getRandomPortfolioListPromise,
             getTopCompanyPromise,
             getLatestTransactionPortfolioPromise,
-            getRecommendedPortfolioPromise])
+            getRecommendedPortfolioPromise,
+            getTopSolutionPromise])
             .then(([randomPortfolioList,
                        getTopCompanyResult,
                        hotPortfolioListResult,
-                       getRecommendedPortfolioResult]) => {
+                       getRecommendedPortfolioResult,
+                       getTopSolutionListResult]) => {
                 setRecommendList(() => [...hotPortfolioListResult.data]);
                 setCompanyList(() => [...getTopCompanyResult.data]);
                 setRecommendList(() => [...randomPortfolioList.data]);
                 setHotPortfolioList(() => [...hotPortfolioListResult.data]);
                 setPortfolioList(() => [...getRecommendedPortfolioResult.data]);
+                setSolutionList(() => [...getTopSolutionListResult.data]);
+                console.log(getTopSolutionListResult);
             });
     }, []);
 
@@ -101,7 +105,7 @@ function Index() {
                             <ul className={style['solution-list']}>
                                 {
                                     solutionList.map((item, index) => {
-                                        return <SolutionListItem value={item} key={index}/>
+                                        return <SolutionListItem {...item} key={`${index}_${item.id}_sol`}/>
                                     })
                                 }
                             </ul>

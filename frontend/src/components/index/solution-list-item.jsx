@@ -1,17 +1,22 @@
+import {useNavigate} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 
 import style from "../../styles/solution-list-item.module.scss";
 
+
 function SolutionListItem(props) {
-    const {value} = props;
-    return <div className={style['solution-list-item']}>
+    const {title, id, portfolioId, description, url} = props;
+    const navigator = useNavigate();
+    return <div className={style['solution-list-item']} onClick={() => {
+        navigator(`/portfolio/${portfolioId}`);
+    }}>
         <div className={style['container']}>
             <div className={style['left']}><Avatar className={style['avatar']}
-                                                   src={`https://picsum.photos/seed/${Date.now() + value}/600/400`}/>
+                                                   src={url}/>
             </div>
             <div className={style['right']}>
-                <div className={style['title']}>{`솔루션 이름_${value}`}</div>
-                <div className={style['description']}>솔루션 설명</div>
+                <div className={style['title']}>{title}</div>
+                <div className={style['description']}>{description}</div>
             </div>
         </div>
     </div>;

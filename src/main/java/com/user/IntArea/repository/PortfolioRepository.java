@@ -2,6 +2,9 @@ package com.user.IntArea.repository;
 
 import com.user.IntArea.entity.Company;
 import com.user.IntArea.entity.Portfolio;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -64,26 +67,25 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     // 포트폴리오에 대한 리뷰들에 작성된 평점의 평균순으로 나열
     @Query(value =
             "SELECT " +
-                    "    p.id AS portfolioId, " +
-                    "    p.title AS title, " +
-                    "    c.companyName AS companyName, " +
-                    "p.description AS description, " +
-                    "    ROUND(AVG(r.rate)::numeric, 2) AS avgRate, " +
-                    "    (select i.url from image i where i.refid = p.id limit 1) AS thumbnail " +
-                    "FROM Portfolio p " +
-                    "LEFT JOIN Image i ON i.refId = p.id " +
-                    "LEFT JOIN Company c ON p.companyid = c.id " +
-                    "LEFT JOIN QuotationRequest qr ON qr.portfolioid = p.id " +
-                    "LEFT JOIN Quotation q ON q.quotationrequestid = qr.id " +
-                    "LEFT JOIN Review r ON r.quotationid = q.id " +
-                    "WHERE 1 = 1 " +
-                    "    AND p.isDeleted = false " +
-                    "    AND p.isActivated = true " +
-                    "    AND qr.progress = 'APPROVED' " +
-                    "GROUP BY " +
-                    "    p.id,c.companyName " +
-                    "ORDER BY " +
-                    "    AVG(r.rate) DESC, p.createdAt ASC ",
+            "    p.id AS portfolioId, " +
+            "    p.title AS title, " +
+            "    c.companyName AS companyName, " +
+            "    ROUND(AVG(r.rate)::numeric, 2) AS avgRate, " +
+            "    (select i.url from image i where i.refid = p.id limit 1) AS thumbnail " +
+            "FROM Portfolio p " +
+            "LEFT JOIN Image i ON i.refId = p.id " +
+            "LEFT JOIN Company c ON p.companyid = c.id " +
+            "LEFT JOIN QuotationRequest qr ON qr.portfolioid = p.id " +
+            "LEFT JOIN Quotation q ON q.quotationrequestid = qr.id " +
+            "LEFT JOIN Review r ON r.quotationid = q.id " +
+            "WHERE 1 = 1 " +
+            "    AND p.isDeleted = false " +
+            "    AND p.isActivated = true " +
+            "    AND q.progress = 'APPROVED' " +
+            "GROUP BY " +
+            "    p.id,c.companyName " +
+            "ORDER BY " +
+            "    AVG(r.rate) DESC, p.createdAt ASC ",
             nativeQuery = true
     )
     List<Map<String, Object>> getRecommendedPortfolioByAvgRate(Pageable pageable);
@@ -125,7 +127,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     void softDeleteByIds(Iterable<UUID> ids);
 
     @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
-    Page<Portfolio> getAllValidByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
+    Page<Portfolio> getAllValidByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
 
     Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
@@ -139,16 +141,14 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             "        q2.createdat, \n" +
             "        p.title,\n" +
             "        p.description,\n" +
-            "        ROUND(AVG(r.rate)::numeric, 2) AS rate,\n" +
-            "        ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY q2.createdat DESC) AS idx,\n" + // Added comma here
-            "        c.companyname\n" + // Adjusted the position
+            "        ROUND(AVG(r.rate)::numeric, 2) as rate,\n" +
+            "        ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY q2.createdat DESC) AS idx\n" +
             "    FROM portfolio p\n" +
-            "    INNER JOIN Company c on c.id = p.companyid\n" +
             "    INNER JOIN quotationrequest q ON p.id = q.portfolioid\n" +
             "    INNER JOIN quotation q2 ON q.id = q2.quotationrequestid AND q2.progress = 'APPROVED'\n" +
             "    INNER JOIN review r ON q2.id = r.quotationid\n" +
             "    WHERE p.isactivated = true AND p.isdeleted = false\n" +
-            "    GROUP BY p.id, q2.createdat, p.title, p.description, c.companyname\n" + // Adjusted the GROUP BY clause
+            "    GROUP BY p.id, q2.createdat, p.title, p.description\n" +
             "),\n" +
             "portfolioImages AS (\n" +
             "    SELECT \n" +
@@ -158,18 +158,16 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             "    FROM Image i\n" +
             ")\n" +
             "SELECT \n" +
-            "    lp.portfolioId, \n" +
+            "    lp.portfolioId as portfolioId, \n" +
             "    lp.createdat, \n" +
             "    lp.title, \n" +
             "    lp.description, \n" +
             "    lp.rate as avgRate, \n" +
-            "    pi.url as thumbnail, \n" + // Added a comma here
-            "    lp.companyname \n" +
+            "    pi.url as thumbnail\n" +
             "FROM latestPortfolios lp\n" +
             "INNER JOIN portfolioImages pi ON lp.portfolioId = pi.portfolioId AND pi.img_idx = 1\n" +
             "WHERE lp.idx = 1\n" +
             "ORDER BY lp.createdat DESC\n" +
             "LIMIT :count", nativeQuery = true)
     List<Map<String, Object>> getRecentTransactionPortfolioList(@Param("count") int count);
-
 }
