@@ -27,13 +27,13 @@ public class ReportResponseDto {
 
     public ReportResponseDto(Tuple tuple) {
         this.id = (UUID) tuple.get("id");
-        this.refTitle = tuple.get("refTitle").toString() != null ? tuple.get("refTitle").toString() : "제목 없음"; // Null 체크 추가
-        this.username = tuple.get("username").toString();
-        this.sort = ReportSort.valueOf(tuple.get("sort").toString());
-        this.title = tuple.get("title").toString();
-        this.description = tuple.get("description").toString();
-        this.comment = tuple.get("comment").toString();
-        this.progress = ReportProgress.valueOf(tuple.get("progress").toString());
+        this.refTitle = tuple.get("refTitle") != null ? (String) tuple.get("refTitle") : "제목 없음"; // Null 체크 추가
+        this.username = (String) tuple.get("username");
+        this.sort = (ReportSort) tuple.get("sort");
+        this.title = (String) tuple.get("title");
+        this.description = (String) tuple.get("description");
+        this.comment = (String) tuple.get("comment");
+        this.progress = (ReportProgress) tuple.get("progress");
         this.createdAt = (LocalDateTime) tuple.get("createdAt");
         this.updatedAt = (LocalDateTime) tuple.get("updatedAt");
     }
