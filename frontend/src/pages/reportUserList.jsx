@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Snackbar } from "@mui/material";
+import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Snackbar, Divider } from "@mui/material";
 
 const ReportUserList = ({ memberId }) => {
     const [reports, setReports] = useState([]);
@@ -40,9 +40,10 @@ const ReportUserList = ({ memberId }) => {
 
     return (
         <Container maxWidth="md" style={{ marginTop: "60px" }}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom style={{textAlign: 'center'}}>
                 내 신고 리스트
             </Typography>
+            <Divider style={{ border: '1px solid #ddd'}}/>
             {loading ? (
                 <CircularProgress />
             ) : (

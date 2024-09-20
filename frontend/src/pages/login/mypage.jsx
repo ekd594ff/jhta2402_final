@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Typography, TextField, Button, Box, Snackbar, Grid2, Alert, Card, CardContent } from "@mui/material";
+import { Container, Typography, TextField, Button, Box, Snackbar, Grid2, Alert, Card, CardContent, Divider } from "@mui/material";
 import { useNavigate, Route, Routes } from "react-router-dom";
 import Header from "../../components/common/header";
 import Footer from "../../components/common/footer";
@@ -9,6 +9,7 @@ import style from "../../styles/quotationRequest-list.module.scss";
 import {CheckCircle, Image, Pending, Person} from "@mui/icons-material";
 import ReportUserList from "../reportUserList";
 import QuotationRequestListComponent from "../quotationRequest/quotationRequestListComponent.jsx";
+import ReviewUserList from "../reviewUserList";
 
 const MyPage = () => {
     const [selectedComponent, setSelectedComponent] = useState("profile");
@@ -53,6 +54,10 @@ const MyPage = () => {
         }
     };
 
+    const handleSelectReviewUserList = () => {
+        navigator("reviewList");
+    };
+
     return (
         <>
             <Header />
@@ -62,6 +67,7 @@ const MyPage = () => {
                         onSelectProfile={handleSelectProfile} 
                         onSelectQuotationRequests={handleSelectQuotationRequests} 
                         onSelectReportUserList={handleSelectReportUserList}
+                        onSelectReviewUserList={handleSelectReviewUserList}
                     />
                 </Box>
                 <Box flexGrow={1} paddingTop="20px">
@@ -69,6 +75,7 @@ const MyPage = () => {
                         <Route path="/profile" element={<MyProfile />} />
                         <Route path="/quotationRequest/member" element={<QuotationRequestListComponent />} />
                         <Route path="/reportUserList/:memberId" element={userData ? <ReportUserList memberId={userData.id} /> : <div>Loading...</div>} />
+                        <Route path="/reviewList" element={<ReviewUserList />} />
                     </Routes>
                 </Box>
             </Box>
@@ -167,8 +174,9 @@ export function MyProfile() {
             <Typography variant="h4" gutterBottom>
                 내 프로필 수정
             </Typography>
-            <Typography variant="h6">이름: {userData.username}</Typography>
-            <Typography variant="h6" style={{ marginBottom: "30px" }}>
+            <Divider style={{marginBottom: "10px" }}/>
+            <Typography variant="h6" sx={{ color: 'gray'}}>이름: {userData.username}</Typography>
+            <Typography variant="h6" sx={{ color: 'gray' ,marginBottom: "30px" }}>
                 이메일: {userData.email}
             </Typography>
             <form onSubmit={handleSubmit}>
