@@ -51,7 +51,6 @@ const QuotationRequestListComponent = () => {
 
             try {
                 const response = await axios.get(url);
-                console.log(response.data);
                 (pageInfo.page === 0)
                     ? setQuotationRequests(response.data.content)
                     : setQuotationRequests((prevRequests) => [
@@ -188,7 +187,6 @@ const QuotationRequestListComponent = () => {
     const saveEditReview = (quotationRequestId) => {
         if (!confirm((reviewModal.isEdit) ? "리뷰를 수정하시겠습니까?" : "리뷰를 작성하시겠습니까?")) return;
 
-        console.log(quotationRequestId);
         const url = (reviewModal.isEdit)
             ? "/api/review/update"
             : `/api/review/quotationRequest/${quotationRequestId}`;
@@ -221,26 +219,26 @@ const QuotationRequestListComponent = () => {
                 <Typography variant="h6" style={{textAlign: "center", margin: "24px 0"}}>
                     {path.endsWith("company") ? "회사 견적신청서 목록" : "견적신청서 목록"}
                 </Typography>
-                <Grid2 container spacing={2} className={style['qr-grid-container']}>
-                    <Grid2 size={2} className={style['qr-grid']}>
+                <Grid2 container spacing={10} className={style['qr-grid-container']}>
+                    <Grid2 size={1} className={style['qr-grid']}>
                         <Button variant="outlined"
                                 className={style[(pageInfo.progress === "PENDING" ? "focus-button" : "button")]}
                                 onClick={() => setProgress("PENDING")}>
-                            진행중인 목록
+                            진행
                         </Button>
                     </Grid2>
-                    <Grid2 size={2} className={style['qr-grid']}>
+                    <Grid2 size={1} className={style['qr-grid']}>
                         <Button variant="outlined"
                                 className={style[(pageInfo.progress === "APPROVED" ? "focus-button" : "button")]}
                                 onClick={() => setProgress("APPROVED")}>
-                            완료된 목록
+                            완료
                         </Button>
                     </Grid2>
-                    <Grid2 size={2} className={style['qr-grid']}>
+                    <Grid2 size={1} className={style['qr-grid']}>
                         <Button variant="outlined"
                                 className={style[(pageInfo.progress === "ALL" ? "focus-button" : "button")]}
                                 onClick={() => setProgress("ALL")}>
-                            전체 목록
+                            전체
                         </Button>
                     </Grid2>
                 </Grid2>
