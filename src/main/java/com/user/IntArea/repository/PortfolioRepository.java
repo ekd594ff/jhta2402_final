@@ -26,7 +26,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     Optional<Portfolio> getOpenPortfolioByPortfolioId(UUID portfolioId);
 
     Page<Portfolio> findAllByCompanyAndIsDeleted(Company company, boolean isDeleted, Pageable pageable);
-    Page<Portfolio> findAllByCompanyAndIsDeletedAndIsActivated(Company company, boolean isDeleted, boolean isActivated, Pageable pageable);
 
     Page<Portfolio> findAllByCompanyAndIsDeletedAndIsActivated(Company company, boolean isDeleted, boolean isActivated, Pageable pageable);
 
@@ -128,7 +127,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     void softDeleteByIds(Iterable<UUID> ids);
 
     @Query("SELECT p FROM Portfolio p WHERE p.company.id = :companyId AND p.isDeleted = false")
-    Page<Portfolio> getAllValidByCompanyId (@Param("companyId") UUID companyId, Pageable pageable);
+    Page<Portfolio> getAllValidByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
     Page<Portfolio> findAllByCompanyId(@Param("companyId") UUID companyId, Pageable pageable);
 
