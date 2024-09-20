@@ -28,7 +28,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
     Page<Portfolio> findAllByCompanyAndIsDeleted(Company company, boolean isDeleted, Pageable pageable);
     Page<Portfolio> findAllByCompanyAndIsDeletedAndIsActivated(Company company, boolean isDeleted, boolean isActivated, Pageable pageable);
 
-    Page<Portfolio> findAllByCompanyAndIsDeletedAndIsActivated(Company company, boolean isDeleted, boolean isActivated, Pageable pageable);
+//    Page<Portfolio> findAllByCompanyAndIsDeletedAndIsActivated(Company company, boolean isDeleted, boolean isActivated, Pageable pageable);
 
     Page<Portfolio> findAllByCompany(Company company, Pageable pageable);
 
