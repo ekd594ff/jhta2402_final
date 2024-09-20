@@ -125,7 +125,10 @@
           gap: 16px;
 
           & > button {
-            color: variables.$COLOR_PRIMARY;
+            color: variables.$color-500;
+            &.active {
+              color: variables.$COLOR_PRIMARY;
+            }
           }
         }
       }

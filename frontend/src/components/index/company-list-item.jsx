@@ -1,13 +1,19 @@
 import style from '../../styles/company-list-item.module.scss';
+import {useNavigate} from "react-router-dom";
 
 function CompanyListItem(props) {
-    const {value} = props;
-    return <li className={style['company-list-item']}>
-        <div className={style['rank']}>{value}</div>
+    const {companyName, description, id, url, rank} = props;
+    const navigator = useNavigate();
+    return <li className={style['company-list-item']} onClick={() => {
+        navigator(`/company/${id}`);
+    }}>
+        <div className={style['rank']}>{rank + 1}</div>
         <div className={style['info']}>
-            <span className={style['name']}>{`업체명_${value}`}</span>
+            <span className={style['name']}>{companyName}</span>
         </div>
-        <img alt={'company'} src={`https://picsum.photos/seed/${Date.now() + value}/1200/800`}/>
+        {
+            url ? <img alt={'company'} src={url}/> : <></>
+        }
     </li>;
 }
 

@@ -77,6 +77,7 @@ public class CompanyController {
         return ResponseEntity.ok().body(unAppliedCompanyDtoPage);
     }
 
+
     @PatchMapping("/admin/apply/{id}")
     public ResponseEntity<?> apply(@PathVariable UUID id) {
 

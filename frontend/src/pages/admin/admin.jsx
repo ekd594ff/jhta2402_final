@@ -28,6 +28,7 @@ import QuotationRequestModalContent from "./component/quotationRequestModalConte
 import ReviewModalContent from "./component/reviewModalContent.jsx";
 
 const linkNameArray = ["회원 정보", "업체 정보", "포트폴리오", "리뷰", "신고 내역", "견적서", "견적 신청서"];
+const IconArray = [];
 
 function route(params, inputValue, navigator) {
     if (!params) {

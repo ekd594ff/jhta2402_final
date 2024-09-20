@@ -54,8 +54,8 @@ public class ReviewController {
     // (일반) 하나의 포트폴리오에 딸린 여러개의 리뷰 조회하기 (?)
     @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<ReviewPortfolioDetailDto>> getReviewByPortfolioId(
-            @PathVariable UUID id, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+            @PathVariable UUID id, @RequestParam int page, @RequestParam int size, @RequestParam String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
 
         Page<ReviewPortfolioDetailDto> portfolioDetailDtos = reviewService.getReviewByPortfolioId(id, pageable);
 
