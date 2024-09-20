@@ -13,7 +13,6 @@ public class ReviewInfoListDto {
     private final String title;
     private final String description;
     private final Double rate;
-    private final String author;
     private final UUID quotationRequestId;
     private final UUID quotationId;
     private final Long totalTransactionAmount;
@@ -26,7 +25,6 @@ public class ReviewInfoListDto {
         this.title = review.getTitle();
         this.description = review.getDescription();
         this.rate = review.getRate();
-        this.author = review.getMember().getUsername();
         this.quotationRequestId = review.getQuotation().getQuotationRequest().getId();
         this.quotationId = review.getQuotation().getId();
         this.totalTransactionAmount = review.getQuotation().getTotalTransactionAmount();
