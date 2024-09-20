@@ -71,7 +71,7 @@ function Index() {
                     </section>
                     <section className={style['section']}>
                         <div className={style['section-title']}>
-                            TOP 업체
+                            TOP 시공업체
                         </div>
                         <div className={style['section-content']}>
                             <ul className={style['company-list']}>

@@ -7,11 +7,9 @@ import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import style from "../../styles/portfolio-detail.module.scss";
 import {
     Alert,
-    Backdrop,
+    Backdrop, Chip,
     Collapse,
-    FormControl,
     FormControlLabel,
-    InputLabel,
     Radio,
     RadioGroup,
     Tooltip
@@ -103,10 +101,37 @@ function PortfolioDetail() {
         page: 0,
         totalPages: 0,
         totalElements: 0,
-        size: 5
+        size: 5,
+        sort: 'rate',
+        prevSort: ''
     });
 
-    const size = 3;
+    const [reviewHasMore, setReviewHasMore] = useState(null);
+
+    function onLoadMoreReview() {
+        reviewListAJAXPromise(id, {
+            page: reviewInfo.page + 1,
+            size: reviewInfo.size,
+            sort: reviewInfo.sort
+        }).then(result => {
+            const {data: {content, page: {number, totalElements, totalPages}}} = result;
+            setReviewInfo({
+                ...reviewInfo,
+                page: number,
+                totalElements,
+                totalPages,
+                review: [...reviewInfo.review, ...content]
+            });
+        })
+    }
+
+    useEffect(() => {
+        if (reviewInfo.review.length < reviewInfo.totalElements) {
+            setReviewHasMore(true);
+        } else {
+            setReviewHasMore(false);
+        }
+    }, [reviewInfo]);
 
     useEffect(() => {
         const portFolioAJAXPromise = axios.get(`/api/portfolio/${id}`)
@@ -115,6 +140,9 @@ function PortfolioDetail() {
                     ...portfolioInfo,
                     ...res.data,
                 })
+
+                console.log(res);
+
                 setPortfolioImgList(res.data.imageUrls);
             })
             .catch(() => {
@@ -124,7 +152,8 @@ function PortfolioDetail() {
 
         Promise.all([reviewListAJAXPromise(id, {
             page: reviewInfo.page,
-            size: reviewInfo.size
+            size: reviewInfo.size,
+            sort: reviewInfo.sort,
         }), portFolioAJAXPromise, solutionAJAXPromise(id), memberInfoAJAXPromise])
             .then(([reviewListResult,
                        portfolioResult,
@@ -162,7 +191,6 @@ function PortfolioDetail() {
 
         const alertOpen = searchParams.get("requestSuccess");
         if (alertOpen !== null) {
-            window.scrollTo(0, 0);
             if (alertOpen === "true") {
                 // 솔루션 신청 성공
                 setAlert(prev => ({
@@ -188,6 +216,19 @@ function PortfolioDetail() {
     useEffect(() => {
         setReportData(prev => ({...prev, title: "", description: ""}));
     }, [reportModalMode, setReportData])
+
+    useEffect(() => {
+        if (reviewInfo.prevSort && reviewInfo.sort !== reviewInfo.prevSort) {
+            reviewListAJAXPromise(id, {
+                page: 0,
+                size: reviewInfo.size,
+                sort: reviewInfo.sort,
+            }).then(result => {
+                const {data: {content, page: {number, totalElements, totalPages}}} = result;
+                setReviewInfo({...reviewInfo, page: number, totalElements, totalPages, review: content});
+            });
+        }
+    }, [reviewInfo.sort, reviewInfo.prevSort]);
 
     return (
         <>
@@ -325,8 +366,15 @@ function PortfolioDetail() {
                                 <span>{reviewInfo.totalElements || ""}</span>
                             </div>
                             <div className={style['order']}>
-                                <Button size="small" disableRipple startIcon={<StarIcon/>}>추천순</Button>
-                                <Button size="small" disableRipple startIcon={<AccessTimeIcon/>}>최신순</Button>
+                                <Button className={reviewInfo.sort === 'rate' ? style['active'] : ""} size="small"
+                                        name="rate" disableRipple startIcon={<StarIcon/>} onClick={() => {
+                                    setReviewInfo(prev => ({...prev, sort: "rate", prevSort: prev.sort}));
+                                }}>추천순</Button>
+                                <Button className={reviewInfo.sort === 'createdAt' ? style['active'] : ""} size="small"
+                                        name="createdAt" disableRipple startIcon={<AccessTimeIcon/>}
+                                        onClick={() => {
+                                            setReviewInfo(prev => ({...prev, sort: "createdAt", prevSort: prev.sort}));
+                                        }}>최신순</Button>
                             </div>
                         </div>
                         <ul className={style['review-list']}>
@@ -350,6 +398,13 @@ function PortfolioDetail() {
                                 }) : <div className={style['empty']}>
                                     <span>등록된 리뷰가 없습니다</span>
                                 </div> : <></>
+                            }
+                            {
+                                reviewHasMore !== null && reviewHasMore ? (
+                                    <Divider>
+                                        <Chip className={style['more']} label="더보기" size="small" variant="outlined"
+                                              onClick={onLoadMoreReview}/>
+                                    </Divider>) : <></>
                             }
                         </ul>
                     </div>

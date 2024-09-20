@@ -85,6 +85,7 @@ function CompanyDetail() {
                     });
                 }
             })
+        window.scrollTo(0, 0);
     }, []);
 
     const portfolioUrl = (!!id)
