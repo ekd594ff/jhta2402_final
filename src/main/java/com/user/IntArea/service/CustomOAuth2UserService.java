@@ -43,10 +43,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Member member;
         if (optionalMember.isEmpty()) {
 
+            String username = memberRepository.findByUsername(oAuth2Response.getName()).isEmpty()
+                    ? oAuth2Response.getName() : oAuth2Response.getName() + "_" + UUID.randomUUID().toString().substring(0, 4);
+
             // 회원 정보가 없는 경우 저장
             member = Member.builder()
                     .email(oAuth2Response.getEmail())
-                    .username(oAuth2Response.getName())
+                    .username(username)
                     .password(UUID.randomUUID().toString())
                     .role(Role.ROLE_USER)
                     .platform(oAuth2Response.getPlatform())
@@ -63,9 +66,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuth2UserAlreadyException(member.getPlatform().getPlatform());
             }
 
-            // 변경사항만 업데이트
-            member.setUsername(oAuth2Response.getName());
-            member.setPlatform(oAuth2Response.getPlatform());
             memberRepository.save(member);
         }
 

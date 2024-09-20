@@ -98,7 +98,10 @@ function CompanyDetail() {
             .then((res) => {
                 setPortfolioList([...portfolioList, ...res.data.content]);
                 setPageInfo({...pageInfo, totalPage: res.data.page.totalPages});
-            }).catch(() => alert("포트폴리오를 불러오는데 문제가 발생했습니다."));
+            }).catch(() => {
+            alert("포트폴리오를 불러오는데 문제가 발생했습니다.");
+            navigate(-1);
+        });
     }, [pageInfo.page]);
 
     const createData = (name, value) => {

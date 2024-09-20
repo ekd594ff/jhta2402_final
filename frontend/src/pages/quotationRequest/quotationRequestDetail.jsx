@@ -108,13 +108,17 @@ function QuotationRequestDetail() {
                                         <TableRow key={solution.id}>
                                             <TableCell>{solution.title}</TableCell>
                                             <TableCell>{solution.description}</TableCell>
-                                            <TableCell>₩{solution.price}</TableCell>
+                                            <TableCell sx={{opacity: 1}}>
+                                                ₩ {Number(solution.price).toLocaleString()}
+                                            </TableCell>
                                         </TableRow>
                                     )}
                                     <TableRow>
                                         <TableCell></TableCell>
                                         <TableCell></TableCell>
-                                        <TableCell>₩{quotationRequest.solutions.reduce((result, solution) => result + solution.price, 0)}</TableCell>
+                                        <TableCell sx={{fontWeight: 500, opacity: 1}}>
+                                            ₩ {Number(quotationRequest.solutions.reduce((result, solution) => result + solution.price, 0)).toLocaleString()}
+                                        </TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>

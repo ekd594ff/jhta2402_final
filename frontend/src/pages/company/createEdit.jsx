@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import {useDaumPostcodePopup} from "react-daum-postcode";
 import {checkMember, checkSeller} from "../../utils/loginUtil.jsx";
+import {formatPhoneNumber} from "../../utils/phoneUtil.jsx";
 
 function CreateEditCompany() {
 
@@ -174,7 +175,7 @@ function CreateEditCompany() {
                     <TextField className={style['text-field']}
                                value={companyInfo.phone}
                                onChange={(e) => setCompanyInfo(
-                                   {...companyInfo, phone: e.target.value})}
+                                   {...companyInfo, phone: formatPhoneNumber(e.target.value)})}
                                type="text"
                                name="phone"
                                placeholder=""

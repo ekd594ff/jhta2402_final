@@ -16,6 +16,7 @@ import QuotationRequestList from "./pages/quotationRequest/quotationRequestList.
 import QuotationRequestDetail from "./pages/quotationRequest/quotationRequestDetail.jsx";
 import QuotationForm from "./pages/quotation/quotation-form.jsx";
 import ReportUserList from "./pages/reportUserList.jsx";
+import ReviewUserList from "./pages/reviewUserList.jsx";
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
                     <Route path="/quotationRequest/:id" element={<QuotationRequestDetail/>}/>
                     <Route path="/quotation/form/:requestId" element={<QuotationForm/>}/>
                     <Route path="/reportUserList/:id" element={<ReportUserList />} />
+                    <Route path="/reviewUserList" element={<ReviewUserList />}/>
                 </Routes>
             </BrowserRouter>
         </div>

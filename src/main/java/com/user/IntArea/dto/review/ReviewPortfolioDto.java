@@ -20,7 +20,7 @@ public class ReviewPortfolioDto {
     public ReviewPortfolioDto(Review review) {
         this.id = review.getId();
         this.portfolioId = review.getQuotation().getQuotationRequest().getPortfolio().getId();
-        this.username = review.getTitle();
+        this.username = review.getMember().getUsername();
         this.title = review.getTitle();
         this.description = review.getDescription();
         this.rate = review.getRate();
