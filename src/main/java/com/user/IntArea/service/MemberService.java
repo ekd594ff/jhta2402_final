@@ -149,7 +149,7 @@ public class MemberService {
 
         // 사용자 이름 및 비밀번호 업데이트
         member.setUsername(updateProfileDto.getUsername());
-        member.setPassword(updateProfileDto.getPassword());
+        member.setPassword(passwordEncoder.encode(updateProfileDto.getPassword()));
 
         // 프로필 이미지가 있는 경우 업로드
         if (updateProfileDto.getFile() != null && !updateProfileDto.getFile().isEmpty()) {
