@@ -40,40 +40,48 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
                         </p>
                     </div>
                 </div>
-                {quotation.progress === "PENDING"
-                    && !requestProgress.endsWith("CANCELLED")
-                    && !isMember &&
-                    <div className={style['button-div']}>
-                        <Button variant="outlined" className={style['cancel-button']}
-                                onClick={() => cancelQuotation(quotation.id)}>
-                            견적서 취소
-                        </Button>
-                        {/*<Button variant="outlined" className={style['edit-button']}*/}
-                        {/*        onClick={() => navigate("/quotation")}>*/}
-                        {/*    견적서 수정*/}
-                        {/*</Button>*/}
-                    </div>
-                }
-                {isMember && quotation.progress === "PENDING" &&
-                    <div className={style['button-div']}>
-                        <Button variant="outlined" className={style['edit-button']}
-                                onClick={() => approveQuotation(quotation.id)}>
-                            견적서 승인
-                        </Button>
-                    </div>
-                }
+                <div className={style['button-container']}>
+                    {quotation.progress === "PENDING"
+                        && !requestProgress.endsWith("CANCELLED") &&
+                        <div className={style['button-div']}>
+                            <Button variant="outlined" className={style['cancel-button']}
+                                    onClick={() => cancelQuotation(quotation.id)}>
+                                견적서 취소
+                            </Button>
+                            {/*<Button variant="outlined" className={style['edit-button']}*/}
+                            {/*        onClick={() => navigate("/quotation")}>*/}
+                            {/*    견적서 수정*/}
+                            {/*</Button>*/}
+                        </div>
+                    }
+                    {isMember && quotation.progress === "PENDING" &&
+                        <div className={style['button-div']}>
+                            <Button variant="outlined" className={style['edit-button']}
+                                    onClick={() => approveQuotation(quotation.id)}>
+                                견적서 승인
+                            </Button>
+                        </div>
+                    }
+                </div>
             </div>
             <div className={style['quotation-info']} key={quotation.id}>
                 {quotation.imageUrls.length > 1 ?
                     <Swiper modules={[Navigation, Pagination]}
                             navigation
                             spaceBetween={50}
-                            slidesPerView={3}
+                            slidesPerView={quotation.imageUrls.length === 2 ? 2 : 3}
                             scrollbar={{draggable: true}}
                             sx={{margin: "auto"}}>
                         {quotation.imageUrls.map(url =>
                             <SwiperSlide key={url}>
-                                <img style={{height: "auto", width: "100%", objectFit: "cover", cursor: "pointer", border: "0.5px solid", borderColor: "#989898"}}
+                                <img style={{
+                                    height: "auto",
+                                    width: "100%",
+                                    objectFit: "cover",
+                                    cursor: "pointer",
+                                    border: "0.5px solid",
+                                    borderColor: "#989898"
+                                }}
                                      src={url}
                                      alt="quotation image"
                                      onClick={() => setModal({open: true, url: url})}/>
@@ -81,7 +89,15 @@ function QuotationCard({quotation, cancelQuotation, requestProgress, isMember, n
                         )}
                     </Swiper>
                     :
-                    <img style={{height: "auto", width: "30%", objectFit: "cover", cursor: "pointer", margin: "16px", border: "0.5px solid", borderColor: "#989898"}}
+                    <img style={{
+                        height: "auto",
+                        width: "30%",
+                        objectFit: "cover",
+                        cursor: "pointer",
+                        margin: "16px",
+                        border: "0.5px solid",
+                        borderColor: "#989898"
+                    }}
                          src={quotation.imageUrls[0]}
                          alt="quotation image"
                          onClick={() => setModal({open: true, url: quotation.imageUrls[0]})}/>

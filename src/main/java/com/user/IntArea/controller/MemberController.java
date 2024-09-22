@@ -53,7 +53,6 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, logoutCookieMap.get("accessToken").toString())
-                .header(HttpHeaders.SET_COOKIE, logoutCookieMap.get("login").toString())
                 .build();
     }
 

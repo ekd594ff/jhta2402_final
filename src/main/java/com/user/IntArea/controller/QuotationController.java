@@ -80,7 +80,7 @@ public class QuotationController {
     // (seller) quotation 생성
     @PostMapping("/company/create") // ● Postman Pass
     public ResponseEntity<?> createQuotation(QuotationCreateDto quotationCreateDto) {
-        quotationService.creatQuotationBySeller(quotationCreateDto);
+        quotationService.createQuotationBySeller(quotationCreateDto);
         return ResponseEntity.ok().build();
     }
 

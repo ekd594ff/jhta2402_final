@@ -137,6 +137,7 @@ public class QuotationRequestService {
 
         return QuotationRequestDetailDto.builder()
                 .quotationRequest(quotationRequest)
+                .loginEmail(loginEmail)
                 .memberUrl(memberUrl)
                 .solutions(solutions)
                 .quotations(quotations)
