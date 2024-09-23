@@ -47,7 +47,7 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
 
         // 동적 정렬 추가
         if (sortField != null && !sortField.isEmpty() && sortDirection != null && !sortDirection.isEmpty()) {
-            query.append("ORDER BY ").append(sortField).append(" ").append(sortDirection).append(" ");
+            query.append("ORDER BY ").append(sortField).append(" ").append(sortDirection).append(", id ");
         }
 
         // 페이지네이션 처리
