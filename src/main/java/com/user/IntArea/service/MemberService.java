@@ -199,4 +199,10 @@ public class MemberService {
             throw new UsernameNotFoundException("editMember");
         }
     }
+
+    public String getRole() {
+        Optional<MemberDto> memberDto = SecurityUtil.getCurrentMember();
+
+        return memberDto.map(MemberDto::getRole).orElse(null);
+    }
 }

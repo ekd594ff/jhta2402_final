@@ -24,10 +24,10 @@ function SearchList() {
     const fetchResults = (pageToFetch = 0, reset = false, sortField = 'createdAt', sortDirection = 'desc') => {
         setLoading(true);
         setError(null);
-        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=4&sortField=${sortField}&sortDirection=${sortDirection}`)
+        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=12&sortField=${sortField}&sortDirection=${sortDirection}`)
             .then(result => {
                 setResults(prevResults => reset ? [...result.data.content] : [...prevResults, ...result.data.content]);
-                setHasMore(result.data.content.length);
+                setHasMore(page + 1 < result.data.page.totalPages);
             })
             .catch(() => setError('검색 결과를 가져오는 데 실패했습니다.'))
             .finally(() => {
