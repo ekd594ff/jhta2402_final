@@ -49,14 +49,14 @@ public class QuotationRequestController {
 
     @GetMapping("/list")
     public ResponseEntity<Page<QuotationRequestListDto>> getQuotationRequestByMemberId(@RequestParam String progress, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt", "id").descending());
         Page<QuotationRequestListDto> responseDto = quotationRequestService.getQuotationRequestsByMemberId(progress, pageable);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @GetMapping("/companyList")
     public ResponseEntity<Page<QuotationRequestCompanyDto>> getQuotationRequestByCompanyId(@RequestParam String progress, @RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt", "id").descending());
         Page<QuotationRequestCompanyDto> responseDto = quotationRequestService.getQuotationRequestsByCompanyId(progress, pageable);
         return ResponseEntity.ok().body(responseDto);
     }
@@ -86,7 +86,7 @@ public class QuotationRequestController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<QuotationAdminRequestDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         Page<QuotationAdminRequestDto> quotationAdminRequestDtos = quotationRequestService.findAllQutationRequestDto(pageable);
         return ResponseEntity.ok().body(quotationAdminRequestDtos);
     }

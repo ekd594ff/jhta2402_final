@@ -57,7 +57,7 @@ public class QuotationController {
     // (일반) 받은 모든 quotation 조회
     @GetMapping("/list") // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotations(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getQuotationInfoDtoListTowardMember(pageable);
     }
 
@@ -70,7 +70,7 @@ public class QuotationController {
     // (일반) 받은 모든 quotation 을 progress에 따라 소팅하여 조회
     @GetMapping("/list/sorted/{progress}")
     public Page<QuotationInfoDto> getAllQuotationsByProgress(@PathVariable(name = "progress") QuotationProgress progress, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getQuotationInfoDtoListTowardMemberSortedByProgress(progress, pageable);
     }
 
@@ -114,7 +114,7 @@ public class QuotationController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<QuotationResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         Page<QuotationResponseDto> quotationResponseDtos = quotationService.findAllQutationResponseDto(pageable);
         return ResponseEntity.ok().body(quotationResponseDtos);
     }
@@ -153,21 +153,21 @@ public class QuotationController {
     // (seller) 작성한 전체 quotation 조회
     @GetMapping("/company/list")  // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationInfoDtos(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsOfCompany(pageable);
     }
 
     // (seller) 작성한 전체 quotation 를 진행상태에 따라 조회
     @GetMapping("/company/list/sorted/{progress}")  // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationInfoDtosSortedByProgress(@PathVariable(name = "progress") QuotationProgress progress, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsOfCompanySortedByProgress(progress, pageable);
     }
 
     // (seller) 작성한 전체 quotation 를 검색어로 조회
     @GetMapping("/company/list/search")  // ● Postman Pass
     public Page<QuotationInfoDto> getQuotationInfoDtosOfCompanyBySearchword(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsOfCompanyBySearchword(searchWord, pageable);
     }
 
@@ -176,28 +176,28 @@ public class QuotationController {
     // (admin) 모든 quotation 를 조회
     @GetMapping("/admin/list/all")  // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationInfoDtosByAdmin(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsByAdmin(pageable);
     }
 
     // (admin) 모든 quotation 를 진행상태에 따라 조회
     @GetMapping("/admin/list/all/{progress}")  // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationInfoDtosSortedByProgressByAdmin(@PathVariable(name = "progress") QuotationProgress progress, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsByProgressByAdmin(progress, pageable);
     }
 
     // (admin) 특정 회사가 작성한 모든 quotation 를 조회
     @GetMapping("/admin/list/{companyId}")  // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationInfoDtosOfCompanyByAdmin(@PathVariable(name = "companyId") UUID companyId, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsOfCompanyByAdmin(companyId, pageable);
     }
 
     // (admin) 특정 회사가 작성한 모든 quotation 를 진행상태에 따라 조회
     @GetMapping("/admin/list/{companyId}/{progress}")  // ● Postman Pass
     public Page<QuotationInfoDto> getAllQuotationInfoDtosOfCompanySortedByProgressByAdmin(@PathVariable(name = "companyId") UUID companyId, @PathVariable(name = "progress") QuotationProgress progress, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return quotationService.getAllQuotationsOfCompanySortedByProgressByAdmin(companyId, progress, pageable);
     }
 

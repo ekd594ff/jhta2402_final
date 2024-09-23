@@ -26,19 +26,19 @@ public class PortfolioController {
 
     @GetMapping("/list")
     public Page<PortfolioInfoDto> getOpenPortfolioInfoDtos(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getOpenPortfolioInfoDtos(pageable);
     }
 
     @GetMapping("/list/company/{id}")
     public Page<PortfolioDetailInfoDto> getOpenPortfolioInfoDtosOfCompany(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getOpenPortfolioInfoDtosOfCompany(companyId, pageable);
     }
 
     @GetMapping("/search")
     public Page<PortfolioInfoDto> searchOpenPortfolioInfoDtos(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getOpenPortfolioInfoDtosWithSearchWord(searchWord, pageable);
     }
 
@@ -107,7 +107,7 @@ public class PortfolioController {
 
     @GetMapping("/list/company")
     public Page<PortfolioDetailInfoDto> getCompanyPortfolioInfoDtosByCompanyManager(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getCompanyPortfolioInfoDtosByCompanyManager(pageable);
     }
 
@@ -141,19 +141,19 @@ public class PortfolioController {
 
     @GetMapping("/admin/list")
     public Page<PortfolioInfoDto> getAllPortfolioInfoDtosByAdmin(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getAllPortfolioInfoDtosByAdmin(pageable);
     }
 
     @GetMapping("/admin/list/company/{id}")
     public Page<PortfolioInfoDto> getAllPortfolioInfoDtosOfCompanyByAdmin(@PathVariable(name = "id") UUID companyId, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getAllPortfolioInfoDtosOfCompanyByAdmin(companyId, pageable);
     }
 
     @GetMapping("/admin/search")
     public Page<PortfolioInfoDto> searchPortfolioByAdmin(@RequestParam String searchWord, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return portfolioService.getAllPortfolioInfoDtosWithSearchWordByAdmin(searchWord, pageable);
     }
 
