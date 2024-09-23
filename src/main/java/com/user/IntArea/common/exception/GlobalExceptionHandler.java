@@ -4,14 +4,13 @@ import com.user.IntArea.common.exception.custom.LoginInfoNotFoundException;
 import com.user.IntArea.common.exception.custom.OAuth2UserAlreadyException;
 import com.user.IntArea.common.exception.custom.UserAlreadyExistsException;
 import com.user.IntArea.dto.member.MemberResponseDto;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.NoSuchElementException;
 
@@ -54,5 +53,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalAccessException.class)
     protected ResponseEntity<?> handleDuplicateKeyException(IllegalAccessException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    // Spring 이미지 업로드 용량 제한
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    protected ResponseEntity<?> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미지 용량을 초과했습니다.");
     }
 }
