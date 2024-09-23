@@ -105,6 +105,10 @@ public class CompanyController {
                                                                     @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                     @RequestParam(required = false) String filterColumn,
                                                                     @RequestParam(required = false) String filterValue) {
+
+        if (sortField.equals("applied")) {
+            sortField = "isApplied";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
