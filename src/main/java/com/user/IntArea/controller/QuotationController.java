@@ -114,7 +114,7 @@ public class QuotationController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<QuotationResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt","id").descending());
         Page<QuotationResponseDto> quotationResponseDtos = quotationService.findAllQutationResponseDto(pageable);
         return ResponseEntity.ok().body(quotationResponseDtos);
     }
