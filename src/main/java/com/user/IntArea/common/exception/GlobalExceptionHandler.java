@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
@@ -35,9 +34,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<?> handleNotValidException(MethodArgumentNotValidException e) {
-//        Map<String, String> errors = new HashMap<>();
-//        e.getBindingResult().getAllErrors()
-//                .forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
