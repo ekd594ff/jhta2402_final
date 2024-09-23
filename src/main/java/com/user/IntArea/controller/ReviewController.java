@@ -47,7 +47,7 @@ public class ReviewController {
     // (일반 사용자 권한) 사용자가 작성한 모든 리뷰 정보 조회
     @GetMapping("/list") // ● postman pass
     public Page<ReviewInfoListDto> getAllReviewsOfUser(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return reviewService.getReviewInfoDtoListOfMember(pageable);
     }
 
@@ -65,7 +65,7 @@ public class ReviewController {
     // (일반) 특정한 회사가 받은 모든 리뷰 조회(isApplied = true 인 회사만 조회)
     @GetMapping("/list/company/{companyId}") // ● postman pass
     public Page<ReviewInfoListDto> getAllReviewsByCompanyId(@PathVariable UUID companyId, @RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return reviewService.getReviewInfoDtoListTowardCompanyIdForUser(companyId, pageable);
     }
     
@@ -74,7 +74,7 @@ public class ReviewController {
     // (seller 권한) 회사가 받은 모든 리뷰 조회
     @GetMapping("/company/list") // ● postman pass
     public Page<ReviewInfoListDto> getAllReviewsForCompany(@RequestParam int page, @RequestParam int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         return reviewService.getReviewInfoDtoListTowardCompany(pageable);
     }
 
@@ -82,7 +82,7 @@ public class ReviewController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReviewPortfolioDto>> getAllReview(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt","id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         Page<ReviewPortfolioDto> reviewPortfolioDetailDtoPage = reviewService.getAllReview(pageable);
         return ResponseEntity.ok().body(reviewPortfolioDetailDtoPage);
     }

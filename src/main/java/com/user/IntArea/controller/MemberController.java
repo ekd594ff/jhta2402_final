@@ -53,7 +53,6 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, logoutCookieMap.get("accessToken").toString())
-                .header(HttpHeaders.SET_COOKIE, logoutCookieMap.get("login").toString())
                 .build();
     }
 
@@ -105,7 +104,7 @@ public class MemberController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<MemberResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size,Sort.by("createdAt","username"));
+        Pageable pageable = PageRequest.of(page, size,Sort.by("createdAt", "username"));
         Page<MemberResponseDto> memberResponseDtoPage = memberService.getMemberList(pageable);
         return ResponseEntity.ok().body(memberResponseDtoPage);
     }

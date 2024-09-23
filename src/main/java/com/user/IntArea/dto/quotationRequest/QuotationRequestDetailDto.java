@@ -19,6 +19,7 @@ public class QuotationRequestDetailDto {
     private String title;
     private String description;
     private QuotationProgress progress;
+    private String loginEmail;
     private QuotationRequestMemberDto member;
     private List<SolutionDetailDto> solutions;
     private List<QuotationDetailDto> quotations;
@@ -26,6 +27,7 @@ public class QuotationRequestDetailDto {
     @Builder
     public QuotationRequestDetailDto(
             QuotationRequest quotationRequest,
+            String loginEmail,
             String memberUrl,
             List<SolutionDetailDto> solutions,
             List<QuotationDetailDto> quotations) {
@@ -33,6 +35,7 @@ public class QuotationRequestDetailDto {
         this.title = quotationRequest.getTitle();
         this.description = quotationRequest.getDescription();
         this.progress = quotationRequest.getProgress();
+        this.loginEmail = loginEmail;
         this.member = new QuotationRequestMemberDto(quotationRequest.getMember(), memberUrl);
         this.solutions = solutions;
         this.quotations = quotations;

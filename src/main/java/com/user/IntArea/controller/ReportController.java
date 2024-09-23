@@ -53,7 +53,7 @@ public class ReportController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<ReportResponseDto>> getMemberList(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt","id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         Page<ReportResponseDto> reportResponseDtos = reportService.findAllReportDto(pageable);
         return ResponseEntity.ok().body(reportResponseDtos);
     }

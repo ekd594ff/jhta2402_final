@@ -88,7 +88,6 @@ public interface QuotationRepository extends JpaRepository<Quotation, UUID> {
             "OR CAST(qr.progress AS string) LIKE %:searchWord% )")
     Page<Quotation> getAllByCompanyWithSearchWord(@Param("searchWord") String searchWord, @Param("companyId") UUID companyId, Pageable pageable);
 
-
     @Query("select q from Quotation q where cast(q.id as string ) LIKE %:id% ")
     Page<Quotation> findAllByIdContains(String id, Pageable pageable);
 

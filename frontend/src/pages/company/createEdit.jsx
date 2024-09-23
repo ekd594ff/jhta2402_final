@@ -189,22 +189,26 @@ function CreateEditCompany() {
                                }}/>
                 </div>
                 <div className={style['input-div']}>
-                    <TextField className={style['text-field']}
-                               value={companyInfo.description}
-                               onChange={(e) => setCompanyInfo(
-                                   {...companyInfo, description: e.target.value})}
-                               type="text"
-                               multiline
-                               rows={5}
-                               name="description"
-                               placeholder=""
-                               variant="outlined"
-                               label="회사 설명"
-                               slotProps={{
-                                   inputLabel: {
-                                       shrink: true,
-                                   }
-                               }}/>
+                    <TextField
+                        className={style['text-field']}
+                        value={companyInfo.description}
+                        onChange={(e) => setCompanyInfo(
+                            {...companyInfo, description: e.target.value})}
+                        type="text"
+                        multiline
+                        rows={5}
+                        name="description"
+                        placeholder=""
+                        variant="outlined"
+                        label="회사 설명"
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            },
+                            htmlInput: {
+                                maxLength: 250,
+                            }
+                        }}/>
                 </div>
                 <div className={style['input-div-address']}>
                     <div className={style['address-div']}>

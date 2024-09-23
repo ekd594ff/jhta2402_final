@@ -231,7 +231,7 @@ public class QuotationService {
 
     // (seller) 신규 견적서 생성 - 받은 견적 요청서와 연관된 견적서를 작성
     @Transactional
-    public void creatQuotationBySeller(QuotationCreateDto quotationCreateDto) {
+    public void createQuotationBySeller(QuotationCreateDto quotationCreateDto) {
         Company company = getCompanyOfMember();
 
         // 견적 요청서 검증 로직 (견적요청이 PENDING인 경우 확인)
@@ -249,6 +249,13 @@ public class QuotationService {
         if (quotationCreateDto.getImageFiles() == null || quotationCreateDto.getImageFiles().isEmpty()) {
             throw new NoSuchElementException("이미지 파일을 첨부해주세요.");
         }
+
+        // 기존 PENDING 상태 QuotationRequest SELLER_CANCELLED로 변경
+        quotationRepository.findByQuotationRequestIdAndProgress(quotationRequest.getId(), QuotationProgress.PENDING)
+                .ifPresent(pendingQuotation -> {
+                    pendingQuotation.setProgress(QuotationProgress.SELLER_CANCELLED);
+                    quotationRepository.save(pendingQuotation);
+                });
 
         Quotation quotation = Quotation.builder()
                 .totalTransactionAmount(quotationCreateDto.getTotalTransactionAmount())
