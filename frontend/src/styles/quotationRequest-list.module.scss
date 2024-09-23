@@ -4,40 +4,42 @@
   display: flex;
   justify-content: center;
   min-height: 100vh;
-  padding-top: variables.$HEADER_HEIGHT;
+  flex-grow: 1;
 
   & > .container {
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
-    padding: 0 8px;
-    margin: 0 16px;
+    padding: 0 32px 0 32px;
     display: flex;
     flex-direction: column;
     height: auto;
 
+    & > .title {
+      font-weight: bold;
+      font-size: 18px;
+      padding: 16px 0;
+    }
 
     & > .qr-grid-container {
-      margin: 24px 0;
+      display: flex;
+      gap: 16px;
+      padding: 8px 0;
+      box-sizing: border-box;
+      & > .focus-button {
+        border-color: variables.$COLOR_PRIMARY;
+        color: variables.$COLOR_PRIMARY;
+      }
 
-      & > .qr-grid {
-
-        & > .focus-button {
-          border-color: variables.$COLOR_PRIMARY;
-          color: variables.$COLOR_PRIMARY;
-        }
-
-        & > .button {
-          border-color: gray;
-          color: gray;
-        }
+      & > .button {
+        border-color: gray;
+        color: gray;
       }
     }
 
     & > .qr-card-container {
-
+      display: flex;
       & > .no-content-div {
-        margin-top: 16px;
         width: 100%;
         text-align: center;
         color: gray;
@@ -45,13 +47,13 @@
       }
 
       & > .qr-card-grid {
-
+        flex: 1 1 45%;
+        display: flex;
+        box-sizing: border-box;
         & > .qr-card {
-          width: 100%;
-
+          box-sizing: border-box;
           & > .qr-card-content {
-            margin: auto;
-
+            box-sizing: border-box;
             & > .image-div {
               display: flex;
               justify-content: space-between;
@@ -91,7 +93,6 @@
             }
 
             & > .member-div {
-
               & > .member-title-div {
                 display: flex;
                 justify-content: space-between;
@@ -105,12 +106,10 @@
               }
 
               & > .member-content-div {
-
               }
             }
 
             & > .info-div {
-
             }
 
             & > .bottom-div {
@@ -140,7 +139,6 @@
   }
 
   & > .back-drop {
-
     & > .review-modal {
       height: 400px;
       width: 360px;
@@ -150,6 +148,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+      box-sizing: border-box;
 
       & > .review-info {
         font-size: 20px;
