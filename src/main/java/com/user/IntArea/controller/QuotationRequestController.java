@@ -23,7 +23,7 @@ public class QuotationRequestController {
     private final QuotationRequestService quotationRequestService;
 
     @PostMapping("/create")
-    public ResponseEntity<QuotationRequestDto> createQuotationRequest(@RequestBody QuotationRequestDto requestDto) {
+    public ResponseEntity<QuotationRequestDto> createQuotationRequest(@RequestBody QuotationRequestDto requestDto) throws IllegalAccessException {
         QuotationRequestDto responseDto = quotationRequestService.createQuotationRequest(requestDto);
         return ResponseEntity.ok().build();
     }

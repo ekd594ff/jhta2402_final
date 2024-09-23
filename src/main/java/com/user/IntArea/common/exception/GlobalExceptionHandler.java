@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -47,5 +48,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OAuth2UserAlreadyException.class)
     protected ResponseEntity<?> handleDuplicateKeyException(OAuth2UserAlreadyException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    // 본인 포트폴리오 견적신청서 작성
+    @ExceptionHandler(IllegalAccessException.class)
+    protected ResponseEntity<?> handleDuplicateKeyException(IllegalAccessException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
