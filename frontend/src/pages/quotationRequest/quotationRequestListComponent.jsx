@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Typography,
-  Button,
-  Snackbar,
-  Grid2,
-  Card,
-  CardContent,
-  Alert,
-  Box,
-  Backdrop,
-} from "@mui/material";
+import { Avatar, Button, Snackbar, Alert, Box, Backdrop } from "@mui/material";
 import style from "../../styles/quotationRequest-list.module.scss";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, Image, Pending } from "@mui/icons-material";
@@ -234,31 +224,33 @@ const QuotationRequestListComponent = () => {
   }
 
   return (
-    <main className={style["main"]}>
+    <div className={style["main"]}>
       <div className={style["container"]}>
         <div className={style["title"]}>
           {path.endsWith("company")
             ? "회사 견적신청서 목록"
             : "견적신청서 목록"}
         </div>
-        <div container spacing={10} className={style["qr-grid-container"]}>
+        <div className={style["qr-grid-container"]}>
           <Button
             variant="outlined"
-            className={
+            className={`${
               style[pageInfo.progress === "PENDING" ? "focus-button" : "button"]
-            }
+            }`}
             onClick={() => setProgress("PENDING")}
-            startIcon={<MoreHorizIcon />}
+            startIcon={<Pending />}
           >
             진행
           </Button>
           <Button
             variant="outlined"
-            className={
+            className={`${
               style[
                 pageInfo.progress === "APPROVED" ? "focus-button" : "button"
               ]
-            }
+            } ${
+              pageInfo.progress === "APPROVED" ? style["approved-selected"] : ""
+            }`}
             onClick={() => setProgress("APPROVED")}
             startIcon={<CheckCircleIcon />}
           >
@@ -266,163 +258,133 @@ const QuotationRequestListComponent = () => {
           </Button>
           <Button
             variant="outlined"
-            className={
+            className={`${
               style[pageInfo.progress === "ALL" ? "focus-button" : "button"]
-            }
+            } ${pageInfo.progress === "ALL" ? style["all-selected"] : ""}`}
             onClick={() => setProgress("ALL")}
             startIcon={<ListAltIcon />}
           >
             전체
           </Button>
         </div>
-        <Grid2 container spacing={2} className={style["qr-card-container"]}>
+        <div className={style["card-container"]}>
           {quotationRequests.length === 0 && (
             <div className={style["no-content-div"]}>
               해당 조건의 견적신청서가 없습니다.
             </div>
           )}
           {quotationRequests.map((request, index) => (
-            <div
-              key={`${index}_${request.id}`}
-              size={{ sx: 12 }}
-              sx={{ width: "100%" }}
-              className={style["qr-card-grid"]}
-            >
-              <Card variant="outlined" className={style["qr-card"]}>
-                <CardContent className={style["qr-card-content"]}>
-                  <div className={style["image-div"]}>
-                    <div className={style["portfolio-div"]}>
-                      {request.portfolio.url ? (
-                        <Box
-                          component="img"
-                          src={request.portfolio.url}
-                          sx={{
-                            width: "64px",
-                            height: "'64px",
-                            objectFit: "cover",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      ) : (
-                        <Image />
-                      )}
-                      <Typography>{request.portfolio.title}</Typography>
-                    </div>
-                    <Typography
-                      variant="subtitle1"
-                      className={style[request.progress]}
+            <div key={`${index}_${request.id}`} className={style["card"]}>
+              <div className={style["top"]}>
+                <div className={style["left"]}>
+                  <Avatar
+                    className={style["avatar"]}
+                    src={request.portfolio.url}
+                    variant="rounded"
+                  />
+                </div>
+                <div className={style["right"]}>
+                  <div className={style["content"]}>
+                    <div
+                      className={`${style["top"]} ${style[request.progress]}`}
                     >
-                      {progressIcon(request.progress)}
-                    </Typography>
+                      <span>{dateFormatter(request.updatedAt)}</span>
+                      {(() => {
+                        switch (request.progress) {
+                          case "PENDING":
+                            return <Pending />;
+                          default:
+                            return <CheckCircleIcon />;
+                        }
+                      })()}
+                    </div>
+                    <div className={style["middle"]}>
+                      <div className={style["title"]}>{request.title}</div>
+                      <div className={`${style["status"]}`}></div>
+                    </div>
+                    <div className={style["bottom"]}>{request.description}</div>
                   </div>
-                  {path.endsWith("company") && (
-                    <div className={style["member-div"]}>
-                      <div className={style["member-title-div"]}>
-                        <div
-                          className={style["title"]}
-                          sx={{ fontSize: "18px" }}
-                        >
-                          {request.title}
-                        </div>
-                        <div className={style["member-info"]}>
-                          <div className={style["member-username"]}>
-                            {request.member.username}
-                          </div>
-                        </div>
-                      </div>
-                      <div className={style["member-content-div"]}>
-                        <div
-                          sx={{
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            WebkitBoxOrient: "vertical",
-                            WebkitLineClamp: 2,
-                            minHeight: "3em",
-                          }}
-                        >
-                          {request.description}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className={style["info-div"]}></div>
-                  <div className={style["bottom-div"]}>
-                    <div className={style["date-div"]}>
-                      {dateFormatter(request.updatedAt)}
-                    </div>
-                    <div className={style["button-div"]}>
-                      {request.progress === "PENDING" && (
-                        <Button
-                          className={style["button"]}
-                          onClick={() => updateProgress(request.id)}
-                        >
-                          거래 취소
-                        </Button>
-                      )}
-                      {request.progress === "APPROVED" &&
-                        (path.endsWith("member") ? (
-                          !!request.review.id ? (
-                            <Button
-                              className={style["button"]}
-                              onClick={() =>
-                                openReviewModal(
-                                  request.review,
-                                  true,
-                                  false,
-                                  request.id
-                                )
-                              }
-                            >
-                              리뷰 수정
-                            </Button>
-                          ) : (
-                            <Button
-                              className={style["button"]}
-                              onClick={() =>
-                                openReviewModal(
-                                  request.review,
-                                  false,
-                                  false,
-                                  request.id
-                                )
-                              }
-                            >
-                              리뷰 작성
-                            </Button>
+                </div>
+              </div>
+              <div className={style["bottom"]}>
+                {request.progress === "PENDING" && (
+                  <Button
+                    className={style["button"]}
+                    onClick={() => updateProgress(request.id)}
+                    variant="outlined"
+                    size="small"
+                    color="error"
+                  >
+                    거래 취소
+                  </Button>
+                )}
+                {request.progress === "APPROVED" &&
+                  (path.endsWith("member") ? (
+                    !!request.review.id ? (
+                      <Button
+                        className={style["button"]}
+                        variant="outlined"
+                        color="secondary"
+                        size="small"
+                        onClick={() =>
+                          openReviewModal(
+                            request.review,
+                            true,
+                            false,
+                            request.id
                           )
-                        ) : (
-                          !!request.review && (
-                            <Button
-                              className={style["button"]}
-                              onClick={() =>
-                                openReviewModal(
-                                  request.review,
-                                  false,
-                                  true,
-                                  request.id
-                                )
-                              }
-                            >
-                              리뷰 확인
-                            </Button>
-                          )
-                        ))}
+                        }
+                      >
+                        리뷰 수정
+                      </Button>
+                    ) : (
                       <Button
                         className={style["button"]}
                         onClick={() =>
-                          navigate(`/quotationRequest/${request.id}`)
+                          openReviewModal(
+                            request.review,
+                            false,
+                            false,
+                            request.id
+                          )
                         }
                       >
-                        상세 정보
+                        리뷰 작성
                       </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    )
+                  ) : (
+                    !!request.review && (
+                      <Button
+                        className={style["button"]}
+                        variant="outlined"
+                        color="success"
+                        size="small"
+                        onClick={() =>
+                          openReviewModal(
+                            request.review,
+                            false,
+                            true,
+                            request.id
+                          )
+                        }
+                      >
+                        리뷰 확인
+                      </Button>
+                    )
+                  ))}
+                <Button
+                  className={style["button"]}
+                  onClick={() => navigate(`/quotationRequest/${request.id}`)}
+                  variant="outlined"
+                  color="info"
+                  size="small"
+                >
+                  상세 정보
+                </Button>
+              </div>
             </div>
           ))}
-        </Grid2>
-
+        </div>
         {pageInfo.page + 1 < pageInfo.totalPage && (
           <Button
             onClick={() =>
@@ -559,7 +521,7 @@ const QuotationRequestListComponent = () => {
           </div>
         </div>
       </Backdrop>
-    </main>
+    </div>
   );
 };
 

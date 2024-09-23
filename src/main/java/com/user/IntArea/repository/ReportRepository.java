@@ -33,9 +33,10 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
             "WHERE 1=1 and cast(r.sort AS String )  IN ('PORTFOLIO', 'REVIEW')")
     Page<Tuple> findAllReportDto(Pageable pageable);
 
-    @Query("SELECT new com.user.IntArea.dto.report.ReportDto(r.id, r.refId, r.memberId, r.sort, r.title, r.description) " +
+    @Query("SELECT new com.user.IntArea.dto.report.ReportDto(r.id, r.refId, r.memberId, r.sort, r.title, r.description, r.createdAt, r.progress, r.comment) " +
             "FROM Report r JOIN Member m ON r.memberId = m.id " +
-            "WHERE r.memberId = :memberId")
+            "WHERE r.memberId = :memberId " +
+            "ORDER BY r.createdAt DESC")
     Page<ReportDto> findAllByMemberId(UUID memberId, Pageable pageable);
 
     @Query("SELECT r.id AS id, " +

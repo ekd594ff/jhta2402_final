@@ -4,7 +4,11 @@
   display: flex;
   justify-content: center;
   min-height: 100vh;
-  flex-grow: 1;
+  width: calc(variables.$CONTAINER_WIDTH - variables.$MYPAGE_SIDEBAR_WIDTH);
+
+  & * {
+    box-sizing: border-box;
+  }
 
   & > .container {
     width: 100%;
@@ -21,9 +25,18 @@
       padding: 16px 0;
     }
 
+    & .no-content-div {
+      width: 100%;
+      padding: 32px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: variables.$color-500;
+    }
+
     & > .qr-grid-container {
       display: flex;
-      gap: 16px;
+      gap: 8px;
       padding: 8px 0;
       box-sizing: border-box;
       & > .focus-button {
@@ -35,104 +48,108 @@
         border-color: gray;
         color: gray;
       }
-    }
 
-    & > .qr-card-container {
-      display: flex;
-      & > .no-content-div {
-        width: 100%;
-        text-align: center;
-        color: gray;
-        font-weight: 400;
+      & > .all-selected {
+        color: #2196f3;
+        border-color: #2196f3;
       }
 
-      & > .qr-card-grid {
-        flex: 1 1 45%;
-        display: flex;
+      & > .approved-selected {
+        color: green;
+        border-color: green;
+      }
+    }
+
+    & > .card-container {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      & > .card {
+        flex: 1 1 calc((100% - 16px) / 2);
         box-sizing: border-box;
-        & > .qr-card {
+        padding: 16px 16px 4px 16px;
+        border-radius: 5px;
+        max-width: calc((100% - 16px) / 2);
+        border: 0.5px solid variables.$color-400;
+        & > .top {
+          display: flex;
+          gap: 8px;
           box-sizing: border-box;
-          & > .qr-card-content {
-            box-sizing: border-box;
-            & > .image-div {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 16px;
-
-              & > .portfolio-div {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-              }
-
-              & > .PENDING {
-                font-size: 14px;
-                color: variables.$COLOR_PRIMARY;
-              }
-
-              & > .APPROVED {
-                font-size: 14px;
-                color: green;
-              }
-
-              & > .USER_CANCELLED {
-                font-size: 14px;
-                color: orange;
-              }
-
-              & > .SELLER_CANCELLED {
-                font-size: 14px;
-                color: orange;
-              }
-
-              & > .ADMIN_CANCELLED {
-                font-size: 14px;
-                color: orange;
-              }
+          & > .left {
+            & > .avatar {
+              width: 64px;
+              height: 64px;
             }
-
-            & > .member-div {
-              & > .member-title-div {
+          }
+          & > .right {
+            flex-grow: 1;
+            box-sizing: content-box;
+            position: relative;
+            & > .content {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              display: flex;
+              flex-direction: column;
+              & * {
+                font-size: 14px;
+              }
+              & > .top {
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-
-                & > .member-info {
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
+                & > svg {
+                  font-size: 20px;
                 }
-              }
-
-              & > .member-content-div {
-              }
-            }
-
-            & > .info-div {
-            }
-
-            & > .bottom-div {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-
-              & > .date-div {
-                font-size: 14px;
-                color: #989898;
-              }
-
-              & > .button-div {
-                display: flex;
-                align-items: end;
-                justify-content: end;
-
-                & > .button {
+                &.PENDING {
                   color: variables.$COLOR_PRIMARY;
                 }
+                &.APPROVED {
+                  color: green;
+                }
+                &.USER_CANCELLED {
+                  color: orange;
+                }
+
+                &.SELLER_CANCELLED {
+                  color: orange;
+                }
+
+                &.ADMIN_CANCELLED {
+                  color: orange;
+                }
+                & > span {
+                  color: variables.$color-700;
+                }
+              }
+              & > .middle {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                align-items: center;
+                font-weight: bold;
+                & > .title {
+                  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+                  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+                  text-overflow: ellipsis; /* 넘친 부분에 말줄임표 표시 */
+                  width: 230px; /* 요소의 너비 설정 */
+                }
+              }
+
+              & > .bottom {
+                white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+                overflow: hidden; /* 넘치는 텍스트를 숨김 */
+                text-overflow: ellipsis; /* 넘친 부분에 말줄임표 표시 */
+                width: 180px; /* 요소의 너비 설정 */
               }
             }
           }
+        }
+
+        & > .bottom {
+          padding: 18px 0 12px 0;
+          display: flex;
+          justify-content: space-between;
         }
       }
     }

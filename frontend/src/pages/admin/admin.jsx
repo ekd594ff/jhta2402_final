@@ -85,7 +85,34 @@ const customColumns = {
       width: 25,
     },
     { name: "이메일", width: 180 },
-    { name: "권한", width: 100 },
+    {
+      name: "권한",
+      width: 150,
+      renderCell: (params) => {
+        const {
+          row: { role },
+        } = params;
+        const r = role.split("_")[1];
+
+        return (
+          <Chip
+            size="small"
+            label={r}
+            variant="outlined"
+            color={(() => {
+              switch (r) {
+                case "ADMIN":
+                  return "success";
+                case "USER":
+                  return "secondary";
+                default:
+                  return "primary";
+              }
+            })()}
+          ></Chip>
+        );
+      },
+    },
     { name: "닉네임", width: 100 },
     {
       name: "플랫폼",
@@ -327,10 +354,12 @@ const customColumns = {
     {
       name: "ID",
       width: 25,
+      sortable: false,
     },
     {
       name: "포트폴리오",
       width: 120,
+      sortable: false,
       renderCell: (param) => {
         const {
           row: { portfolioId },
@@ -754,6 +783,7 @@ function DataTable() {
     field: "delete",
     headerName: "수정",
     width: 150,
+    sortable: false,
     renderCell: (params) => (
       <div style={{ height: "100%", display: "flex", alignItems: "center" }}>
         <DisplaySettingsIcon
@@ -780,7 +810,7 @@ function DataTable() {
       if (response.data.content.length > 0) {
         const cols = Object.keys(response.data.content[0]).map((key, idx) => {
           const columArray = customColumns[pathname.toLowerCase()];
-          const { name, width, renderCell } = columArray[idx];
+          const { name, width, renderCell, sortable } = columArray[idx];
 
           const col = {
             field: key,
@@ -796,6 +826,10 @@ function DataTable() {
 
           if (renderCell) {
             col["renderCell"] = renderCell;
+          }
+
+          if (sortable === false) {
+            col["sortable"] = false;
           }
 
           return col;
@@ -843,13 +877,29 @@ function DataTable() {
       );
       // 동적으로 컬럼 정의 생성
       if (response.data.content.length > 0) {
-        const cols = Object.keys(response.data.content[0]).map((key) => {
-          return {
+        const cols = Object.keys(response.data.content[0]).map((key, idx) => {
+          const columArray = customColumns[pathname.toLowerCase()];
+          const { name, width, renderCell, sortable } = columArray[idx];
+          const col = {
             field: key,
-            headerName: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자 대문자
-            flex: 1, // 기본 너비
+            headerName: name, // 첫 글자 대문자
             filterOperators,
           };
+          if (width) {
+            col["width"] = width;
+          } else {
+            col["flex"] = 1;
+          }
+
+          if (renderCell) {
+            col["renderCell"] = renderCell;
+          }
+
+          if (sortable === false) {
+            col["sortable"] = false;
+          }
+
+          return col;
         });
         cols.push(buttonColumns);
         setColumns(cols);
