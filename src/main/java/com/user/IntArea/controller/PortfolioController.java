@@ -50,7 +50,6 @@ public class PortfolioController {
                                                               @RequestParam int size,
                                                               @RequestParam(defaultValue = "createdAt") String sortField,
                                                               @RequestParam(defaultValue = "asc") String sortDirection) {
-
         Pageable pageable = PageRequest.of(page, size);
         Page<PortfolioSearchDto> portfolioSearchDtoPage = portfolioService.findPortfolioBySearchWord(searchWord, sortField, sortDirection, pageable);
         return ResponseEntity.ok().body(portfolioSearchDtoPage);
