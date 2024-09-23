@@ -6,7 +6,12 @@ import MenuItem from "@mui/material/MenuItem";
 import style from "../../styles/header.module.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 import SearchIcon from "@mui/icons-material/Search";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import BusinessIcon from "@mui/icons-material/Business";
+import LogoutIcon from "@mui/icons-material/Logout";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 function SearchBox(props) {
   const { setter, expand } = props;
@@ -31,6 +36,10 @@ function SearchBox(props) {
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
+            if (!value.trim()) {
+              window.alert("검색어를 입력해 주세요");
+              return;
+            }
             navigator(`/search/detailed?query=${value}`);
           }
         }}
@@ -43,6 +52,7 @@ function Header() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [username, setUsername] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -120,6 +130,15 @@ function Header() {
         setIsLoading(false);
       });
 
+    axios
+      .get(`/api/member/admin/role`)
+      .then((result) => {
+        setIsAdmin(true);
+      })
+      .catch((err) => {
+        setIsAdmin(false);
+      });
+
     checkCompany();
 
     document.addEventListener("click", function (event) {
@@ -156,15 +175,34 @@ function Header() {
               />
               <span>{username}</span>
               <div className={`${style["menu"]} ${open ? style["open"] : ""}`}>
-                <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
+                <MenuItem onClick={() => navigate("/mypage")}>
+                  <AccountCircleIcon />
+                  My Page
+                </MenuItem>
                 <MenuItem
                   onClick={() =>
                     navigate(hasCompany ? "/company/info" : "/company/create")
                   }
                 >
+                  <BusinessIcon />
                   Company
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <LogoutIcon />
+                  Logout
+                </MenuItem>
+                {isAdmin ? (
+                  <MenuItem
+                    onClick={() => {
+                      navigate("/admin");
+                    }}
+                  >
+                    <DashboardIcon />
+                    Admin
+                  </MenuItem>
+                ) : (
+                  <></>
+                )}
               </div>
             </>
           ) : (

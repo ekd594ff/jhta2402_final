@@ -35,10 +35,21 @@
         border-color: gray;
         color: gray;
       }
+
+      & > .all-selected {
+        color: #2196f3;
+        border-color: #2196f3;
+      }
+
+      & > .approved-selected {
+        color: green;
+        border-color: green;
+      }
     }
 
     & > .qr-card-container {
       display: flex;
+      background-color: darkgreen;
       & > .no-content-div {
         width: 100%;
         text-align: center;
