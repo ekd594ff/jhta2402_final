@@ -47,99 +47,43 @@
       }
     }
 
-    & > .qr-card-container {
+    & > .card-container {
+      width: 100%;
       display: flex;
-      background-color: darkgreen;
-      & > .no-content-div {
-        width: 100%;
-        text-align: center;
-        color: gray;
-        font-weight: 400;
-      }
-
-      & > .qr-card-grid {
+      flex-wrap: wrap;
+      gap: 8px;
+      & > .card {
         flex: 1 1 45%;
-        display: flex;
         box-sizing: border-box;
-        & > .qr-card {
+        padding: 16px;
+        border-radius: 5px;
+        border: 0.5px solid variables.$color-400;
+        & > .top {
+          display: flex;
+          gap: 8px;
           box-sizing: border-box;
-          & > .qr-card-content {
-            box-sizing: border-box;
-            & > .image-div {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 16px;
-
-              & > .portfolio-div {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-              }
-
-              & > .PENDING {
-                font-size: 14px;
-                color: variables.$COLOR_PRIMARY;
-              }
-
-              & > .APPROVED {
-                font-size: 14px;
-                color: green;
-              }
-
-              & > .USER_CANCELLED {
-                font-size: 14px;
-                color: orange;
-              }
-
-              & > .SELLER_CANCELLED {
-                font-size: 14px;
-                color: orange;
-              }
-
-              & > .ADMIN_CANCELLED {
-                font-size: 14px;
-                color: orange;
-              }
+          & > .left {
+            & > .avatar {
+              width: 64px;
+              height: 64px;
             }
-
-            & > .member-div {
-              & > .member-title-div {
+          }
+          & > .right {
+            flex-grow: 1;
+            box-sizing: content-box;
+            position: relative;
+            & > .content {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              & > .top {
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-
-                & > .member-info {
-                  display: flex;
-                  align-items: center;
-                  gap: 8px;
-                }
-              }
-
-              & > .member-content-div {
-              }
-            }
-
-            & > .info-div {
-            }
-
-            & > .bottom-div {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-
-              & > .date-div {
-                font-size: 14px;
-                color: #989898;
-              }
-
-              & > .button-div {
-                display: flex;
-                align-items: end;
-                justify-content: end;
-
-                & > .button {
-                  color: variables.$COLOR_PRIMARY;
+                & > .title {
+                  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+                  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+                  text-overflow: ellipsis; /* 넘친 부분에 말줄임표 표시 */
+                  width: 200px; /* 요소의 너비 설정 */
                 }
               }
             }
@@ -147,6 +91,107 @@
         }
       }
     }
+
+    // & > .qr-card-container {
+    //   display: flex;
+    //   background-color: darkgreen;
+    //   & > .no-content-div {
+    //     width: 100%;
+    //     text-align: center;
+    //     color: gray;
+    //     font-weight: 400;
+    //   }
+
+    //   & > .qr-card-grid {
+    //     flex: 1 1 45%;
+    //     display: flex;
+    //     box-sizing: border-box;
+    //     & > .qr-card {
+    //       box-sizing: border-box;
+    //       & > .qr-card-content {
+    //         box-sizing: border-box;
+    //         & > .image-div {
+    //           display: flex;
+    //           justify-content: space-between;
+    //           align-items: center;
+    //           margin-bottom: 16px;
+
+    //           & > .portfolio-div {
+    //             display: flex;
+    //             align-items: center;
+    //             gap: 16px;
+    //           }
+
+    //           & > .PENDING {
+    //             font-size: 14px;
+    //             color: variables.$COLOR_PRIMARY;
+    //           }
+
+    //           & > .APPROVED {
+    //             font-size: 14px;
+    //             color: green;
+    //           }
+
+    //           & > .USER_CANCELLED {
+    //             font-size: 14px;
+    //             color: orange;
+    //           }
+
+    //           & > .SELLER_CANCELLED {
+    //             font-size: 14px;
+    //             color: orange;
+    //           }
+
+    //           & > .ADMIN_CANCELLED {
+    //             font-size: 14px;
+    //             color: orange;
+    //           }
+    //         }
+
+    //         & > .member-div {
+    //           & > .member-title-div {
+    //             display: flex;
+    //             justify-content: space-between;
+    //             align-items: center;
+
+    //             & > .member-info {
+    //               display: flex;
+    //               align-items: center;
+    //               gap: 8px;
+    //             }
+    //           }
+
+    //           & > .member-content-div {
+    //           }
+    //         }
+
+    //         & > .info-div {
+    //         }
+
+    //         & > .bottom-div {
+    //           display: flex;
+    //           justify-content: space-between;
+    //           align-items: center;
+
+    //           & > .date-div {
+    //             font-size: 14px;
+    //             color: #989898;
+    //           }
+
+    //           & > .button-div {
+    //             display: flex;
+    //             align-items: end;
+    //             justify-content: end;
+
+    //             & > .button {
+    //               color: variables.$COLOR_PRIMARY;
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   & > .back-drop {

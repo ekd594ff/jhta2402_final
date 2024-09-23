@@ -231,7 +231,7 @@ const QuotationRequestListComponent = () => {
             ? "회사 견적신청서 목록"
             : "견적신청서 목록"}
         </div>
-        <div container spacing={10} className={style["qr-grid-container"]}>
+        <div className={style["qr-grid-container"]}>
           <Button
             variant="outlined"
             className={
@@ -273,94 +273,117 @@ const QuotationRequestListComponent = () => {
           )}
           {quotationRequests.map((request, index) => (
             <div key={`${index}_${request.id}`} className={style["card"]}>
-              {path.endsWith("company") && (
-                <div className={style["member-div"]}>
-                  <div className={style["member-title-div"]}>
-                    <div className={style["title"]}>{request.title}</div>
-                    <div className={style["member-info"]}>
-                      <div className={style["member-username"]}>
-                        {request.member.username}
-                      </div>
+              {/* <div>{request.title}</div>
+              <div>{request.description}</div>
+              <div>{dateFormatter(request.updatedAt)}</div> */}
+              <div className={style["top"]}>
+                <div className={style["left"]}>
+                  <Avatar
+                    className={style["avatar"]}
+                    src={request.portfolio.url}
+                    variant="rounded"
+                  />
+                </div>
+                <div className={style["right"]}>
+                  <div className={style["content"]}>
+                    <div className={style["top"]}>
+                      <div className={style["title"]}>{request.title}</div>
+                      <div className={style["status"]}></div>
                     </div>
-                  </div>
-                  <div className={style["member-content-div"]}>
-                    <div>{request.description}</div>
+                    <div className={style["middle"]}></div>
+                    <div className={style["bottom"]}></div>
                   </div>
                 </div>
-              )}
-              <div className={style["bottom-div"]}>
-                <div className={style["date-div"]}>
-                  {dateFormatter(request.updatedAt)}
-                </div>
-                {/* <div className={style["button-div"]}>
-                  {request.progress === "PENDING" && (
-                    <Button
-                      className={style["button"]}
-                      onClick={() => updateProgress(request.id)}
-                    >
-                      거래 취소
-                    </Button>
-                  )}
-                  {request.progress === "APPROVED" &&
-                    (path.endsWith("member") ? (
-                      !!request.review.id ? (
-                        <Button
-                          className={style["button"]}
-                          onClick={() =>
-                            openReviewModal(
-                              request.review,
-                              true,
-                              false,
-                              request.id
-                            )
-                          }
-                        >
-                          리뷰 수정
-                        </Button>
-                      ) : (
-                        <Button
-                          className={style["button"]}
-                          onClick={() =>
-                            openReviewModal(
-                              request.review,
-                              false,
-                              false,
-                              request.id
-                            )
-                          }
-                        >
-                          리뷰 작성
-                        </Button>
-                      )
-                    ) : (
-                      !!request.review && (
-                        <Button
-                          className={style["button"]}
-                          onClick={() =>
-                            openReviewModal(
-                              request.review,
-                              false,
-                              true,
-                              request.id
-                            )
-                          }
-                        >
-                          리뷰 확인
-                        </Button>
-                      )
-                    ))}
-                  <Button
-                    className={style["button"]}
-                    onClick={() => navigate(`/quotationRequest/${request.id}`)}
-                  >
-                    상세 정보
-                  </Button>
-                </div> */}
               </div>
             </div>
+            // <div key={`${index}_${request.id}`} className={style["card"]}>
+            //   {path.endsWith("company") && (
+            //     <div className={style["member-div"]}>
+            //       <div className={style["member-title-div"]}>
+            //         <div className={style["title"]}>{request.title}</div>
+            //         <div className={style["member-info"]}>
+            //           <div className={style["member-username"]}>
+            //             {request.member.username}
+            //           </div>
+            //         </div>
+            //       </div>
+            //       <div className={style["member-content-div"]}>
+            //         <div>{request.description}</div>
+            //       </div>
+            //     </div>
+            //   )}
+            //   <div className={style["bottom-div"]}>
+            //     <div className={style["date-div"]}>
+            //       {dateFormatter(request.updatedAt)}
+            //     </div>
+            //     <div className={style["button-div"]}>
+            //       {request.progress === "PENDING" && (
+            //         <Button
+            //           className={style["button"]}
+            //           onClick={() => updateProgress(request.id)}
+            //         >
+            //           거래 취소
+            //         </Button>
+            //       )}
+            //       {request.progress === "APPROVED" &&
+            //         (path.endsWith("member") ? (
+            //           !!request.review.id ? (
+            //             <Button
+            //               className={style["button"]}
+            //               onClick={() =>
+            //                 openReviewModal(
+            //                   request.review,
+            //                   true,
+            //                   false,
+            //                   request.id
+            //                 )
+            //               }
+            //             >
+            //               리뷰 수정
+            //             </Button>
+            //           ) : (
+            //             <Button
+            //               className={style["button"]}
+            //               onClick={() =>
+            //                 openReviewModal(
+            //                   request.review,
+            //                   false,
+            //                   false,
+            //                   request.id
+            //                 )
+            //               }
+            //             >
+            //               리뷰 작성
+            //             </Button>
+            //           )
+            //         ) : (
+            //           !!request.review && (
+            //             <Button
+            //               className={style["button"]}
+            //               onClick={() =>
+            //                 openReviewModal(
+            //                   request.review,
+            //                   false,
+            //                   true,
+            //                   request.id
+            //                 )
+            //               }
+            //             >
+            //               리뷰 확인
+            //             </Button>
+            //           )
+            //         ))}
+            //       <Button
+            //         className={style["button"]}
+            //         onClick={() => navigate(`/quotationRequest/${request.id}`)}
+            //       >
+            //         상세 정보
+            //       </Button>
+            //     </div>
+            //   </div>
+            // </div>
           ))}
         </div>
-
         {pageInfo.page + 1 < pageInfo.totalPage && (
           <Button
             onClick={() =>
