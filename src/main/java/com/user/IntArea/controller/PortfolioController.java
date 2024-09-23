@@ -182,6 +182,12 @@ public class PortfolioController {
         if (sortField.equals("companyName")) {
             sortField = "company.companyName";
         }
+        if (sortField.equals("activated")) {
+            sortField = "isActivated";
+        }
+        if (sortField.equals("deleted")) {
+            sortField = "isDeleted";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());
