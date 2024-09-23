@@ -1,3 +1,5 @@
+@use "variables";
+
 .index {
   width: 100%;
   height: 100vh;
@@ -5,16 +7,36 @@
 }
 
 .aside {
-  width: 220px;
-  background-color: #2ECC71;
+  width: 180px;
   z-index: 10;
-  //height: auto;
 }
 
 .container {
   flex-grow: 1;
-  background-color: darkgray;
-  z-index: 1;
+  box-sizing: border-box;
+  padding: 16px 16px;
+  background-color: variables.$color-200;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    padding: 8px 0;
+    font-weight: bold;
+    & > svg {
+      font-size: 24px;
+    }
+  }
+
+  .data-grid-wrapper {
+    width: 100%;
+    height: 100%;
+    & > .data-grid {
+      width: 100%;
+      border: 0;
+    }
+  }
 }
 
 .modal-style {
@@ -22,43 +44,103 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff; // 흰색 배경
-  border-radius: 8px; // 모서리 둥글게
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); // 부드러운 그림자
+  border-radius: 5px; // 모서리 둥글게
   padding: 20px; // 패딩
-  width: 600px; // 너비 조정
-  max-width: 90%; // 화면 크기에 맞춰 조정
+  width: 90%; // 너비 조정
+  max-width: 360px; // 화면 크기에 맞춰 조정
   outline: none; // 기본 테두리 제거
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 
-  h6 {
-    margin-bottom: 16px; // 제목과 내용 간격
-    font-weight: 600; // 제목 두껍게
+  & > .title {
+    font-weight: bold;
+    font-size: 20px;
   }
 
   button {
     margin-top: 20px; // 버튼 간격
     width: 100%; // 버튼 전체 너비
   }
+
+  & > div {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
+    & * {
+      font-size: 14px;
+    }
+  }
+
+  & :global(.btn-group) {
+    display: flex;
+    gap: 16px;
+    & > button:first-child {
+      color: variables.$color-700;
+      border: 0.5px solid variables.$color-700;
+    }
+
+    & > button:nth-child(2) {
+      color: #0275d8;
+      border: 0.5px solid #0275d8;
+    }
+  }
 }
 
-.list-item {
-  background-color: #2ECC71 !important; /* 기본 배경 색상 */
-  border-radius: 12px; /* 둥근 모서리 */
-  margin: 10px 0; /* 아이템 간격 */
-  transition: background-color 0.3s, transform 0.2s; /* 전환 효과 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-  position: relative; /* z-index 적용을 위해 추가 */
-  z-index: 10; /* 높은 z-index 값 */
-}
+.nav-list {
+  & > .home-link-wrapper {
+    position: relative;
+    & .home {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 20px;
+      padding: 28px 0;
+      position: relative;
 
-.list-item:hover {
-  background-color: #E67E22  !important; /* 호버 시 색상 변경 */
-  transform: scale(1.05); /* 호버 시 약간 커지는 효과 */
-}
+      & > img {
+        height: 100%;
+      }
+    }
+  }
 
-.list-item .MuiListItemText-root {
-  font-weight: bold; /* 텍스트 두껍게 */
-  color: #FFF; /* 텍스트 색상 */
+  & > a {
+    text-decoration: none;
+  }
+
+  .list-item {
+    transition: background-color 0.3s, transform 0.2s;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    gap: 12px;
+    color: variables.$color-900;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 16px;
+    box-sizing: border-box;
+
+    & svg {
+      font-size: 18px;
+    }
+
+    &:hover:not(.selected) {
+      transform: scale(1.05); /* 호버 시 약간 커지는 효과 */
+      background-color: variables.$color-100;
+      border: 0.5px solid variables.$COLOR_PRIMARY;
+      color: variables.$COLOR_PRIMARY;
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
+    &.selected {
+      background-color: variables.$COLOR_PRIMARY;
+      color: variables.$color-100;
+    }
+  }
 }
 
 .customPagination {
@@ -66,13 +148,18 @@
   justify-content: flex-start; /* 왼쪽 정렬 */
   margin: 0; /* 필요에 따라 여백 조정 */
 }
+
 .customButton {
   padding: 6px 12px; /* 패딩 조정 */
   font-size: 14px; /* 글자 크기 조정 */
 }
 
 .buttonContainer {
-  padding: 10px;
+  padding: 16px 0;
   display: flex;
+  & > button {
+    background-color: #dc3545;
+    color: #fff;
+  }
   //justify-content: flex-end; /* 오른쪽 정렬 */
 }
