@@ -60,7 +60,7 @@ function CreateEditCompany() {
     const checkInput = () => {
         if (companyInfo.companyName === "") {
             alert("회사 이름을 입력해주세요.");
-        } else if (companyInfo.phone === "") {
+        } else if (companyInfo.phone.length < 8) {
             alert("회사 전화번호를 입력해주세요.");
         } else if (companyInfo.address === "") {
             alert("회사 주소를 입력해주세요.");
