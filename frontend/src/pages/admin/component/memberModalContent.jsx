@@ -139,7 +139,7 @@ function MemberModalContent(inputValue) {
         onChange={(event) => {
           const value = event.target.value;
           setValue((prev) => {
-            return { ...prev, role: value };
+            return { ...prev, deleted: value };
           });
         }}
       >
@@ -149,6 +149,7 @@ function MemberModalContent(inputValue) {
           </MenuItem>
         ))}
       </TextField>
+
       <div className="btn-group">
         <Button
           onClick={() => {
@@ -163,12 +164,8 @@ function MemberModalContent(inputValue) {
               .patch(`/api/member/admin`, {
                 id: value.id,
                 role: value.role,
-                isDeleted: value.deleted,
+                deleted: value.deleted,
               })
-              .catch((response) => console.log(response));
-            console.log("role", value.role);
-            console.log("value", value);
-            console.log("event", event);
           }}
         >
           수정

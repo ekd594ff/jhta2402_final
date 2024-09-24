@@ -114,10 +114,6 @@ function ReviewModalContent(inputValue) {
                 title: value.title,
                 description: value.description,
               })
-              .catch((response) => console.log(response));
-            console.log("role", value.role);
-            console.log("value", value);
-            console.log("event", event);
           }}
         >
           수정

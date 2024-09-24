@@ -140,7 +140,6 @@ function CompanyModalContent(inputValue) {
                 detailAddress: value.detailAddress,
                 applied: value.applied,
               })
-              .catch((response) => console.log(response));
           }}
         >
           수정
