@@ -138,7 +138,7 @@ function CompanyModalContent(inputValue) {
                 phone: value.phone,
                 address: value.address,
                 detailAddress: value.detailAddress,
-                isApplied: value.applied,
+                applied: value.applied,
               })
               .catch((response) => console.log(response));
           }}

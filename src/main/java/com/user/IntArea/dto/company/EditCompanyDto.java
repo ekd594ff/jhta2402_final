@@ -13,5 +13,5 @@ public class EditCompanyDto {
     private String phone;
     private String address;
     private String detailAddress;
-    private boolean isApplied;
+    private boolean applied;
 }
