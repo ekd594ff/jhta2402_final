@@ -19,7 +19,7 @@ function Login() {
         const {email, password} = login;
         axios.post('/api/member/login', {email, password}, {withCredentials: true})
             .then(res => {
-                navigate(-1);
+                navigate("/");
             })
             .catch(err => alert(err.response ? err.response.data.message : "로그인 실패"));
     }

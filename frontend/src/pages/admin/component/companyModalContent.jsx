@@ -82,12 +82,12 @@ function CompanyModalContent(inputValue) {
       <TextField
         size="small"
         label="DETAIL-ADDRESS"
-        defaultValue={inputValue.detatilAddress}
+        defaultValue={inputValue.detailAddress}
         variant="standard"
         onChange={(event) => {
           const value = event.target.value;
           setValue((prev) => {
-            return { ...prev, detatilAddress: value };
+            return { ...prev, detailAddress: value };
           });
         }}
       />
