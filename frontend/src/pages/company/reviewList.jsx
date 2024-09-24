@@ -14,13 +14,13 @@ const ReviewList = ({ companyId }) => {
   const fetchReviewsBasedOnRole = async (companyId, page, size) => {
     try {
       // 권한을 확인하는 API 호출
-      const roleResponse = await axios.get("/api/member/role", {
+      const roleResponse = await axios.get("/api/member/check/role", {
         withCredentials: true,
       });
-      const role = roleResponse.data.role; // 'SELLER', 'USER', 'ADMIN' 등
+      const role = roleResponse.data; // 'ROLE_SELLER', 'ROLE_USER', 'ROLE_ADMIN' 등
 
       let response;
-      if (role === "SELLER") {
+      if (role === "ROLE_SELLER") {
         // 판매자 권한일 경우 회사의 모든 리뷰를 조회
         response = await axios.get("/api/review/company/list", {
           params: { page, size },
