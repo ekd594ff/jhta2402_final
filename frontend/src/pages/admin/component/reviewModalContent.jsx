@@ -108,12 +108,17 @@ function ReviewModalContent(inputValue) {
         </Button>
         <Button
           onClick={async (event) => {
-            const response = await axios
-              .patch(`/api/review/admin`, {
+            try {
+              const response = await axios.patch(`/api/review/admin`, {
                 id: value.id,
                 title: value.title,
                 description: value.description,
-              })
+              });
+              window.alert("리뷰 수정되었습니다");
+              window.location.reload();
+            } catch (err) {
+              window.alert("리뷰 수정 실패");
+            }
           }}
         >
           수정

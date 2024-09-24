@@ -109,8 +109,11 @@ export function MyProfile() {
       .then((result) => result.json())
       .then((data) => {
         const { images } = data;
-        if (images[0]) {
-          setUserImage(images[0].url);
+        if (images.length) {
+          const { url } = images[images.length - 1];
+          setUserImage(url);
+        } else {
+          setUserImage("");
         }
       });
     const fetchUserData = async () => {
@@ -190,6 +193,7 @@ export function MyProfile() {
 
       setMessage("정보가 성공적으로 수정되었습니다.");
       setOpenSnackbar(true);
+      navigate(0);
     } catch (error) {
       console.error("수정 중 오류 발생:", error);
       setMessage("수정에 실패했습니다.");
@@ -209,9 +213,7 @@ export function MyProfile() {
           {selectedFile ? (
             <img src={selectedFile.preview} className={style["preview"]} />
           ) : (
-            <Avatar className={style["avatar"]} src={userImage}>
-              {userData.username.charAt(0)}
-            </Avatar>
+            <Avatar className={style["avatar"]} src={userImage}></Avatar>
           )}
           <input {...getInputProps()} />
         </div>

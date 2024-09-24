@@ -153,12 +153,17 @@ function ReportModalContent(inputValue) {
         </Button>
         <Button
           onClick={async (event) => {
-            const response = await axios
-              .patch(`/api/report/admin`, {
+            try {
+              const response = await axios.patch(`/api/report/admin`, {
                 id: value.id,
                 comment: value.comment,
                 progress: value.progress,
-              })
+              });
+              window.alert("신고내역 수정되었습니다");
+              window.location.reload();
+            } catch (err) {
+              window.alert("신고내역 수정 실패");
+            }
           }}
         >
           수정

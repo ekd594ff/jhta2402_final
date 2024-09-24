@@ -160,12 +160,17 @@ function MemberModalContent(inputValue) {
         </Button>
         <Button
           onClick={async (event) => {
-            const response = await axios
-              .patch(`/api/member/admin`, {
+            try {
+              const response = await axios.patch(`/api/member/admin`, {
                 id: value.id,
                 role: value.role,
                 deleted: value.deleted,
-              })
+              });
+              window.alert("회원정보 수정되었습니다");
+              window.location.reload();
+            } catch (err) {
+              window.alert("회원정보 수정 실패");
+            }
           }}
         >
           수정

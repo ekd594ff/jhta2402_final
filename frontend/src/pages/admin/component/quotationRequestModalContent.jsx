@@ -146,11 +146,19 @@ function QuotationRequestModalContent(inputValue) {
         </Button>
         <Button
           onClick={async (event) => {
-            const response = await axios
-              .patch(`/api/quotationRequest/admin`, {
-                id: value.id,
-                progress: value.progress,
-              })
+            try {
+              const response = await axios.patch(
+                `/api/quotationRequest/admin`,
+                {
+                  id: value.id,
+                  progress: value.progress,
+                }
+              );
+              window.alert("견적 신청서 수정되었습니다");
+              window.location.reload();
+            } catch (err) {
+              window.alert("견적 신청서 수정 실패");
+            }
           }}
         >
           수정

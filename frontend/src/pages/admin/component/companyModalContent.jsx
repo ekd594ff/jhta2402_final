@@ -130,8 +130,8 @@ function CompanyModalContent(inputValue) {
         </Button>
         <Button
           onClick={async (event) => {
-            const response = await axios
-              .patch(`/api/company/admin`, {
+            try {
+              const response = await axios.patch(`/api/company/admin`, {
                 id: value.id,
                 companyName: value.companyName,
                 description: value.description,
@@ -139,7 +139,12 @@ function CompanyModalContent(inputValue) {
                 address: value.address,
                 detailAddress: value.detailAddress,
                 applied: value.applied,
-              })
+              });
+              window.alert("업체정보 수정되었습니다");
+              window.location.reload();
+            } catch (err) {
+              window.alert("업체정보 수정 실패");
+            }
           }}
         >
           수정

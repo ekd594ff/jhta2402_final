@@ -11,10 +11,18 @@
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
     padding: 0 8px;
-    margin: 16px 16px;
     display: flex;
     flex-direction: column;
     height: auto;
+    position: relative;
+    justify-content: center;
+
+    & > .alert {
+      position: absolute;
+      width: calc(100% - 64px);
+      top: 0;
+      left: 16px;
+    }
 
     & > .sub-title {
       font-size: 20px;
@@ -74,7 +82,6 @@
     }
 
     & > .request-card {
-
       & > .card-content {
         display: flex;
         flex-direction: row;
@@ -100,7 +107,5 @@
         }
       }
     }
-
   }
 }
-

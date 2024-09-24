@@ -417,15 +417,19 @@ const QuotationRequestListComponent = ({ expand }) => {
         </Snackbar>
         <Box sx={{ height: "32px" }} />
       </div>
-
       <Backdrop
         className={style["back-drop"]}
         open={reviewModal.open}
-        onClick={() => {
+        onClick={(event) => {
           setReviewModal((prev) => ({ ...prev, open: false }));
         }}
       >
-        <div className={style["review-modal"]}>
+        <div
+          className={style["review-modal"]}
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        >
           <div className={style["review-info"]}>
             {reviewModal.readOnly
               ? "리뷰 확인"

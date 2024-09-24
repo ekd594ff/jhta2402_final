@@ -136,14 +136,19 @@ function PortfolioModalContent(inputValue) {
         </Button>
         <Button
           onClick={async (event) => {
-            const response = await axios
-              .patch(`/api/portfolio/admin`, {
+            try {
+              const response = await axios.patch(`/api/portfolio/admin`, {
                 id: value.id,
                 title: value.title,
                 description: value.description,
                 deleted: value.deleted,
                 activated: value.activated,
-              })
+              });
+              window.alert("포트폴리오 수정되었습니다");
+              window.location.reload();
+            } catch (err) {
+              window.alert("포트폴리오 수정 실패");
+            }
           }}
         >
           수정
