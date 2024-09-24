@@ -20,14 +20,15 @@ function SearchList() {
     const [sortField, setSortField] = useState('rate');
     const [sortDirection, setSortDirection] = useState('desc');
     const [reset, setReset] = useState(false);
+    const pageSize = 12;
 
     const fetchResults = (pageToFetch = 0, reset = false, sortField = 'createdAt', sortDirection = 'desc') => {
         setLoading(true);
         setError(null);
-        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=12&sortField=${sortField}&sortDirection=${sortDirection}`)
+        axios.get(`/api/portfolio/search/detailed?searchWord=${query}&page=${pageToFetch}&size=${pageSize}&sortField=${sortField}&sortDirection=${sortDirection}`)
             .then(result => {
                 setResults(prevResults => reset ? [...result.data.content] : [...prevResults, ...result.data.content]);
-                setHasMore(page + 1 < result.data.page.totalPages);
+                setHasMore(result.data.content.length === pageSize);
             })
             .catch(() => setError('검색 결과를 가져오는 데 실패했습니다.'))
             .finally(() => {
@@ -37,7 +38,7 @@ function SearchList() {
     };
 
     useEffect(() => {
-        if (prevQuery && prevQuery !== query) {
+        if (prevQuery !== query) {
             fetchResults(0, true, sortField, sortDirection);
             setReset(true);
         }

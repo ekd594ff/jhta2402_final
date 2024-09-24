@@ -130,6 +130,7 @@ public class TokenProvider implements InitializingBean {
     private Cookie toServletCookie(ResponseCookie responseCookie) {
 
         Cookie cookie = new Cookie(responseCookie.getName(), responseCookie.getValue());
+        cookie.setDomain(domain);
         cookie.setMaxAge((int) responseCookie.getMaxAge().getSeconds());
         cookie.setPath("/");
         cookie.setHttpOnly(responseCookie.isHttpOnly());

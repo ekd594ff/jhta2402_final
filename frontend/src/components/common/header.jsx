@@ -30,7 +30,7 @@ function SearchBox(props) {
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
                 onKeyDown={(event) => {
-                    if (event.key === "Enter") {
+                    if (event.key === "Enter" && value !== "") {
                         navigator(`/search/detailed?query=${value}`);
                     }
                 }}
@@ -162,12 +162,17 @@ function Header() {
                             <div className={`${style["menu"]} ${open ? style["open"] : ""}`}>
                                 <MenuItem onClick={() => navigate("/mypage")}>내 프로필</MenuItem>
                                 <MenuItem onClick={() => navigate("/mypage/quotationRequest/member")}>내 신청서</MenuItem>
+                                {role === "ROLE_USER" &&
+                                    <MenuItem onClick={() => navigate("/company/create")}>
+                                        회사 생성
+                                    </MenuItem>
+                                }
                                 {role === "ROLE_SELLER" &&
                                     <>
-                                        <MenuItem onClick={() => navigate("/company/create")}>
+                                        <MenuItem onClick={() => navigate("/company/info")}>
                                             회사 정보
                                         </MenuItem>
-                                        <MenuItem onClick={() => navigate("/company/create")}>
+                                        <MenuItem onClick={() => navigate("/quotationRequest/company")}>
                                             회사 견적서
                                         </MenuItem>
                                     </>
