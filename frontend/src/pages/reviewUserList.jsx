@@ -96,7 +96,7 @@ const ReviewUserList = () => {
       ) : (
         <div className={style["empty"]}>리뷰 내역이 존재하지 않습니다</div>
       )}
-      {!reviews.length && isEndOfData ? (
+      {isEndOfData ? (
         <></>
       ) : (
         <Divider variant="middle" className={style["divider"]}>

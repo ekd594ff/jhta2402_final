@@ -11,7 +11,7 @@ import Rating from "@mui/material/Rating";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 
-const QuotationRequestListComponent = () => {
+const QuotationRequestListComponent = ({ expand }) => {
   const path = window.location.pathname;
   const navigate = useNavigate();
 
@@ -231,7 +231,7 @@ const QuotationRequestListComponent = () => {
   }, [reviewModal.open]);
 
   return (
-    <div className={style["main"]}>
+    <div className={`${style["main"]} ${expand ? style["expand"] : ""}`}>
       <div className={style["container"]}>
         <div className={style["title"]}>
           {path.endsWith("company")
@@ -296,14 +296,7 @@ const QuotationRequestListComponent = () => {
                       className={`${style["top"]} ${style[request.progress]}`}
                     >
                       <span>{dateFormatter(request.updatedAt)}</span>
-                      {(() => {
-                        switch (request.progress) {
-                          case "PENDING":
-                            return <Pending />;
-                          default:
-                            return <CheckCircleIcon />;
-                        }
-                      })()}
+                      {progressIcon(request.progress)}
                     </div>
                     <div className={style["middle"]}>
                       <div className={style["title"]}>{request.title}</div>

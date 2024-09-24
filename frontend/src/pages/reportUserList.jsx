@@ -181,7 +181,7 @@ const ReportUserList = ({ memberId }) => {
       ) : (
         <div className={style["empty"]}>신고 내역이 존재하지 않습니다</div>
       )}
-      {isEndOfData && !reports.length ? (
+      {isEndOfData ? (
         <></>
       ) : (
         <Divider variant="middle" className={style["divider"]}>

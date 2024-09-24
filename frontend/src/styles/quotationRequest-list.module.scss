@@ -6,6 +6,10 @@
   min-height: 100vh;
   width: calc(variables.$CONTAINER_WIDTH - variables.$MYPAGE_SIDEBAR_WIDTH);
 
+  &.expand {
+    width: 100%;
+  }
+
   & * {
     box-sizing: border-box;
   }
@@ -14,7 +18,7 @@
     width: 100%;
     max-width: variables.$CONTAINER_WIDTH;
     box-sizing: border-box;
-    padding: 0 32px 0 32px;
+    padding: 16px 32px 0 32px;
     display: flex;
     flex-direction: column;
     height: auto;
@@ -92,6 +96,7 @@
               position: absolute;
               display: flex;
               flex-direction: column;
+              gap: 5px;
               & * {
                 font-size: 14px;
               }

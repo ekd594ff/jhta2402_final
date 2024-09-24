@@ -145,7 +145,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -156,7 +156,7 @@ const customColumns = {
     {
       name: "수정일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -219,7 +219,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -279,7 +279,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -290,7 +290,7 @@ const customColumns = {
     {
       name: "수정일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { updatedAt },
@@ -414,7 +414,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -425,7 +425,7 @@ const customColumns = {
     {
       name: "수정일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -461,8 +461,8 @@ const customColumns = {
         );
       },
     },
-    { name: "제목", width: 80 },
-    { name: "상세", width: 80 },
+    { name: "제목", width: 160 },
+    { name: "상세", width: 160 },
     { name: "비고" },
     {
       name: "현황",
@@ -493,7 +493,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -504,7 +504,7 @@ const customColumns = {
     {
       name: "수정일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { updatedAt },
@@ -563,7 +563,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -574,7 +574,7 @@ const customColumns = {
     {
       name: "수정일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { updatedAt },
@@ -608,8 +608,8 @@ const customColumns = {
         );
       },
     },
-    { name: "제목", width: 80 },
-    { name: "상세", width: 80 },
+    { name: "제목", width: 160 },
+    { name: "상세", width: 200 },
     {
       name: "현황",
       width: 180,
@@ -640,7 +640,7 @@ const customColumns = {
     {
       name: "생성일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { createdAt },
@@ -651,7 +651,7 @@ const customColumns = {
     {
       name: "수정일",
       date: true,
-      width: 100,
+      width: 120,
       renderCell: (param) => {
         const {
           row: { updatedAt },
