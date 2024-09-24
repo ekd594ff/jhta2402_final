@@ -1,4 +1,10 @@
-body, html {
+@font-face {
+  font-family: "Spoqa";
+  src: url("../fonts/SpoqaHanSansNeo-Medium.ttf") format("truetype");
+}
+
+body,
+html {
   padding: 0;
   margin: 0;
   position: relative;
@@ -8,7 +14,15 @@ body.modal {
   overflow: hidden;
 }
 
-h1, h2, h3, h4, h5 {
+body * {
+  font-family: "Spoqa" !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
   margin: 0;
 }
 

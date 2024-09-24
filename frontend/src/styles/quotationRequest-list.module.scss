@@ -156,9 +156,9 @@
   }
 
   & > .back-drop {
+    z-index: 99999;
     & > .review-modal {
-      height: 400px;
-      width: 360px;
+      width: 460px;
       border-radius: 8px;
       padding: 32px;
       background-color: white;
@@ -166,10 +166,11 @@
       flex-direction: column;
       justify-content: space-around;
       box-sizing: border-box;
+      gap: 24px;
 
       & > .review-info {
-        font-size: 20px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: normal;
       }
 
       & > .rate-div {
@@ -183,6 +184,12 @@
 
         & > .rate-text {
           text-align: center;
+        }
+      }
+
+      & > .text-field-detail {
+        & * {
+          font-size: 14px;
         }
       }
 

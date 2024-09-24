@@ -3,12 +3,11 @@ import axios from "axios";
 import { Avatar, Button, Snackbar, Alert, Box, Backdrop } from "@mui/material";
 import style from "../../styles/quotationRequest-list.module.scss";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, Image, Pending } from "@mui/icons-material";
+import { CheckCircle, Pending } from "@mui/icons-material";
 import { dateFormatter } from "../../utils/dateUtil.jsx";
 import TextField from "@mui/material/TextField";
 import Rating from "@mui/material/Rating";
 
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 
@@ -223,6 +222,14 @@ const QuotationRequestListComponent = () => {
     navigate(-1);
   }
 
+  useEffect(() => {
+    if (reviewModal.open) {
+      document.body.classList.add("modal");
+    } else {
+      document.body.classList.remove("modal");
+    }
+  }, [reviewModal.open]);
+
   return (
     <div className={style["main"]}>
       <div className={style["container"]}>
@@ -418,7 +425,13 @@ const QuotationRequestListComponent = () => {
         <Box sx={{ height: "32px" }} />
       </div>
 
-      <Backdrop className={style["back-drop"]} open={reviewModal.open}>
+      <Backdrop
+        className={style["back-drop"]}
+        open={reviewModal.open}
+        onClick={() => {
+          setReviewModal((prev) => ({ ...prev, open: false }));
+        }}
+      >
         <div className={style["review-modal"]}>
           <div className={style["review-info"]}>
             {reviewModal.readOnly
@@ -432,6 +445,7 @@ const QuotationRequestListComponent = () => {
               className={style["rating"]}
               name="review-rate"
               value={reviewModal.rate}
+              size="small"
               onChange={(event, newValue) =>
                 setReviewModal({
                   ...reviewModal,
@@ -451,6 +465,7 @@ const QuotationRequestListComponent = () => {
           <TextField
             className={style["text-field-detail"]}
             value={reviewModal.title}
+            size="small"
             onChange={(e) => {
               setReviewModal({
                 ...reviewModal,
@@ -475,6 +490,7 @@ const QuotationRequestListComponent = () => {
           <TextField
             className={style["text-field-detail"]}
             value={reviewModal.description}
+            size="small"
             onChange={(e) => {
               setReviewModal({
                 ...reviewModal,
@@ -500,6 +516,7 @@ const QuotationRequestListComponent = () => {
           <div className={style["button-div"]}>
             <Button
               className={style["cancel-button"]}
+              size="small"
               onClick={() =>
                 setReviewModal({
                   ...reviewModal,
@@ -511,6 +528,7 @@ const QuotationRequestListComponent = () => {
             </Button>
             {!reviewModal.readOnly && (
               <Button
+                size="small"
                 className={style["save-button"]}
                 variant="contained"
                 onClick={() => saveEditReview(reviewModal.quotationRequestId)}

@@ -33,7 +33,7 @@ const getTopSolutionPromise = axios.get(`/api/solution/list/top/${8}`);
 function Index() {
   const [recommendList, setRecommendList] = useState([]);
   const [portfolioList, setPortfolioList] = useState([]);
-  const [solutionList, setSolutionList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+  const [solutionList, setSolutionList] = useState([]);
   const [companyList, setCompanyList] = useState([]);
   const [hotPortfolioList, setHotPortfolioList] = useState([]);
 
