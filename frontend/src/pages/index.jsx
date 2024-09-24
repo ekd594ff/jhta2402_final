@@ -49,7 +49,6 @@ function Index() {
                 setHotPortfolioList(() => [...hotPortfolioListResult.data]);
                 setPortfolioList(() => [...getRecommendedPortfolioResult.data]);
                 setSolutionList(() => [...getTopSolutionListResult.data]);
-                console.log(getTopSolutionListResult);
             });
     }, []);
 

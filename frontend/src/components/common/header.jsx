@@ -30,7 +30,7 @@ function SearchBox(props) {
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
                 onKeyDown={(event) => {
-                    if (event.key === "Enter") {
+                    if (event.key === "Enter" && value !== "") {
                         navigator(`/search/detailed?query=${value}`);
                     }
                 }}
