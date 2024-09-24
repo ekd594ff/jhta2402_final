@@ -139,24 +139,12 @@ public class CompanyService {
         List<Company> companies = companyRepository.findAll();
 
         return companies.stream()
-                .map(this::converToDto)
+                .map(CompanyResponseDto::new)
                 .toList();
     }
 
-    private CompanyResponseDto converToDto(Company company) {
-        return new CompanyResponseDto(
-                company.getId(),
-                company.getCompanyName(),
-                company.getDescription(),
-                company.getPhone(),
-                company.getAddress(),
-                company.getDetailAddress(),
-                company.getIsApplied(),
-                company.getCreatedAt());
-    }
-
     public Page<CompanyResponseDto> getAllCompany(Pageable pageable) {
-        return companyRepository.findAll(pageable).map(this::converToDto);
+        return companyRepository.findAll(pageable).map(CompanyResponseDto::new);
     }
 
     public Page<CompanyResponseDto> getCompanyListByFilter(Pageable pageable, Optional<String> filterColumn, Optional<String> filterValue) {
