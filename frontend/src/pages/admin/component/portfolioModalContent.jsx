@@ -116,7 +116,7 @@ function PortfolioModalContent(inputValue) {
         onChange={(event) => {
           const value = event.target.value;
           setValue((prev) => {
-            return { ...prev, deleted: value };
+            return { ...prev, activated: value };
           });
         }}
       >
@@ -141,11 +141,9 @@ function PortfolioModalContent(inputValue) {
                 id: value.id,
                 title: value.title,
                 description: value.description,
-                isDeleted: value.deleted,
-                isActivated: value.activated,
+                deleted: value.deleted,
+                activated: value.activated,
               })
-              .catch((response) => console.log(response));
-            console.log("value", value);
           }}
         >
           수정

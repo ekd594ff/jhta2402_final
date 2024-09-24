@@ -159,10 +159,6 @@ function ReportModalContent(inputValue) {
                 comment: value.comment,
                 progress: value.progress,
               })
-              .catch((response) => console.log(response));
-            console.log("role", value.role);
-            console.log("value", value);
-            console.log("event", event);
           }}
         >
           수정

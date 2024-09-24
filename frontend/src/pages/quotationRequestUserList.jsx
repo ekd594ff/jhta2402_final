@@ -26,14 +26,12 @@ const QuotationRequestUserList = () => {
         const response = await axios.get(
           `/api/quotationRequest/list/${memberId}?page=${page}&pageSize=10`
         );
-        console.log("Fetched Quotation Requests:", response.data);
         setQuotationRequests((prevRequests) => [
           ...prevRequests,
           ...response.data.content,
         ]);
         setHasMore(response.data.content.length > 0);
       } catch (err) {
-        console.error(err);
         setError(err);
       } finally {
         setLoading(false);
@@ -56,7 +54,6 @@ const QuotationRequestUserList = () => {
   };
 
   const cancelQuotationRequest = async (id) => {
-    console.log(id);
     try {
       await axios.put(`/api/quotationRequest/cancel/${id}`);
       setSnackbarMessage("요청이 취소되었습니다.");

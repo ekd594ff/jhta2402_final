@@ -32,10 +32,6 @@ const ReviewUserList = () => {
 
   const navigator = useNavigate();
 
-  useEffect(() => {
-    console.log(reviews.length);
-  }, [reviews.length]);
-
   return (
     <div className={style["reviewUserList"]}>
       <div className={style["title"]}>내 리뷰 목록</div>
