@@ -43,7 +43,8 @@
           gap: 8px;
         }
         & > .company-list {
-          gap: 16px;
+          gap: 8px;
+          justify-content: space-between;
         }
       }
     }

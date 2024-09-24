@@ -1,0 +1,84 @@
+@use "variables";
+
+.reviewUserList {
+  display: flex;
+  min-height: 100vh;
+  padding: 0 32px 32px 32px;
+  flex-direction: column;
+  width: calc(variables.$CONTAINER_WIDTH - variables.$MYPAGE_SIDEBAR_WIDTH);
+  box-sizing: border-box;
+  & > .title {
+    box-sizing: border-box;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 16px 0;
+  }
+
+  & > .empty {
+    padding: 32px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: variables.$color-500;
+  }
+
+  & > .divider {
+    margin: 16px 0;
+  }
+
+  & > .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    & > .item {
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px 12px;
+      & > .top {
+        display: flex;
+        gap: 8px;
+        & > .title {
+          font-weight: bold;
+        }
+        & > .date {
+          color: variables.$color-600;
+        }
+      }
+
+      & > .middle-1 {
+        & > .price {
+          font-weight: bold;
+          &::before {
+            content: "사용금액";
+            margin-right: 6px;
+            font-weight: normal;
+          }
+          &::after {
+            content: "KRW";
+            margin-left: 3px;
+          }
+        }
+      }
+
+      & > .middle {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        & > .rate {
+          font-weight: bold;
+        }
+      }
+
+      & > .portfolio-link-wrapper {
+        & > .chip {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

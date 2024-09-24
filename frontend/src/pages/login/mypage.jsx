@@ -21,14 +21,12 @@ const MyPage = () => {
       try {
         const response = await axios.get("/api/member/email");
         setUserData(response.data);
-        //console.info(response.data);
       } catch (error) {
         console.error("사용자 정보를 가져오는 중 오류 발생:", error);
       }
     };
 
     fetchUserData();
-    //console.info(userData);
   }, []);
 
   const handleSelectProfile = () => {
