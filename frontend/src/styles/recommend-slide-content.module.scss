@@ -1,4 +1,4 @@
-@use 'variables';
+@use "variables";
 
 .recommend-slide-content {
   width: 100%;
@@ -25,14 +25,16 @@
     background: linear-gradient(to top, #000, transparent);
     color: #fff;
 
-
     & > .portfolio-name {
       cursor: pointer;
       transition: color 0.2s ease;
+      font-size: 24px;
       &:hover {
         color: variables.$color-500;
       }
     }
-  }
 
+    & > .company-name {
+    }
+  }
 }

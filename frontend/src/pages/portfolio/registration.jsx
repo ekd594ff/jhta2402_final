@@ -4,21 +4,15 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {
     Button,
     TextField,
-    Step,
-    StepLabel,
-    Stepper,
-    StepConnector,
-    stepConnectorClasses,
-    styled, Alert, Snackbar, Card, Grid2
+    Alert,
+    Snackbar, Card, Grid2
 } from "@mui/material";
 import style from "../../styles/portfolio-registration.module.scss";
 import Header from "../../components/common/header.jsx";
 import Footer from "../../components/common/footer.jsx";
-import {Check} from "@mui/icons-material";
 import ImageUpload from "../../components/portfolio/imageUpload.jsx";
 import SolutionForm from "../../components/portfolio/solutionForm.jsx";
 import {checkSeller} from "../../utils/loginUtil.jsx";
-import * as PropTypes from "prop-types";
 import CustomStepper from "../../components/quotation/customStepper.jsx";
 
 
@@ -128,7 +122,7 @@ function Registration() {
                     alert(`포트폴리오가 등록되었습니다.`);
                     navigate("/");
                 })
-                .catch(err => alert(err + "오류가 발생했습니다. 다시 시도해주세요."));
+                .catch(err => alert(err.response.data + "\r\n오류가 발생했습니다. 다시 시도해주세요."));
         } else {
             axios.patch(`/api/portfolio/${id}`,
                 formData,

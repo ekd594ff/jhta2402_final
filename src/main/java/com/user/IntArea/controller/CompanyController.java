@@ -70,7 +70,7 @@ public class CompanyController {
     public ResponseEntity<Page<UnAppliedCompanyDto>> getUnapply(@RequestParam int page, @RequestParam int size) {
 
         Pageable pageable = PageRequest.of(
-                page, size, Sort.by("createdAt").descending());
+                page, size, Sort.by("createdAt", "id").descending());
 
         Page<UnAppliedCompanyDto> unAppliedCompanyDtoPage = companyService.getUnApply(pageable);
 
@@ -94,7 +94,7 @@ public class CompanyController {
 
     @GetMapping("/admin/list")
     public ResponseEntity<Page<CompanyResponseDto>> getAllCompany(@RequestParam int page, @RequestParam(name = "pageSize") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
         Page<CompanyResponseDto> companyResponseDtoPage = companyService.getAllCompany(pageable);
         return ResponseEntity.ok().body(companyResponseDtoPage);
     }
@@ -105,6 +105,10 @@ public class CompanyController {
                                                                     @RequestParam(defaultValue = "desc", required = false) String sort,
                                                                     @RequestParam(required = false) String filterColumn,
                                                                     @RequestParam(required = false) String filterValue) {
+
+        if (sortField.equals("applied")) {
+            sortField = "isApplied";
+        }
         Pageable pageable;
         if (sort.equals("desc")) {
             pageable = PageRequest.of(page, size, Sort.by(sortField).descending());

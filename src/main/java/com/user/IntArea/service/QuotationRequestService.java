@@ -40,13 +40,18 @@ public class QuotationRequestService {
     private final ReviewRepository reviewRepository;
 
     @Transactional
-    public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) {
+    public QuotationRequestDto createQuotationRequest(QuotationRequestDto requestDto) throws IllegalAccessException {
 
         // Member 및 Portfolio 조회
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("멤버 정보가 없습니다."));
         Portfolio portfolio = portfolioRepository.findById(requestDto.getPortfolioId())
                 .orElseThrow(() -> new NoSuchElementException("포트폴리오 정보가 없습니다."));
+
+        // 본인 포트폴리오인 경우 생성 불가
+        if (portfolio.getCompany().getMember().getEmail().equals(member.getEmail())) {
+            throw new IllegalAccessException("본인 포트폴리오에 견적신청서를 넣을 수 없습니다.");
+        }
 
         // QuotationRequest 엔티티 생성 및 저장
         QuotationRequest quotationRequest = QuotationRequest.builder()
@@ -137,6 +142,7 @@ public class QuotationRequestService {
 
         return QuotationRequestDetailDto.builder()
                 .quotationRequest(quotationRequest)
+                .loginEmail(loginEmail)
                 .memberUrl(memberUrl)
                 .solutions(solutions)
                 .quotations(quotations)

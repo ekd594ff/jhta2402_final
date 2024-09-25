@@ -9,6 +9,6 @@ public class EditPortfolioDto {
     private UUID id;
     private String title;
     private String description;
-    private boolean isDeleted;
-    private boolean isActivated;
+    private boolean deleted;
+    private boolean activated;
 }

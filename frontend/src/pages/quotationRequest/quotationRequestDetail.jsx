@@ -29,17 +29,7 @@ function QuotationRequestDetail() {
     const steps = ['견적신청서 등록', '견적서 등록', '고객 승인 대기', '승인 완료'];
     const [activeStep, setActiveStep] = useState(-1);
 
-    const getMemberInfo = async () => await axios.get("/api/member/email", {withCredentials: true});
     const getQuotationDetail = async () => await axios.get(`/api/quotationRequest/detail/${id}`, {withCredentials: true});
-
-    useEffect(() => {
-        getMemberInfo()
-            .then((res) => {
-                if (res.data.role === "ROLE_SELLER") {
-                    setIsMember(false);
-                }
-            })
-    }, []);
 
     useEffect(() => {
         getQuotationDetail()
@@ -49,16 +39,22 @@ function QuotationRequestDetail() {
                 if (res.data.progress.endsWith("CANCELLED")) {
                     setActiveStep(-1);
                 } else if (res.data.progress === "APPROVED") {
-                    setActiveStep(3);
+                    setActiveStep(4);
                 } else if (res.data.quotations.some(quotation => quotation.progress === "PENDING")) {
                     setActiveStep(2);
                 } else if (res.data.quotations.length > 0) {
                     setActiveStep(1);
+                } else {
+                    setActiveStep(0);
+                }
+
+                if (res.data.loginEmail !== res.data.member.email) {
+                    setIsMember(false);
                 }
             })
             .catch(() => {
                 alert("문제가 발생했습니다.");
-                // navigate(-1);
+                navigate(-1);
             })
     }, [trigger]);
 
@@ -66,8 +62,8 @@ function QuotationRequestDetail() {
         if (!confirm("해당 견적서를 취소처리 하시겠습니까?")) return;
 
         const url = (isMember)
-            ? `/api/quotation/company/cancel/${id}`
-            : `/api/quotation/cancel/${id}`
+            ? `/api/quotation/cancel/${id}`
+            : `/api/quotation/company/cancel/${id}`
 
         axios.patch(url)
             .then(() => {

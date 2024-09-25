@@ -1,18 +1,21 @@
-$HEADER_HEIGHT : 54px;
+$HEADER_HEIGHT: 54px;
 
-$CONTAINER_WIDTH : 1000px;
+$CONTAINER_WIDTH: 1000px;
 
-$LOGIN_FORM_MARGIN_TOP : 150px;
-$SIGNUP_FORM_MARGIN_TOP : 150px;
+$LOGIN_FORM_MARGIN_TOP: 150px;
+$SIGNUP_FORM_MARGIN_TOP: 150px;
 
-$COLOR_PRIMARY : #FA4D56;
+$COLOR_PRIMARY: #fa4d56;
 
-$LOGIN_FORM_WIDTH : 300px;
+$LOGIN_FORM_WIDTH: 300px;
 
-$PORTFOLIO_IMG_LIST_ITEM_SIZE : 230px;
+$PORTFOLIO_IMG_LIST_ITEM_SIZE: 230px;
 $PORTFOLIO_SOLUTION_LIST_ITEM_HEIGHT: 70px;
 
 $HEADER_BUTTON_HEIGHT: 36px;
+
+$MYPAGE_SIDEBAR_WIDTH: 200px;
+$MYPAGE_AVATAR_DIAMETER: 128px;
 
 $color-100: #ffffff; // 100: 흰색 (가장 밝음)
 $color-200: #f8f9fa; // 200: 매우 밝은 회색
@@ -28,7 +31,6 @@ $color-1000: #212529; // 1000: 검은색 (가장 어두움)
 // 텍스트 색상
 $text-primary: $color-900; // 기본 텍스트 색상
 $text-secondary: $color-800; // 보조 텍스트 색상
-
 
 @mixin media-960 {
   @media (max-width: 960px) {

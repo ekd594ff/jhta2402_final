@@ -164,7 +164,6 @@ const QuotationRequest = () => {
                     rows={4}
                     value={customDescription}
                     onChange={(e) => setCustomDescription(e.target.value)}
-                    InputLabelProps={{shrink: true}}
                     className={style['other-description']}
                     sx={{
                         '& .MuiOutlinedInput-root': {
@@ -172,6 +171,9 @@ const QuotationRequest = () => {
                                 borderColor: 'rgba(0, 0, 0, 0.6);', // hover 시에도 기본값
                             }
                         },
+                    }}
+                    slotProps={{
+                        inputLabel: {shrink: true}
                     }}
                 />
                 <div className={style['btn-group']}>

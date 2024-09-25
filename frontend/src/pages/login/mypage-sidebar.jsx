@@ -1,81 +1,91 @@
 import React, { useEffect, useState } from "react";
-import { List, ListItem, ListItemText, Divider, Avatar, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { List, ListItem, ListItemText, Avatar } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = ({ onSelectProfile, onSelectQuotationRequests, onSelectReportUserList, onSelectReviewUserList }) => {
-    const navigate = useNavigate();
-    const [memberId, setMemberId] = useState("");
-    const [userData, setUserData] = useState({ username: "", profileImage: "default-profile-image-url.jpg" });
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import StarIcon from "@mui/icons-material/Star";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
-    useEffect(() => {
-        const fetchMemberId = async () => {
-            try {
-                const response = await fetch(`/api/member/email`);
-                const data = await response.json();
-                setMemberId(data.id);
-                setUserData({
-                    username: data.username, 
-                    profileImage: data.images && data.images.length > 0 ? data.images[data.images.length - 1].url : "default-profile-image-url.jpg"
-                });
-            } catch(error) {
-                console.error("회원 정보를 불러오는데 실패했습니다.", error);
-            }
-        };
-        fetchMemberId();
-    }, []);
+import style from "../../styles/mypage-sidebar.module.scss";
 
-    
+const Sidebar = ({
+  onSelectProfile,
+  onSelectQuotationRequests,
+  onSelectReportUserList,
+  onSelectReviewUserList,
+}) => {
+  const navigate = useNavigate();
+  const [memberId, setMemberId] = useState("");
+  const [userData, setUserData] = useState({
+    username: "",
+    profileImage: "default-profile-image-url.jpg",
+  });
 
-    return (
-        <div
-            style={{
-                width: "250px",
-                height: "100vh",
-                backgroundColor: "#f0f0f0",
-                padding: "20px",
-            }}
+  const path = useLocation().pathname.split("/")[2];
+
+  useEffect(() => {
+    const fetchMemberId = async () => {
+      try {
+        const response = await fetch(`/api/member/email`);
+        const data = await response.json();
+        setMemberId(data.id);
+        setUserData({
+          username: data.username,
+          profileImage:
+            data.images && data.images.length > 0
+              ? data.images[data.images.length - 1].url
+              : "default-profile-image-url.jpg",
+        });
+      } catch (error) {
+        console.error("회원 정보를 불러오는데 실패했습니다.", error);
+      }
+    };
+    fetchMemberId();
+  }, []);
+
+  return (
+    <div className={style["mypage-sidebar"]}>
+      <div className={style["info"]}>
+        <Avatar
+          className={style["avatar"]}
+          alt={userData.username}
+          src={userData.profileImage}
+        />
+        <div className={style["username"]}>{userData.username}</div>
+      </div>
+      <List className={style["list"]}>
+        <ListItem
+          onClick={onSelectProfile}
+          className={path === "profile" ? style["selected"] : ""}
         >
-            <Avatar
-                alt={userData.username}
-                src={userData.profileImage}
-                style={{ width: 80, height: 80, marginLeft: 85, marginTop: 70, marginBottom: 16 }}
-            />
-            <div style={{
-                marginTop: "10px", 
-                marginLeft: "20px",
-                marginRight: "20px",
-                padding: "5px",
-                border: "2px solid #ccc",
-                borderRadius: "8px",
-                backgroundColor: "#fff",
-                display: "flex",
-                justifyContent: "center",
-                boxShadow: "12px 12px 7px rgba(0, 0, 0, 0.4)",
-                
-            }}>
-                <Typography variant="h6" style={{flexGrow: 1, textAlign: "center" }}>{userData.username}</Typography>
-            </div>
-            <List style={{marginTop: "40px" }}>
-                <ListItem button onClick={onSelectProfile}>
-                    <ListItemText primary="내 프로필" />
-                </ListItem>
-                <Divider />
-                <ListItem button style={{marginTop: "10px"}} onClick={onSelectQuotationRequests}>
-                    <ListItemText primary="내 신청서" />
-                </ListItem>   
-                <Divider />
-                <ListItem button style={{marginTop: "10px"}} onClick={onSelectReportUserList}>
-                    <ListItemText primary="내 신고" />
-                </ListItem>
-                <Divider />
-                <ListItem button style={{marginTop: "10px"}} onClick={onSelectReviewUserList}>
-                    <ListItemText primary="내 리뷰" />
-                </ListItem>         
-            </List>
-            <Divider />
-        </div>
-    );
+          <AccountCircleIcon />
+          <span>내 프로필</span>
+        </ListItem>
+        <ListItem
+          onClick={onSelectQuotationRequests}
+          className={path === "quotationRequest" ? style["selected"] : ""}
+        >
+          <AssignmentIcon />
+          <span>내 신청서</span>
+        </ListItem>
+        <ListItem
+          onClick={onSelectReportUserList}
+          className={path === "reportUserList" ? style["selected"] : ""}
+        >
+          <NotificationsIcon />
+          <span>내 신고</span>
+        </ListItem>
+        <ListItem
+          onClick={onSelectReviewUserList}
+          className={path === "reviewList" ? style["selected"] : ""}
+        >
+          <StarIcon />
+          <span>내 리뷰</span>
+        </ListItem>
+      </List>
+    </div>
+  );
 };
 
 export default Sidebar;

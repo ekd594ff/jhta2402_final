@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class SecurityUtil {
@@ -26,7 +25,6 @@ public class SecurityUtil {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
-            log.debug("Security Context에 인증 정보가 없습니다.");
             return Optional.empty();
         }
 

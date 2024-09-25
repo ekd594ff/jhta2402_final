@@ -1,0 +1,66 @@
+@use "variables";
+
+.mypage {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+    box-sizing: border-box;
+    padding: 0 16px 0 16px;
+    display: flex;
+    height: auto;
+
+    & .profile-content {
+      width: calc(variables.$CONTAINER_WIDTH - variables.$MYPAGE_SIDEBAR_WIDTH);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0 32px;
+      box-sizing: border-box;
+      & > .title {
+        font-weight: bold;
+        font-size: 18px;
+        padding: 16px 0;
+      }
+      & > .content {
+        display: flex;
+        box-sizing: border-box;
+        justify-content: space-between;
+        align-items: center;
+        gap: 32px;
+        & > .dropzone {
+          width: variables.$MYPAGE_AVATAR_DIAMETER;
+          height: variables.$MYPAGE_AVATAR_DIAMETER;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+          cursor: pointer;
+          & > .avatar {
+            width: 100%;
+            height: 100%;
+          }
+          & > .preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        & > form {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 32px;
+          & > .btn-group {
+            display: flex;
+            justify-content: flex-end;
+          }
+        }
+      }
+    }
+  }
+}

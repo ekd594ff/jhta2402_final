@@ -60,7 +60,7 @@ function CreateEditCompany() {
     const checkInput = () => {
         if (companyInfo.companyName === "") {
             alert("회사 이름을 입력해주세요.");
-        } else if (companyInfo.phone === "") {
+        } else if (companyInfo.phone.length < 8) {
             alert("회사 전화번호를 입력해주세요.");
         } else if (companyInfo.address === "") {
             alert("회사 주소를 입력해주세요.");
@@ -97,9 +97,10 @@ function CreateEditCompany() {
             .then((res) => {
                 alert((isEdit) ? "수정되었습니다." : "생성되었습니다.");
                 navigate("/company/info");
-            }).catch(() => {
-            alert("문제가 발생했습니다.");
-        })
+            })
+            .catch((err) => {
+                alert(err.response.data);
+            })
     }
 
     // 이미지 미리보기
@@ -189,22 +190,26 @@ function CreateEditCompany() {
                                }}/>
                 </div>
                 <div className={style['input-div']}>
-                    <TextField className={style['text-field']}
-                               value={companyInfo.description}
-                               onChange={(e) => setCompanyInfo(
-                                   {...companyInfo, description: e.target.value})}
-                               type="text"
-                               multiline
-                               rows={5}
-                               name="description"
-                               placeholder=""
-                               variant="outlined"
-                               label="회사 설명"
-                               slotProps={{
-                                   inputLabel: {
-                                       shrink: true,
-                                   }
-                               }}/>
+                    <TextField
+                        className={style['text-field']}
+                        value={companyInfo.description}
+                        onChange={(e) => setCompanyInfo(
+                            {...companyInfo, description: e.target.value})}
+                        type="text"
+                        multiline
+                        rows={5}
+                        name="description"
+                        placeholder=""
+                        variant="outlined"
+                        label="회사 설명"
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            },
+                            htmlInput: {
+                                maxLength: 250,
+                            }
+                        }}/>
                 </div>
                 <div className={style['input-div-address']}>
                     <div className={style['address-div']}>

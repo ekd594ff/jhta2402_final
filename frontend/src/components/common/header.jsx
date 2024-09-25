@@ -6,7 +6,17 @@ import MenuItem from "@mui/material/MenuItem";
 import style from "../../styles/header.module.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SearchIcon from "@mui/icons-material/Search";
+
+import {
+  Search as SearchIcon,
+  AccountCircle as AccountCircleIcon,
+  Assignment as AssignmentIcon,
+  Business as BusinessIcon,
+  Handshake as HandshakeIcon,
+  Logout as LogoutIcon,
+  DomainAdd as DomainAddIcon,
+  SpaceDashboard as SpaceDashboardIcon,
+} from "@mui/icons-material";
 
 function SearchBox(props) {
   const { setter, expand } = props;
@@ -30,7 +40,7 @@ function SearchBox(props) {
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === "Enter") {
+          if (event.key === "Enter" && value !== "") {
             navigator(`/search/detailed?query=${value}`);
           }
         }}
@@ -48,7 +58,7 @@ function Header() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [searchBoxExpand, setSearchBoxExpand] = useState(false);
   const [userImage, setUserImage] = useState("");
-  const [hasCompany, setHasCompany] = useState(false);
+  const [role, setRole] = useState("");
 
   const handleClickAvatar = (event) => {
     event.stopPropagation();
@@ -67,12 +77,12 @@ function Header() {
 
   const checkCompany = async () => {
     try {
-      const response = await axios.get("/api/company/info", {
+      const response = await axios.get("/api/member/check/role", {
         withCredentials: true,
       });
-      setHasCompany(response.data.companyName !== null);
+      setRole(response.data);
     } catch (error) {
-      setHasCompany(false);
+      setRole("");
     }
   };
 
@@ -97,10 +107,14 @@ function Header() {
         navigate("/company/edit");
       }
     } catch (error) {
-      alert("회사가 없습니다. 생성 페이지로 이동합니다.");
+      alert("업체가 없습니다. 생성 페이지로 이동합니다.");
       navigate("/company/create");
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     axios
@@ -156,15 +170,46 @@ function Header() {
               />
               <span>{username}</span>
               <div className={`${style["menu"]} ${open ? style["open"] : ""}`}>
-                <MenuItem onClick={() => navigate("/mypage")}>My Page</MenuItem>
-                <MenuItem
-                  onClick={() =>
-                    navigate(hasCompany ? "/company/info" : "/company/create")
-                  }
-                >
-                  Company
+                <MenuItem onClick={() => navigate("/mypage")}>
+                  <AccountCircleIcon />
+                  <span>내 프로필</span>
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem
+                  onClick={() => navigate("/mypage/quotationRequest/member")}
+                >
+                  <AssignmentIcon />
+                  <span>내 신청서</span>
+                </MenuItem>
+                {role === "ROLE_USER" && (
+                  <MenuItem onClick={() => navigate("/company/create")}>
+                    <DomainAddIcon />
+                    <span>업체 생성</span>
+                  </MenuItem>
+                )}
+                {role === "ROLE_SELLER" && (
+                  <>
+                    <MenuItem onClick={() => navigate("/company/info")}>
+                      <BusinessIcon />
+                      <span>업체 정보</span>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => navigate("/quotationRequest/company")}
+                    >
+                      <HandshakeIcon />
+                      <span>업체 견적서</span>
+                    </MenuItem>
+                  </>
+                )}
+                {role === "ROLE_ADMIN" && (
+                  <MenuItem onClick={() => navigate("/admin")}>
+                    <SpaceDashboardIcon />
+                    <span>관리자 화면</span>
+                  </MenuItem>
+                )}
+                <MenuItem onClick={handleLogout}>
+                  <LogoutIcon />
+                  <span>로그아웃</span>
+                </MenuItem>
               </div>
             </>
           ) : (

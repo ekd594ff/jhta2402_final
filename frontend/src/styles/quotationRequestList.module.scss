@@ -1,0 +1,12 @@
+@use "variables";
+
+.quotationRequestList {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: variables.$HEADER_HEIGHT;
+  & > .container {
+    width: 100%;
+    max-width: variables.$CONTAINER_WIDTH;
+  }
+}

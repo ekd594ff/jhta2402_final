@@ -86,21 +86,24 @@
           }
         }
 
-
-        & > .button-div {
+        & > .button-container {
           display: flex;
-          justify-content: end;
-          margin: 16px;
-          gap: 16px;
 
-          & > .cancel-button {
-            border-color: variables.$COLOR_PRIMARY;
-            color: variables.$COLOR_PRIMARY;
-          }
+          & > .button-div {
+            display: flex;
+            justify-content: end;
+            margin: 16px;
+            gap: 16px;
 
-          & > .edit-button {
-            border-color: variables.$COLOR_PRIMARY;
-            color: variables.$COLOR_PRIMARY;
+            & > .cancel-button {
+              border-color: variables.$COLOR_PRIMARY;
+              color: variables.$COLOR_PRIMARY;
+            }
+
+            & > .edit-button {
+              border-color: variables.$COLOR_PRIMARY;
+              color: variables.$COLOR_PRIMARY;
+            }
           }
         }
       }
@@ -115,7 +118,6 @@
           flex-direction: row;
 
           & > .slide {
-
             & > .image {
               width: 120px;
               height: 120px;
