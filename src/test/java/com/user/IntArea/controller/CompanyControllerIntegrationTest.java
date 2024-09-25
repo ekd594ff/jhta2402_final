@@ -60,7 +60,8 @@ class CompanyControllerIntegrationTest {
                 "회사 이름1",
                 "회사 설명1",
                 "010-1234-5678",
-                "부산 해운대구 APEC로 17 (센텀리더스마크)"
+                "부산 해운대구 APEC로 17 (센텀리더스마크)",
+                "201"
         );
         companyRequestDto.setImage(new MockMultipartFile("temp.png", "".getBytes()));
 

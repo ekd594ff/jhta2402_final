@@ -2,12 +2,36 @@
 ###  배포 주소: https://intarea.store
 ![페이지 메인화면 캡처](intarea_main_capture.png)
 
+## 웹개발팀 소개
+|엄인용|김상빈|김진현|김태환|윤형민|
+|:---:|:---:|:---:|:---:|:---:|
+|![image](https://avatars.githubusercontent.com/u/94286943?v=4)| ![image](https://avatars.githubusercontent.com/u/162076969?v=4) |![image](https://avatars.githubusercontent.com/u/162077098?v=4)|![image](https://avatars.githubusercontent.com/u/138198133?v=4)| ![image](https://avatars.githubusercontent.com/u/156720686?v=4) |
+| [@ekd594ff](https://github.com/ekd594ff)| [@SangBin0902](https://github.com/SangBin0902) |[@kim0815b](https://github.com/kim0815b)|[@typhoon0678](https://github.com/typhoon0678)| [@HyungminYoon1](https://github.com/HyungminYoon1)|
+|중앙HTA 수료생| 중앙HTA 수료생  |중앙HTA 수료생|중앙HTA 수료생|중앙HTA 수료생|
+
+
 ## 프로젝트 개요
 
 ### ■ 주제
 ```
 인테리어 서비스 제공업자와 고객을 연결하는 사이트
 ```
+
+### ■ 개발환경
+- 언어: Java 17, JavaScript
+- 개발도구: IntelliJ, VSCode
+- 서버: Node.js, AWS
+- UI: React
+
+### ■ 서버 구성: Amazon Web Service
+- DB 구성: Amazon EC2 / PostgreSQL
+- 이미지 저장: Amazon S3
+
+### ■ 기타 활용 도구
+- 진행상황 컨트롤: Notion
+- 소통: 슬랙
+- ERD 작성: ERDCloud(https://www.erdcloud.com/d/ea6GQFJNKK7qDGauk)
+- 화면 다이어그램: https://app.diagrams.net/#G1SYYZpUSokPOUO2KBgryEKKi1QlnlNamW
 
 ### ■ 일반 기능
 ```
@@ -54,24 +78,6 @@
   - 받은 견적서 목록
   - 승인된 견적(완료된 거래)에 대한 리뷰 작성
   ```
-
-### ■ 사용 기술 및 서비스
-
-- 언어: Java 17, JavaScript
-- 개발도구: IntelliJ, VSCode
-- 서버: Node.js, AWS
-- UI: React
-
-
-### ■ 서버 구성: Amazon Web Service
-- DB 구성: Amazon EC2 / PostgreSQL
-- 이미지 저장: Amazon S3
-
-### ■ 기타 활용 도구
-- 진행상황 컨트롤: Notion
-- 소통: 슬랙
-- ERD 작성: ERDCloud(https://www.erdcloud.com/d/ea6GQFJNKK7qDGauk)
-- 화면 다이어그램: https://app.diagrams.net/#G1SYYZpUSokPOUO2KBgryEKKi1QlnlNamW
 
 
 ## 설정
