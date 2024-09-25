@@ -47,7 +47,7 @@ function CompanyDetail() {
     totalPage: 0,
   });
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   // member api
   const getCompanyById = async () =>
