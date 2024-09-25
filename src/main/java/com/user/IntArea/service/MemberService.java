@@ -19,11 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,7 +134,7 @@ public class MemberService {
                 .collect(Collectors.toList());
 
         // Member를 MemberResponseDto로 변환
-        return new MemberWithImagesResponseDto(member,images);
+        return new MemberWithImagesResponseDto(member, images);
     }
 
     @Transactional
@@ -153,27 +150,12 @@ public class MemberService {
 
         // 프로필 이미지가 있는 경우 업로드
         if (updateProfileDto.getFile() != null && !updateProfileDto.getFile().isEmpty()) {
-            Optional<ImageDto> imageDtoOptional = uploadProfileImage(updateProfileDto.getFile());
-            imageDtoOptional.ifPresent(imageDto -> {
-                imageRepository.save(imageDto.toImage());
-            });
-        }
-    }
+            ImageDto imageDto = imageUtil.uploadS3(updateProfileDto.getFile(), member.getId(), 0)
+                    .orElseThrow(() -> new NoSuchElementException("S3 오류"));
 
-    @Transactional
-    public Optional<ImageDto> uploadProfileImage(MultipartFile file) {
-        MemberDto memberDto = SecurityUtil.getCurrentMember()
-                .orElseThrow(() -> new UsernameNotFoundException("현재 로그인한 사용자가 없습니다."));
-        String email = memberDto.getEmail();
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일로 회원을 찾을 수 없습니다."));
-
-        Optional<ImageDto> imageDtoOptional = imageUtil.uploadS3(file, member.getId(), 0);
-
-        imageDtoOptional.ifPresent(imageDto -> {
+            imageRepository.deleteByRefId(member.getId());
             imageRepository.save(imageDto.toImage());
-        });
-        return imageDtoOptional;
+        }
     }
 
     @Transactional

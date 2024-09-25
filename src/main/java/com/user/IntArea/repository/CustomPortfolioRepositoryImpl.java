@@ -37,6 +37,7 @@ public class CustomPortfolioRepositoryImpl implements CustomPortfolioRepository 
                 .append("LEFT JOIN quotation q ON qr.id = q.quotationRequestId ")
                 .append("LEFT JOIN review re ON q.id = re.quotationId ")
                 .append("WHERE 1 = 1 ")
+                .append("AND c.isApplied = true ")
                 .append("AND p.isDeleted = false ")
                 .append("AND p.isActivated = true ")
                 .append("AND (p.title LIKE CONCAT('%', :searchWord, '%') OR ")
