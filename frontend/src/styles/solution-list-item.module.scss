@@ -11,6 +11,29 @@
   cursor: pointer;
   user-select: none;
 
+  flex: 1 1 calc((100% - 16px) / 2);
+  max-width: calc((100% - 16px) / 2);
+
+  @include variables.media-960 {
+    flex: 1 1 calc((100% - 16px) / 2);
+    max-width: calc((100% - 16px) / 2);
+  }
+
+  @include variables.media-720 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  @include variables.media-540 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  @include variables.media-320 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
   & > .container {
     display: flex;
     gap: 16px;
