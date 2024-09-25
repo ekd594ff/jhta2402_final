@@ -60,6 +60,7 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, UUID> {
             "FROM Portfolio p " +
             "INNER JOIN Image i on i.refId = p.id " +
             "INNER JOIN Company c on p.companyid =  c.id " +
+            "WHERE c.isApplied = true " +
             "ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
     List<Map<String, Object>> getRandomPortfolioInfoDtos(@Param("count") int count);
 

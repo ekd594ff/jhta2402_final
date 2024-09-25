@@ -1,5 +1,5 @@
 # IntArea
-###  배포 주소: https://suggest-launch.store/
+###  배포 주소: https://intarea.store
 ![페이지 메인화면 캡처](intarea_main_capture.png)
 
 ## 프로젝트 개요
