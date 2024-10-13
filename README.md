@@ -28,7 +28,7 @@
 - 이미지 저장: Amazon S3
 
 ### ■ 기타 활용 도구
-- 진행상황 컨트롤: Notion
+- Notion: https://phase-rail-b25.notion.site/JHTA-2402-1-Final-60254b8037b44088857305189c6eb412
 - 소통: 슬랙
 - ERD 작성: ERDCloud(https://www.erdcloud.com/d/ea6GQFJNKK7qDGauk)
 - 화면 다이어그램: https://app.diagrams.net/#G1SYYZpUSokPOUO2KBgryEKKi1QlnlNamW
